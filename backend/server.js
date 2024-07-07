@@ -3,7 +3,8 @@ const app = express();
 const cors = require("cors");
 const corsOption = require('./configs/corsConfig');
 require('./configs/env');
-const dbConnection = require('./utils/database/connection')
+const dbConnection = require('./utils/database/connection');
+const authRouter = require('./routes/auth-route')
 
 // Call all the environment variable
 const PORT = process.env.PORT;
@@ -11,9 +12,11 @@ const PORT = process.env.PORT;
 app.use(cors(corsOption));
 app.use(express.json());
 
-// listen to the server
-app.get("/", (req, res) => {
-  res.status(200).send("Hello World");
+// Handle all the routes here
+app.use('/api/auth',authRouter);
+
+app.get("/", async(req, res) => {
+  res.status(200).send("hello world")
 });
 
 dbConnection().then((data)=>{
