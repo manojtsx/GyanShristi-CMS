@@ -1,3 +1,5 @@
+const dotenv = require('dotenv');
+dotenv.config();
 const FRONTEND_URL= process.env.FRONTEND_URL;
 
 const corsOption = {
@@ -8,4 +10,4 @@ const corsOption = {
     credentials: true,
   };
 
-  module.exports = corsOption;
+  module.exports = corsOption; 
