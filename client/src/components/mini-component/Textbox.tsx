@@ -5,11 +5,16 @@ type TextBoxProps = {
   placeholder: string;
 };
 
-
 function Textbox({ name, value, placeholder }: TextBoxProps) {
   return (
     <>
-      <input type="text" name={name} value={value} placeholder={placeholder} className="bg-white border-none shadow-md w-[300px]"/>
+      <input
+        type="text"
+        name={name}
+        value={value}
+        placeholder={placeholder}
+        className="bg-white border-none shadow-md w-[300px] placeholder"
+      />
     </>
   );
 }
