@@ -1,6 +1,7 @@
 "use client"
 import Link from 'next/link'
 import React, { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import Textbox from './mini-component/Textbox'
 import PasswordBox from './mini-component/PasswordBox'
 import SubmitButton from './mini-component/SubmitButton'
@@ -18,6 +19,7 @@ const API = process.env.NEXT_PUBLIC_BACKEND_API;
 
 function Login() {
   const {addNotification} = useNotifications();
+  const router = useRouter();
   const [user,setUser] = useState<User>({username : "", password : ""});
   
   // Handle the input change 
@@ -50,7 +52,8 @@ function Login() {
       if(!res.ok){
         throw new Error(data.msg);
       }
-      addNotification(data.msg, 'success')
+      addNotification(data.msg, 'success');
+      router.push('/dashboard')
     }catch(err : any){
       addNotification(err.message, 'error');
     } 

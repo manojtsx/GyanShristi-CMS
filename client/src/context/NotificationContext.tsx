@@ -50,7 +50,7 @@ export const NotificationProvider = ({ children }: { children: ReactNode }) => {
     // Provide the notification context to child components
     return (
         <NotificationContext.Provider value={{ notifications, addNotification, removeNotification }}>
-            {children} // Render child components
+            {children}
         </NotificationContext.Provider>
     )
 }
