@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import Logo from "./mini-component/Logo";
 import Textbox from "./mini-component/Textbox";
 import SmallButton from "./mini-component/SmallButton";
@@ -21,6 +22,7 @@ interface User {
 }
 function Register() {
   const { addNotification } = useNotifications();
+  const router = useRouter();
   const [isFirstForm, setIsFirstForm] = useState(true);
   const [user, setUser] = useState<User>({
     name: "",
@@ -49,7 +51,7 @@ function Register() {
       if (user.password !== user.confirm_password) {
         throw new Error('Please match the password.')
       }
-      const res = await fetch(`${API}api/auth/login`, {
+      const res = await fetch(`${API}api/auth/register`, {
         method: "POST",
         headers: {
           'Content-Type': 'application/json'
@@ -59,12 +61,12 @@ function Register() {
       const data = await res.json();
       if (res.status === 400) {
         throw new Error(data.msg)
-        return;
       }
       if (!res.ok) {
         throw new Error(data.msg)
       }
       addNotification(data.msg, 'success');
+      router.push('/login');
     } catch (err: any) {
       addNotification(err.message, 'error');
     }
@@ -82,10 +84,10 @@ function Register() {
         </button>
       </div>
       <div className="flex justify-center items-center min-h-[90vh] w-1/2 pl-24">
+      <form onSubmit={handleSubmit}>
         {isFirstForm ? (
-          <form
-            onSubmit={handleSubmit}
-            className="flex justify-center items-center flex-col gap-5 bg-[#FBF9F9] p-10 rounded-lg shadow-lg"
+          <div
+          className="flex justify-center items-center flex-col gap-5 bg-[#FBF9F9] p-10 rounded-lg shadow-lg"
           >
             <Logo />
             <Textbox
@@ -93,37 +95,36 @@ function Register() {
               value={user.name}
               placeholder="Full Name"
               onChange={handleInputChange}
-            />
+              />
             <Textbox
               name="email"
               value={user.email}
               placeholder="Email ID"
               onChange={handleInputChange}
-            />
+              />
             <Textbox
               name="phone_number"
               value={user.phone_number}
               placeholder="Contact Number"
               onChange={handleInputChange}
-            />
+              />
             <Textbox
               name="address"
               value={user.address}
               placeholder="Address"
               onChange={handleInputChange}
-            />
+              />
             <div className=" space-x-1">
               <Link href="/login">
                 <SmallButton text="Cancel" />
               </Link>
               <SmallButton text="Next" onClick={handleNextClick} />
             </div>
-          </form>
+          </div>
         ) : (
           // second form
-          <form
-            action=""
-            className="flex justify-center items-center flex-col gap-5 bg-[#FBF9F9] p-10 rounded-lg shadow-lg"
+          <div
+          className="flex justify-center items-center flex-col gap-5 bg-[#FBF9F9] p-10 rounded-lg shadow-lg"
           >
             <Logo />
             <Textbox
@@ -131,22 +132,23 @@ function Register() {
               value={user.username}
               placeholder="Username"
               onChange={handleInputChange}
-            />
+              />
             <PasswordBox
               name="password"
               value={user.password}
               placeholder="Password"
               onChange={handleInputChange}
-            />
+              />
             <PasswordBox
               name="confirm_password"
               value={user.confirm_password}
               placeholder="Confirm Password"
               onChange={handleInputChange}
-            />
+              />
             <SubmitButton text="Submit" />
-          </form>
+          </div>
         )}
+        </form>
       </div>
     </main>
   );
