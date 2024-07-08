@@ -9,6 +9,14 @@ const authRouter = require('./routes/auth-route')
 // Call all the environment variable
 const PORT = process.env.PORT;
 
+// // Apply cors options
+// const corsOption = {
+//     origin : process.env.FRONTEND_URL,
+//     methods : "GET,POST,PUT,DELETE",
+//     allowHeaders : 'Content-Type,Authorization',
+//     optionsSuccessStatus : 200
+// } 
+
 app.use(cors(corsOption));
 app.use(express.json());
 

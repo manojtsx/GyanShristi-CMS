@@ -6,9 +6,31 @@ import SmallButton from "./mini-component/SmallButton";
 import SubmitButton from "./mini-component/SubmitButton";
 import Link from "next/link";
 
+interface User {
+  name: string;
+  email: string;
+  phone_number: string;
+  address: string;
+  username: string;
+  password: string;
+}
 function Register() {
   const [isFirstForm, setIsFirstForm] = useState(true);
+  const [user, setUser] = useState<User>({
+    name: "",
+    email: "",
+    phone_number: "",
+    address: "",
+    username: "",
+    password: "",
+  });
 
+  // Handle the input change
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const name = e.target.name;
+    const value = e.target.value;
+    setUser({ ...user, [name]: value });
+  };
   const handleNextClick = () => {
     setIsFirstForm(false);
   };
@@ -32,14 +54,30 @@ function Register() {
             className="flex justify-center items-center flex-col gap-5 bg-[#FBF9F9] p-10 rounded-lg shadow-lg"
           >
             <Logo />
-            <Textbox name="name" value="name" placeholder="Name" />
-            <Textbox name="email" value="email" placeholder="Email ID" />
+            <Textbox
+              name="name"
+              value="name"
+              placeholder="Name"
+              onChange={handleInputChange}
+            />
+            <Textbox
+              name="email"
+              value="email"
+              placeholder="Email ID"
+              onChange={handleInputChange}
+            />
             <Textbox
               name="Phone_number"
               value="Phone_Number"
               placeholder="Contact Number"
+              onChange={handleInputChange}
             />
-            <Textbox name="address" value="address" placeholder="Address" />
+            <Textbox
+              name="address"
+              value="address"
+              placeholder="Address"
+              onChange={handleInputChange}
+            />
             <div className=" space-x-1">
               <Link href="/login">
                 <SmallButton text="Cancel" />
@@ -54,12 +92,23 @@ function Register() {
             className="flex justify-center items-center flex-col gap-5 bg-[#FBF9F9] p-10 rounded-lg shadow-lg"
           >
             <Logo />
-            <Textbox name="username" value="username" placeholder="Username" />
-            <Textbox name="password" value="password" placeholder="Password" />
+            <Textbox
+              name="username"
+              value="username"
+              placeholder="Username"
+              onChange={handleInputChange}
+            />
+            <Textbox
+              name="password"
+              value="password"
+              placeholder="Password"
+              onChange={handleInputChange}
+            />
             <Textbox
               name="confirm_password"
               value="confirm_password"
               placeholder="Confirm Password"
+              onChange={handleInputChange}
             />
             <SubmitButton text="Submit" />
           </form>
