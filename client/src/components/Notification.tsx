@@ -23,9 +23,8 @@ const NotificationContainer = () => {
         // Style the container with Tailwind CSS for fixed positioning, spacing, and z-index
         <div className="fixed top-5 right-5 z-50 flex flex-col space-y-4">
             {notifications.map((notification) => (
-                // Render each notification with a dynamic style based on its type
                 <div key={notification.id} className={`notification bg-white shadow-lg rounded-lg p-4 ${notification.type === 'success' ? 'bg-green-100 text-green-800' : notification.type === 'error' ? 'bg-red-100 text-red-800' : 'bg-blue-100 text-blue-800'}`}>
-                    {notification.message} // Display the notification message
+                    {notification.message}
                 </div>
             ))}
         </div>
