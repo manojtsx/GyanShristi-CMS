@@ -5,6 +5,10 @@ import Textbox from "./mini-component/Textbox";
 import SmallButton from "./mini-component/SmallButton";
 import SubmitButton from "./mini-component/SubmitButton";
 import Link from "next/link";
+import PasswordBox from "./mini-component/PasswordBox";
+import { useNotifications } from "@/context/NotificationContext";
+
+const API = process.env.NEXT_PUBLIC_BACKEND_API;
 
 interface User {
   name: string;
@@ -13,8 +17,10 @@ interface User {
   address: string;
   username: string;
   password: string;
+  confirm_password: string
 }
 function Register() {
+  const { addNotification } = useNotifications();
   const [isFirstForm, setIsFirstForm] = useState(true);
   const [user, setUser] = useState<User>({
     name: "",
@@ -23,6 +29,7 @@ function Register() {
     address: "",
     username: "",
     password: "",
+    confirm_password: ""
   });
 
   // Handle the input change
@@ -35,6 +42,33 @@ function Register() {
     setIsFirstForm(false);
   };
 
+  // submit the form for registration
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      if (user.password !== user.confirm_password) {
+        throw new Error('Please match the password.')
+      }
+      const res = await fetch(`${API}api/auth/login`, {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(user)
+      });
+      const data = await res.json();
+      if (res.status === 400) {
+        throw new Error(data.msg)
+        return;
+      }
+      if (!res.ok) {
+        throw new Error(data.msg)
+      }
+      addNotification(data.msg, 'success');
+    } catch (err: any) {
+      addNotification(err.message, 'error');
+    }
+  }
   return (
     <main className=" flex min-h-screen">
       <div className="flex flex-col items-start justify-center w-1/2 pl-40">
@@ -50,31 +84,31 @@ function Register() {
       <div className="flex justify-center items-center min-h-[90vh] w-1/2 pl-24">
         {isFirstForm ? (
           <form
-            action=""
+            onSubmit={handleSubmit}
             className="flex justify-center items-center flex-col gap-5 bg-[#FBF9F9] p-10 rounded-lg shadow-lg"
           >
             <Logo />
             <Textbox
               name="name"
-              value="name"
-              placeholder="Name"
+              value={user.name}
+              placeholder="Full Name"
               onChange={handleInputChange}
             />
             <Textbox
               name="email"
-              value="email"
+              value={user.email}
               placeholder="Email ID"
               onChange={handleInputChange}
             />
             <Textbox
-              name="Phone_number"
-              value="Phone_Number"
+              name="phone_number"
+              value={user.phone_number}
               placeholder="Contact Number"
               onChange={handleInputChange}
             />
             <Textbox
               name="address"
-              value="address"
+              value={user.address}
               placeholder="Address"
               onChange={handleInputChange}
             />
@@ -94,19 +128,19 @@ function Register() {
             <Logo />
             <Textbox
               name="username"
-              value="username"
+              value={user.username}
               placeholder="Username"
               onChange={handleInputChange}
             />
-            <Textbox
+            <PasswordBox
               name="password"
-              value="password"
+              value={user.password}
               placeholder="Password"
               onChange={handleInputChange}
             />
-            <Textbox
+            <PasswordBox
               name="confirm_password"
-              value="confirm_password"
+              value={user.confirm_password}
               placeholder="Confirm Password"
               onChange={handleInputChange}
             />
