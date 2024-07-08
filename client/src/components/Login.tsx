@@ -57,7 +57,7 @@ function Login() {
   }
   return (
     <div className='flex justify-center items-center min-h-[90vh]'>
-    <form onSubmit={handleSubmit} className='flex justify-center items-center flex-col gap-5 bg-[#FBF9F9] p-10'>
+    <form onSubmit={handleSubmit} className='flex justify-center items-center flex-col gap-8 bg-[#FBF9F9] p-10 shadow-lg rounded-md'>
         <Logo />
         <Textbox name="username" value={user.username} placeholder="Username" onChange={handleInputChange}/>
         <PasswordBox name="password" value={user.password} placeholder="Password" onChange={handleInputChange}/>
