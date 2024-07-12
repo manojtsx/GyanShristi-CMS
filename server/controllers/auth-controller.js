@@ -4,13 +4,14 @@ const Login = require('../models/login-model');
 // Controller to register
 const register = async(req,res) =>{
     try{
-        const {name, username, password, email, address, phone_number, role} = req.body;
+        const {name, username, password, email, address, phone_number} = req.body;
+        const status  = 'unrequested';
         const isUserPresent = await User.findOne({username : username});
         if(isUserPresent){
             return res.status(400).json({msg : "Username already exists."})
         }
         const user = new User({
-            name, username, password, email, address, phone_number
+            name, username, password, email, address, phone_number,status
         });
         await user.encryptPassword(password);
         await user.save();
