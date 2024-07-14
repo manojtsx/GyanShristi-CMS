@@ -205,6 +205,29 @@ const promoteToAdmin = async (req, res) => {
   }
 };
 
+// save profile picture path
+const uploadProfilePicture = async (req, res) => {
+  try {
+    if (req.file === undefined) {
+      return res.status(400).json({ msg: "No file selected!" });
+    }
+    
+    const userId = req.user.id;
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ msg: "User not found" });
+    }
+    await User.findByIdAndUpdate(
+      userId,
+      { profile_pic: req.file.path },
+      { new: true }
+    );
+      res.status(200).json({msg : "Profile picture uploaded successfully"});
+  } catch (err) {
+    res.status(500).json({ msg: err.message });
+  }
+};
+
 module.exports = {
   getUser,
   getUserByRole,
@@ -216,4 +239,5 @@ module.exports = {
   approveAsAuthor,
   changeUserToEditor,
   promoteToAdmin,
+  uploadProfilePicture,
 };
