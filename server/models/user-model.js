@@ -1,9 +1,6 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const SALT = 10;
-<<<<<<< HEAD
-
-=======
 require("../configs/env");
 const jwt = require("jsonwebtoken");
 const key = process.env.JWT_SECRET;
@@ -21,15 +18,6 @@ class UserClass {
     this.role = user.role;
     this.status = user.status;
     this.created_at = user.created_at || Date.now();
-  }
-  // encrypt password during register
-  async encryptPassword(password) {
-    try {
-      const hashedPassword = await bcrypt.hash(password, SALT);
-      this.password = hashedPassword;
-    } catch (err) {
-      throw err;
-    }
   }
 
   //validate password during login
@@ -57,7 +45,6 @@ class UserClass {
 }
 
 // mongoose schema of user
->>>>>>> beef375fb1ffbb88dffa2ed7c1053c1482bc82af
 const UserSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -85,11 +72,7 @@ const UserSchema = new mongoose.Schema({
   role: {
     type: String,
     enum: ["admin", "editor", "author", "viewer"],
-<<<<<<< HEAD
-    default : 'viewer'
-=======
     default: "viewer",
->>>>>>> beef375fb1ffbb88dffa2ed7c1053c1482bc82af
   },
   status: {
     type: String,
@@ -101,28 +84,20 @@ const UserSchema = new mongoose.Schema({
   },
 });
 
-<<<<<<< HEAD
-UserSchema.methods.encryptPassword = async function (password) {
-  try {
-    const hashedPassword = await bcrypt.hash(password, SALT);
-    this.password = hashedPassword; 
-  } catch (err) {
-    throw new Error(err.message);
+UserSchema.pre('save',async function(next){
+  if(!this.isModified('password')){
+    return next();
   }
-};
-
-UserSchema.methods.validatePassword = async function(password){
   try{
-    return await bcrypt.compare(password,this.password);
+    this.password = await bcrypt.hash(this.password, SALT);
+    next();
   }catch(err){
-    throw new Error(err.message);
+    next(err);
   }
-}
+})
 
-=======
 // load Userclass in mongoose schema
 UserSchema.loadClass(UserClass);
->>>>>>> beef375fb1ffbb88dffa2ed7c1053c1482bc82af
 
 const User = mongoose.model("User", UserSchema);
 module.exports = User;
