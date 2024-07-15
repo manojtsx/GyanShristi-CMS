@@ -1,5 +1,7 @@
 const User = require("../models/user-model");
 const UserClass = require("../models/user-model");
+const path = require('path');
+const fs = require('fs');
 
 // controller to get all the user data
 const getUser = async (req, res) => {
@@ -217,6 +219,16 @@ const uploadProfilePicture = async (req, res) => {
     if (!user) {
       return res.status(404).json({ msg: "User not found" });
     }
+// Check if user has an existing profile picture
+if(user.profile_pic){
+  const oldProfilePicPath = path.join(__dirname,'..',user.profile_pic);
+  fs.unlink(oldProfilePicPath, (err)=>{
+    if(err){
+      throw err;
+    }
+  })
+}
+
     await User.findByIdAndUpdate(
       userId,
       { profile_pic: req.file.path },
