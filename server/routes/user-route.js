@@ -8,10 +8,10 @@ const upload = require('../configs/profile-upload')
 router.route("/").get(userController.getUser);
 router.route("/role").get(userController.getUserByRole);
 router.route("/upload-profile-picture").put(verifyToken,upload, userController.uploadProfilePicture);
+router.route("/change-password").put(verifyToken, userController.changePassword);
 router.route("/:id").get(userController.getUserById);
 router.route("/:id").put(userController.editUserById);
 router.route("/:id").delete(userController.deleteUserById);
-router.route("/change-password").put(verifyToken, userController.changePassword);
 router.route("/change-email").put(verifyToken,userController.changeEmail);
 router.route("/approve-author/:id").put(userController.approveAsAuthor);
 router.route("/change-to-editor/:id").put(userController.changeUserToEditor);

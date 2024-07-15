@@ -19,15 +19,6 @@ class UserClass {
     this.status = user.status;
     this.created_at = user.created_at || Date.now();
   }
-  // encrypt password during register
-  async encryptPassword(password) {
-    try {
-      const hashedPassword = await bcrypt.hash(password, SALT);
-      this.password = hashedPassword;
-    } catch (err) {
-      throw err;
-    }
-  }
 
   //validate password during login
   async validatePassword(password) {
@@ -92,6 +83,18 @@ const UserSchema = new mongoose.Schema({
     default: Date.now,
   },
 });
+
+UserSchema.pre('save',async function(next){
+  if(!this.isModified('password')){
+    return next();
+  }
+  try{
+    this.password = await bcrypt.hash(this.password, SALT);
+    next();
+  }catch(err){
+    next(err);
+  }
+})
 
 // load Userclass in mongoose schema
 UserSchema.loadClass(UserClass);

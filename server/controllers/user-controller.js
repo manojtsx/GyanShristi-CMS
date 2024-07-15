@@ -98,25 +98,17 @@ const changePassword = async (req, res) => {
       return res.status(404).json({ msg: "User not found" });
     }
 
-    const userInstance = new UserClass(user);
-    console.log(userInstance);
-
-    // validate whether the old password match the database password or not
-    const isMatch = await userInstance.validatePassword(old_password);
+    // Validate whether the old password matches the database password or not
+    const isMatch = await user.validatePassword(old_password);
     if (!isMatch) {
-      return res
-        .status(401)
-        .json({ msg: "Please type your old password correctly" });
+      return res.status(401).json({ msg: "Please type your old password correctly" });
     }
-    console.log("hello");
 
-    // Encrypt the new password
-    await userInstance.encryptPassword(new_password);
-    user.password = userInstance.password;
-
-    //Save the updated user
+    // Hash the new password and save it
+    user.password = new_password;
     await user.save();
-    res.status(200).json({ msg: "Password change successfully." });
+
+    res.status(200).json({ msg: "Password changed successfully" });
   } catch (err) {
     res.status(500).json({ msg: err.message });
   }
@@ -221,7 +213,7 @@ const uploadProfilePicture = async (req, res) => {
     }
 // Check if user has an existing profile picture
 if(user.profile_pic){
-  const oldProfilePicPath = path.join(__dirname,'..',user.profile_pic);
+  const oldProfilePicPath = path.join(__dirname,'.. ',user.profile_pic);
   fs.unlink(oldProfilePicPath, (err)=>{
     if(err){
       throw err;

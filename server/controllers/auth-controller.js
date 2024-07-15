@@ -13,7 +13,7 @@ const register = async(req,res) =>{
         const user = new User({
             name, username, password, email, address, phone_number,status
         });
-        await user.encryptPassword(password);
+       
         await user.save();
         res.status(200).json({msg : "Registered successfully", user})
     }catch(err){
