@@ -1,6 +1,9 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const SALT = 10;
+<<<<<<< HEAD
+
+=======
 require("../configs/env");
 const jwt = require("jsonwebtoken");
 const key = process.env.JWT_SECRET;
@@ -45,6 +48,7 @@ class UserClass {
 }
 
 // mongoose schema of user
+>>>>>>> beef375fb1ffbb88dffa2ed7c1053c1482bc82af
 const UserSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -72,7 +76,11 @@ const UserSchema = new mongoose.Schema({
   role: {
     type: String,
     enum: ["admin", "editor", "author", "viewer"],
+<<<<<<< HEAD
+    default : 'viewer'
+=======
     default: "viewer",
+>>>>>>> beef375fb1ffbb88dffa2ed7c1053c1482bc82af
   },
   status: {
     type: String,
@@ -98,6 +106,7 @@ UserSchema.pre('save',async function(next){
 
 // load Userclass in mongoose schema
 UserSchema.loadClass(UserClass);
+>>>>>>> beef375fb1ffbb88dffa2ed7c1053c1482bc82af
 
 const User = mongoose.model("User", UserSchema);
 module.exports = User;
