@@ -29,7 +29,7 @@ function Navbar() {
       <Image src="/logo.png" alt="CMS Logo" width={45} height={45} className="rounded-[50%]"/>
         <ul className="hidden sm:flex justify-between gap-8 font-semibold">
           {navItems.map((item,index)=>(
-            <li className={`hover:bg-[rgb(162,204,243)] p-2 ${activeLink === item.id ?'border-b-2 border-[rgb(77,27,194)]' : ''}`} onClick={() => handleActiveLink(item.id)}><Link href={item.link}>{item.name}</Link></li>
+            <li key={index} className={`hover:bg-[rgb(162,204,243)] p-2 ${activeLink === item.id ?'border-b-2 border-[#1E58C8]' : ''}`} onClick={() => handleActiveLink(item.id)}><Link href={item.link}>{item.name}</Link></li>
           )
         )}
         </ul>
@@ -40,8 +40,8 @@ function Navbar() {
       
       {isClick && (
           <ul className="w-screen flex flex-col items-start font-semibold sm:hidden">
-             {navItems.map((item)=>(
-          <li className="w-[inherit] flex justify-center hover:bg-[rgb(162,204,243)] p-2"><Link href={item.link}>{item.name}</Link></li>
+             {navItems.map((item, index)=>(
+          <li key={index} className="w-[inherit] flex justify-center hover:bg-[rgb(162,204,243)] p-2"><Link href={item.link}>{item.name}</Link></li>
         )
       )}    
         </ul>
