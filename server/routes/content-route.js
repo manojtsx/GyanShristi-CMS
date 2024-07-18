@@ -18,10 +18,10 @@ router.put('/edit/pdf/:id', verifyToken,pdfUpload, contentController.editPdfCont
 router.put('/edit/video/:id', verifyToken, videoUpload,contentController.editVideoContent);
 
 // Define routes for deleting content
-router.delete('/delete/:id', contentController.deleteContent);
+router.delete('/delete/:id', verifyToken, contentController.deleteContent);
 
 // Define routes for approving content
-router.put('/approve/:id', contentController.approveContent);
+router.put('/approve/:id', verifyToken, contentController.approveContent);
 
 // Define routes for getting content by ID
 router.get('/post/:id', contentController.getPostContentById);
