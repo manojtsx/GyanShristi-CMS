@@ -7,6 +7,7 @@ const path = require("path");
 const addPostContent = async (req, res) => {
   try {
     const { title, description, blog, userId } = req.body;
+    // Get userId if sent from the client side
     let userIdToUse = userId || req.user.id;
 
     const user = await User.findById(userIdToUse);
@@ -37,6 +38,7 @@ const addPostContent = async (req, res) => {
         .status(201)
         .json({ msg: "Content Added Successfully", content: newContent });
     } else {
+      // this is for admin and editor
       const newContent = new Content({
         title,
         description,
@@ -66,6 +68,7 @@ const addPdfContent = async (req, res) => {
       return res.status(404).json({ msg: "User doesnot exists" });
     }
 
+    // this comes from the middleware upload after handling file upload
     const pdfFilePath = req.file.path;
 
     // Work according to the role
@@ -114,6 +117,7 @@ const addVideoContent = async (req, res) => {
       return res.status(404).json({ msg: "User doesnot exists" });
     }
 
+    // this comes from the upload middleware after handling upload
     const videoFilePath = req.file.path;
 
     // Work according to the role
@@ -255,6 +259,7 @@ const editPdfContent = async (req, res) => {
   }
 };
 
+// edit the video content from the server
 const editVideoContent = async (req, res) => {
   try {
     const { title, description, userId } = req.body;
@@ -307,14 +312,78 @@ const editVideoContent = async (req, res) => {
     res.status(500).json({ msg: err.message });
   }
 };
+
+//delete content from the server as well as database
 const deleteContent = async (req, res) => {
   try {
+    // verify the user
+    const userId = req.user.id;
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ msg: "User doesnot exists." });
+    }
+
+    //verify the content to be deleted
+    const contentId = req.params.id;
+    const content = await Content.findById(contentId);
+    if (!content) {
+      return res.status(404).json({ msg: "No content to delete" });
+    }
+
+    //check for the action of viewer and author
+    if (user.role === "viewer") {
+      return res
+        .status(401)
+        .json({ msg: "Not authorized to perform this action." });
+    } else if (user.role === "author") {
+      if (content.user_id.toString() !== userId) {
+        return res
+          .status(401)
+          .json({ msg: "Not authorized to perform this action." });
+      }
+    }
+
+    // delete the file if every condition are not satisfied
+    if (content.location) {
+      fs.unlinkSync(path.join(__dirname, "..", content.location), (err) => {
+        throw err;
+      });
+    }
+
+    await Content.findByIdAndDelete(contentId);
+    return res.status(200).json({ msg: "Content deleted successfully" });
   } catch (err) {
     res.status(500).json({ msg: err.message });
   }
 };
 const approveContent = async (req, res) => {
   try {
+    const userId = req.user.id;
+    const user = await User.findById(userId);
+    if (!userId) {
+      return res.status(404).json({ msg: "User doesnot exist." });
+    }
+
+    const contentId = req.params.id;
+    const content = await Content.findById(contentId);
+    if (!content) {
+      return res.status(404).json({ msg: "Content doesnot exist" });
+    }
+
+    // not authorized if the user is viewer or author
+    if (user.role === "viewer" || user.role === "author") {
+      return res
+        .status(401)
+        .json({ msg: "Not authorized to perform this action." });
+    }
+
+    // change the status of the content
+    if(content.status === 'Uploaded'){
+      return res.status(409).json({msg : 'Conflict occured in content status'})
+    }
+    content.status = "Uploaded";
+    await content.save();
+    res.status(200).json({ msg: "Approved Content" });
   } catch (err) {
     res.status(500).json({ msg: err.message });
   }
