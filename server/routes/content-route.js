@@ -29,9 +29,6 @@ router.get('/pdf/:id', contentController.getPdfContentById);
 router.get('/video/:id', contentController.getVideoContentById);
 
 // Define routes for getting all content
-router.get('/post', contentController.getAllPostContent);
-router.get('/pdf', contentController.getAllPdfContent);
-router.get('/video', contentController.getAllVideoContent);
 router.get('/', contentController.getAllContent);
 
 module.exports = router;

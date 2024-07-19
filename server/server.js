@@ -7,6 +7,7 @@ const dbConnection = require('./utils/database/connection');
 const authRouter = require('./routes/auth-route')
 const userRouter = require('./routes/user-route');
 const contentRouter = require('./routes/content-route')
+const categoryRouter = require('./routes/category-route');
 
 // Call all the environment variable
 const PORT = process.env.PORT;
@@ -26,6 +27,7 @@ app.use(express.json());
 app.use('/api/auth',authRouter);
 app.use('/api/user',userRouter);
 app.use('/api/content',contentRouter)
+app.use('/api/category',categoryRouter)
 
 app.get("/", async(req, res) => {
   res.status(200).send("hello world")

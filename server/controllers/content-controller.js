@@ -388,44 +388,74 @@ const approveContent = async (req, res) => {
     res.status(500).json({ msg: err.message });
   }
 };
+
+//get post content detail on click 
 const getPostContentById = async (req, res) => {
   try {
+    const contentId = req.params.id;
+    const content = await Content.findById(contentId);
+    if(!content){
+      return res.status(404).json({msg : 'Content doesnot exists'})
+    }
+    if(content.content_type !== 'post'){
+      return res.status(403).json({msg : 'You are trying to open post but this is a video/pdf.'})
+    }
+    const contentToShow = await Content.find({content_type : 'post', _id : contentId});
+    res.status(200).json({content : contentToShow})
   } catch (err) {
     res.status(500).json({ msg: err.message });
   }
 };
+
+// get pdf detail on click
 const getPdfContentById = async (req, res) => {
   try {
+    const contentId = req.params.id;
+    const content = await Content.findById(contentId);
+    if(!content){
+      return res.status(404).json({msg : 'Content doesnot exists'})
+    }
+    if(content.content_type !== 'pdf'){
+      return res.status(403).json({msg : 'You are trying to open pdf but this is a video/post.'})
+    }
+    const contentToShow = await Content.find({content_type :'pdf', _id : contentId});
+    res.status(200).json({content : contentToShow})
   } catch (err) {
     res.status(500).json({ msg: err.message });
   }
 };
+
+// get  video detail on click
 const getVideoContentById = async (req, res) => {
   try {
+    const contentId = req.params.id;
+    const content = await Content.findById(contentId);
+    if(!content){
+      return res.status(404).json({msg : 'Content doesnot exists'})
+    }
+    if(content.content_type !== 'video'){
+      return res.status(403).json({msg : 'You are trying to open video but this is a pdf/post.'})
+    }
+    const contentToShow = await Content.find({content_type :'video', _id : contentId});
+    res.status(200).json({content : contentToShow})
   } catch (err) {
     res.status(500).json({ msg: err.message });
   }
 };
-const getAllPostContent = async (req, res) => {
-  try {
-  } catch (err) {
-    res.status(500).json({ msg: err.message });
-  }
-};
-const getAllPdfContent = async (req, res) => {
-  try {
-  } catch (err) {
-    res.status(500).json({ msg: err.message });
-  }
-};
-const getAllVideoContent = async (req, res) => {
-  try {
-  } catch (err) {
-    res.status(500).json({ msg: err.message });
-  }
-};
+
+// get all content detail
 const getAllContent = async (req, res) => {
   try {
+    const {filter} =req.query;
+    let content = await Content.find({});
+    if(!content){
+      res.status(404).json({msg : "No content found"});
+    }
+    if(filter) {
+        content = content.filter(item => item.content_type === filter)
+    }
+    res.status(200).json({content})
+
   } catch (err) {
     res.status(500).json({ msg: err.message });
   }
@@ -443,8 +473,5 @@ module.exports = {
   getPostContentById,
   getPdfContentById,
   getVideoContentById,
-  getAllPostContent,
-  getAllPdfContent,
-  getAllVideoContent,
   getAllContent,
 };
