@@ -5,6 +5,7 @@ import { NotificationProvider } from "@/context/NotificationContext";
 import NotificationContainer from "@/components/Notification";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import Copyright from "@/components/mini-component/Copyright";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -24,8 +25,9 @@ export default function RootLayout({
         <body>
           <NotificationContainer />
           <Navbar />
-          <Footer/>
           {children}
+          <Footer/>
+          <Copyright />
         </body>
       </NotificationProvider>
     </html>
