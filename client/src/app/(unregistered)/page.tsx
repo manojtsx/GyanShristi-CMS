@@ -7,7 +7,11 @@ import Image from "next/image";
 export default function Page() {
   return (
     <div>
-    <div className="hidden sm:flex justify-between gap-10 px-20 py-16">
+      <div>
+        <p>Dashboard</p>
+        
+      </div>
+    <div className="hidden sm:flex justify-between gap-10 px-20 py-16" >
       <div className="flex flex-col justify-center gap-5">
         <div className="flex flex-col gap-1">
         <h1 className="font-medium text-4xl ">GyanShristi</h1>
@@ -15,7 +19,7 @@ export default function Page() {
         </div>
         <ApplyAsAuthorButton/>
       </div>
-      <div className="">
+      <div>
         <Image src="/GyanShristi_playingLaptop.webp" alt="Browsing Laptop" width={500} height={500} className="rounded-md min-w-64"/>
       </div>
     </div>
