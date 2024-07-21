@@ -14,7 +14,7 @@ import "froala-editor/js/plugins/emoticons.min.js";
 import "froala-editor/js/plugins/special_characters.min.js";
 import "froala-editor/js/plugins/table.min.js";
 import "froala-editor/js/plugins/link.min.js";
-import debounce from "lodash/debounce";
+import {debounce} from "lodash";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMicrophone, faMicrophoneSlash } from '@fortawesome/free-solid-svg-icons';
 
