@@ -1,10 +1,10 @@
-import TextEditor from "@/components/TextEditor";
+import SpeechToTextEditor from "@/components/SpeechToTextEditor";
 import React from "react";
 
 export default function Page() {
   return (
     <div>
-      <TextEditor />
+      <SpeechToTextEditor />
     </div>
   );
 }

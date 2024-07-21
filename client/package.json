@@ -13,12 +13,14 @@
     "next": "14.2.4",
     "react": "^18",
     "react-dom": "^18",
-    "react-froala-wysiwyg": "^4.2.1"
+    "react-froala-wysiwyg": "^4.2.1",
+    "react-speech-recognition": "^3.10.0"
   },
   "devDependencies": {
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@types/react-speech-recognition": "^3.9.5",
     "postcss": "^8",
     "tailwindcss": "^3.4.4",
     "typescript": "^5"
