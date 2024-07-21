@@ -9,15 +9,7 @@ const CategorySchema = new mongoose.Schema({
   user_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref : "User"
-  },
-  content_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref : "Content"
-  },
-  parent_category_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref : "Category"
-  },
+  }
 });
 
 const Category = mongoose.model("Category", CategorySchema)
