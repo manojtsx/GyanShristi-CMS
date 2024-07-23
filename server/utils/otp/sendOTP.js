@@ -1,5 +1,6 @@
 const nodemailer = require('nodemailer');
 const generateOTP = require('./generateOTP');
+const generateOTPEmail = require('./htmlForOTP');
 require('dotenv').config();
 
 async function sendOTP(email){
@@ -27,7 +28,7 @@ async function sendOTP(email){
         subject : 'Keep this OTP confidential',
         text : `Your OTP is ${otp}`,
         html : `
-            <h1>Your OTP is ${otp}</h1>
+            ${generateOTPEmail(otp)}
         `
     }
 

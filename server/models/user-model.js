@@ -78,6 +78,9 @@ const UserSchema = new mongoose.Schema({
     type: String,
     enum: ["unrequested", "pending", "approved"],
   },
+  otp:{
+    type: String
+  },
   created_at: {
     type: Date,
     default: Date.now,
