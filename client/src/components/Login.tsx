@@ -33,7 +33,6 @@ function Login() {
   const handleSubmit = async(e : React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try{
-      console.log(API)
       const res = await fetch(`${API}api/auth/login`,{
         method : "POST",
         headers :{

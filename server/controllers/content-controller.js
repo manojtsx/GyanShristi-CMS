@@ -19,7 +19,6 @@ const addPostContent = async (req, res) => {
     // Save blog content to a file
     const blogFileName = `post-${Date.now()}.txt`; // Generate a unique filename
     const blogFilePath = path.join("uploads/post", blogFileName); // Create file path
-    console.log(blogFilePath);
     fs.writeFileSync(blogFilePath, blog); // Write blog content to file
 
     // Work according to the role
@@ -197,7 +196,6 @@ const editPostContent = async (req, res) => {
     }
     // Unlink the previous file
     if (post.location) {
-      console.log(path.join(__dirname, "..", post.location));
       fs.unlinkSync(path.join(__dirname, "..", post.location), (err) => {
         if (err) {
           throw err;
