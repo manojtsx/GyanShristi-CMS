@@ -43,7 +43,6 @@ const SpeechToTextEditor: React.FC = () => {
     if (editorInstance) {
       const handleContentChanged = () => {
         const currentContent = editorInstance.html.get();
-        console.log("Editor content:", currentContent);
       };
 
       // Attach the contentChanged event handler
@@ -96,7 +95,6 @@ const SpeechToTextEditor: React.FC = () => {
             placeholderText: "Start writing the content...",
             events: {
               initialized: function () {
-                console.log("Froala Editor initialized");
                 setEditorInstance(this);
               },
             },

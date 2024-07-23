@@ -119,7 +119,6 @@ const changeEmail = async (req, res) => {
   try {
     const { new_email } = req.body;
     const userId = req.user.id;
-    console.log(userId);
 
     const user = await User.findById(userId);
     if (!user) {
@@ -141,7 +140,6 @@ const approveAsAuthor = async (req, res) => {
   try {
     const viewerId = req.params.id;
     const user = await User.findById(viewerId);
-    console.log(user);
     if (!user) {
       return res.status(404).json({ msg: "User doesnot exists." });
     }
