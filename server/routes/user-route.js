@@ -7,7 +7,7 @@ const upload = require('../configs/profile-upload')
 // Define routes
 router.route("/").get(verifyToken,userController.getUser);
 router.route("/role").get(verifyToken,userController.getUserByRole);
-router.route("/upload-profile-picture").put(verifyToken,upload, userController.uploadProfilePicture);
+router.route("/upload-profile-picture/:id").put(verifyToken,upload, userController.uploadProfilePicture);
 router.route("/change-password/:id").put(verifyToken, userController.changePassword);
 router.route("/:id").get(userController.getUserById);
 router.route("/:id").put(verifyToken, userController.editUserById);
