@@ -1,5 +1,7 @@
 const User = require("../models/user-model");
 const UserClass = require("../models/user-model");
+const path = require('path');
+const fs = require('fs');
 
 // controller to get all the user data
 const getUser = async (req, res) => {
@@ -96,25 +98,17 @@ const changePassword = async (req, res) => {
       return res.status(404).json({ msg: "User not found" });
     }
 
-    const userInstance = new UserClass(user);
-    console.log(userInstance);
-
-    // validate whether the old password match the database password or not
-    const isMatch = await userInstance.validatePassword(old_password);
+    // Validate whether the old password matches the database password or not
+    const isMatch = await user.validatePassword(old_password);
     if (!isMatch) {
-      return res
-        .status(401)
-        .json({ msg: "Please type your old password correctly" });
+      return res.status(401).json({ msg: "Please type your old password correctly" });
     }
-    console.log("hello");
 
-    // Encrypt the new password
-    await userInstance.encryptPassword(new_password);
-    user.password = userInstance.password;
-
-    //Save the updated user
+    // Hash the new password and save it
+    user.password = new_password;
     await user.save();
-    res.status(200).json({ msg: "Password change successfully." });
+
+    res.status(200).json({ msg: "Password changed successfully" });
   } catch (err) {
     res.status(500).json({ msg: err.message });
   }
@@ -125,7 +119,6 @@ const changeEmail = async (req, res) => {
   try {
     const { new_email } = req.body;
     const userId = req.user.id;
-    console.log(userId);
 
     const user = await User.findById(userId);
     if (!user) {
@@ -147,7 +140,6 @@ const approveAsAuthor = async (req, res) => {
   try {
     const viewerId = req.params.id;
     const user = await User.findById(viewerId);
-    console.log(user);
     if (!user) {
       return res.status(404).json({ msg: "User doesnot exists." });
     }
@@ -205,6 +197,39 @@ const promoteToAdmin = async (req, res) => {
   }
 };
 
+// save profile picture path
+const uploadProfilePicture = async (req, res) => {
+  try {
+    if (req.file === undefined) {
+      return res.status(400).json({ msg: "No file selected!" });
+    }
+    
+    const userId = req.user.id;
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ msg: "User not found" });
+    }
+// Check if user has an existing profile picture
+if(user.profile_pic){
+  const oldProfilePicPath = path.join(__dirname,'.. ',user.profile_pic);
+  fs.unlink(oldProfilePicPath, (err)=>{
+    if(err){
+      throw err;
+    }
+  })
+}
+
+    await User.findByIdAndUpdate(
+      userId,
+      { profile_pic: req.file.path },
+      { new: true }
+    );
+      res.status(200).json({msg : "Profile picture uploaded successfully"});
+  } catch (err) {
+    res.status(500).json({ msg: err.message });
+  }
+};
+
 module.exports = {
   getUser,
   getUserByRole,
@@ -216,4 +241,5 @@ module.exports = {
   approveAsAuthor,
   changeUserToEditor,
   promoteToAdmin,
+  uploadProfilePicture,
 };
