@@ -117,7 +117,7 @@ const deleteUserById = async (req, res) => {
     // Authorization check
     if (
       userRole === "admin" ||
-      (userRole === "editor" && user.role === "admin") ||
+      (userRole === "editor" && user.role !== "admin") ||
       (["author", "viewer"].includes(userRole) && userId === id)
     ) {
       const isDeleted = await User.findByIdAndDelete(id).select("-password");
@@ -151,7 +151,7 @@ const changePassword = async (req, res) => {
     // Authorize check
     if (
       userRole === "admin" ||
-      (userRole === "editor" && user.role === "admin") ||
+      (userRole === "editor" && user.role !== "admin") ||
       (["author", "viewer"].includes(userRole) && userId === id)
     ) {
       // Validate whether the old password matches the database password or not
@@ -193,7 +193,7 @@ const changeEmail = async (req, res) => {
     // Authorize check
     if (
       userRole === "admin" ||
-      (userRole === "editor" && user.role === "admin") ||
+      (userRole === "editor" && user.role !== "admin") ||
       (["author", "viewer"].includes(userRole) && userId === id)
     ) {
       if (user.email === new_email) {
@@ -313,19 +313,20 @@ const promoteToAdmin = async (req, res) => {
 const uploadProfilePicture = async (req, res) => {
   try {
     const userRole = req.user.role;
+    const userId = req.user.id;
     if (req.file === undefined) {
       return res.status(400).json({ msg: "No file selected!" });
     }
 
-    const userId = req.user.id;
-    const user = await User.findById(userId);
+    const id = req.params.id;
+    const user = await User.findById(id);
     if (!user) {
       return res.status(404).json({ msg: "User not found" });
     }
 
     if (
       userRole === "admin" ||
-      (userRole === "editor" && user.role === "admin") ||
+      (userRole === "editor" && user.role !== "admin") ||
       (["author", "viewer"].includes(userRole) && userId === id)
     ) {
       // Check if user has an existing profile picture
