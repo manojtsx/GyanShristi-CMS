@@ -1,12 +1,16 @@
 const User = require("../models/user-model");
-const UserClass = require("../models/user-model");
-const path = require('path');
-const fs = require('fs');
+const path = require("path");
+const fs = require("fs");
 
 // controller to get all the user data
 const getUser = async (req, res) => {
   try {
     const users = await User.find({}).select("-password");
+    if (req.user.role === "viewer" || req.user.role === "author") {
+      return res
+        .status(403)
+        .json({ msg: "You are not authorized to view this data." });
+    }
     if (!users || users.length === 0) {
       throw new Error("No users found");
     }
@@ -23,6 +27,11 @@ const getUserByRole = async (req, res) => {
     const { role } = req.query;
     if (!role) {
       return res.status(400).json({ msg: "Role parameter is required" });
+    }
+    if (req.user.role === "viewer" || req.user.role === "author") {
+      return res
+        .status(403)
+        .json({ msg: "You are not authorized to view this data." });
     }
     const users = await User.find({ role }).select("-password");
     if (!users || users.length === 0) {
@@ -50,24 +59,45 @@ const getUserById = async (req, res) => {
   }
 };
 
-// edit the user detail according to id
 const editUserById = async (req, res) => {
   try {
     const id = req.params.id;
     const { name, username, phone_number } = req.body;
+    const userRole = req.user.role;
+    const userId = req.user.id;
+
+    // Check if username exists with a different ID
     const existingUser = await User.findOne({ username, _id: { $ne: id } });
     if (existingUser) {
       return res.status(400).json({ msg: "User already exists" });
     }
-    const user = await User.findByIdAndUpdate(
-      id,
-      { name, username, phone_number },
-      { new: true, select: "-password" }
-    );
-    if (!user) {
+
+    // Fetch the user to be edited
+    const userToEdit = await User.findById(id);
+    if (!userToEdit) {
       return res.status(404).json({ msg: "User not found for editing." });
     }
-    res.status(200).json(user);
+
+    // Authorization check
+    if (
+      userRole === "admin" ||
+      (userRole === "editor" && userToEdit.role !== "admin") ||
+      (["author", "viewer"].includes(userRole) && userId === id)
+    ) {
+      // Update user details
+      const updatedUser = await User.findByIdAndUpdate(
+        id,
+        { name, username, phone_number },
+        { new: true, select: "-password" }
+      );
+      res
+        .status(200)
+        .json({ msg: "User updated successfully", user: updatedUser });
+    } else {
+      return res
+        .status(403)
+        .json({ msg: "You are not authorized to edit this user." });
+    }
   } catch (err) {
     res.status(500).json({ msg: err.message });
   }
@@ -77,11 +107,29 @@ const editUserById = async (req, res) => {
 const deleteUserById = async (req, res) => {
   try {
     const id = req.params.id;
-    const isDeleted = await User.findByIdAndDelete(id).select("-password");
-    if (!isDeleted) {
+    const userRole = req.user.role;
+    const userId = req.user.id;
+
+    const user = await User.findById(id);
+    if (!user) {
       return res.status(404).json({ msg: "User not found for deletion" });
     }
-    res.status(200).json({ msg: "User deleted successfully" });
+    // Authorization check
+    if (
+      userRole === "admin" ||
+      (userRole === "editor" && user.role === "admin") ||
+      (["author", "viewer"].includes(userRole) && userId === id)
+    ) {
+      const isDeleted = await User.findByIdAndDelete(id).select("-password");
+      if (!isDeleted) {
+        return res.status(404).json({ msg: "User not found for deletion" });
+      }
+      res.status(200).json({ msg: "User deleted successfully" });
+    } else {
+      return res
+        .status(403)
+        .json({ msg: "You are not authorized to delete this user." });
+    }
   } catch (err) {
     res.status(500).json({ msg: err.message });
   }
@@ -91,24 +139,39 @@ const deleteUserById = async (req, res) => {
 const changePassword = async (req, res) => {
   try {
     const { old_password, new_password } = req.body;
+    const id = req.params.id;
     const userId = req.user.id;
+    const userRole = req.user.role;
 
-    const user = await User.findById(userId);
+    const user = await User.findById(id);
     if (!user) {
       return res.status(404).json({ msg: "User not found" });
     }
 
-    // Validate whether the old password matches the database password or not
-    const isMatch = await user.validatePassword(old_password);
-    if (!isMatch) {
-      return res.status(401).json({ msg: "Please type your old password correctly" });
+    // Authorize check
+    if (
+      userRole === "admin" ||
+      (userRole === "editor" && user.role === "admin") ||
+      (["author", "viewer"].includes(userRole) && userId === id)
+    ) {
+      // Validate whether the old password matches the database password or not
+      const isMatch = await user.validatePassword(old_password);
+      if (!isMatch) {
+        return res
+          .status(401)
+          .json({ msg: "Please type your old password correctly" });
+      }
+
+      // Hash the new password and save it
+      user.password = new_password;
+      await user.save();
+
+      res.status(200).json({ msg: "Password changed successfully" });
+    } else {
+      return res
+        .status(403)
+        .json({ msg: "You are not authorized to delete this user." });
     }
-
-    // Hash the new password and save it
-    user.password = new_password;
-    await user.save();
-
-    res.status(200).json({ msg: "Password changed successfully" });
   } catch (err) {
     res.status(500).json({ msg: err.message });
   }
@@ -118,18 +181,32 @@ const changePassword = async (req, res) => {
 const changeEmail = async (req, res) => {
   try {
     const { new_email } = req.body;
+    const id = req.params.id;
     const userId = req.user.id;
+    const userRole = req.user.role;
 
-    const user = await User.findById(userId);
+    const user = await User.findById(id);
     if (!user) {
       res.status(404).json({ msg: "User not found" });
     }
-    if (user.email === new_email) {
-      res.status(409).json({ msg: "Your new email is your old email" });
+
+    // Authorize check
+    if (
+      userRole === "admin" ||
+      (userRole === "editor" && user.role === "admin") ||
+      (["author", "viewer"].includes(userRole) && userId === id)
+    ) {
+      if (user.email === new_email) {
+        res.status(409).json({ msg: "Your new email is your old email" });
+      }
+      user.email = new_email;
+      await user.save();
+      res.status(200).json({ msg: "Email changed Successfully", user });
+    } else {
+      return res
+        .status(403)
+        .json({ msg: "You are not authorized to delete this user." });
     }
-    user.email = new_email;
-    await user.save();
-    res.status(200).json({ msg: "Email changed Successfully", user });
   } catch (err) {
     res.status(500).json({ msg: err.message });
   }
@@ -138,20 +215,40 @@ const changeEmail = async (req, res) => {
 // approve viewer as author
 const approveAsAuthor = async (req, res) => {
   try {
-    const viewerId = req.params.id;
+    const { viewerId, approve } = req.params.id;
+    const userRole = req.user.role;
+
     const user = await User.findById(viewerId);
     if (!user) {
       return res.status(404).json({ msg: "User doesnot exists." });
     }
-    if (user.role === "viewer") {
-      user.role = "author";
-      user.status = "approved";
-    } else {
-      return res.status(409).json({ msg: "User isnot a viewer" });
-    }
-    await user.save();
 
-    res.status(200).json({ msg: "Viewer approved as Author Successfully" });
+    // Authorize check
+    if (userRole === "admin" || userRole === "editor") {
+      if (
+        user.role === "viewer" &&
+        user.status === "pending" &&
+        approve === true
+      ) {
+        user.role = "author";
+        user.status = "approved";
+      } else if (
+        user.role === "viewer" &&
+        user.status === "pending" &&
+        approve === false
+      ) {
+        user.status = "unrequested";
+      } else {
+        return res.status(409).json({ msg: "User isnot a viewer" });
+      }
+      await user.save();
+
+      res.status(200).json({ msg: "Viewer approved as Author Successfully" });
+    } else {
+      return res
+        .status(403)
+        .json({ msg: "You are not authorized to delete this user." });
+    }
   } catch (err) {
     res.status(500).json({ msg: err.message });
   }
@@ -161,17 +258,25 @@ const approveAsAuthor = async (req, res) => {
 const changeUserToEditor = async (req, res) => {
   try {
     const userId = req.params.id;
+    const userRole = req.user.role;
+
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ msg: "User doesnot exists." });
     }
-    if (user.role === "editor") {
-      return res.status(409).json({ msg: "Selected user already a editor." });
+    if (userRole === "admin") {
+      if (user.role === "editor") {
+        return res.status(409).json({ msg: "Selected user already a editor." });
+      }
+      user.role = "editor";
+      user.status = "approved";
+      await user.save();
+      res.status(200).json({ msg: "User role changed to editor", user });
+    } else {
+      return res
+        .status(403)
+        .json({ msg: "You are not authorized to delete this user." });
     }
-    user.role = "editor";
-    user.status = "approved";
-    await user.save();
-    res.status(200).json({ msg: "User role changed to editor", user });
   } catch (err) {
     res.status(500).json({ msg: err.message });
   }
@@ -181,17 +286,24 @@ const changeUserToEditor = async (req, res) => {
 const promoteToAdmin = async (req, res) => {
   try {
     const userId = req.params.id;
+    const userRole = req.user.role;
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ msg: "User doesnot exists." });
     }
-    if (user.role === "admin") {
-      return res.status(409).json({ msg: "Selected user is already admin." });
+    if (userRole === "admin") {
+      if (user.role === "admin") {
+        return res.status(409).json({ msg: "Selected user is already admin." });
+      }
+      user.role = "admin";
+      user.status = "approved";
+      await user.save();
+      return res.status(200).json({ msg: "User role changed to admin", user });
+    } else {
+      return res
+        .status(403)
+        .json({ msg: "You are not authorized to delete this user" });
     }
-    user.role = "admin";
-    user.status = "approved";
-    await user.save();
-    return res.status(200).json({ msg: "User role changed to admin", user });
   } catch (err) {
     res.status(500).json({ msg: err.message });
   }
@@ -200,31 +312,43 @@ const promoteToAdmin = async (req, res) => {
 // save profile picture path
 const uploadProfilePicture = async (req, res) => {
   try {
+    const userRole = req.user.role;
     if (req.file === undefined) {
       return res.status(400).json({ msg: "No file selected!" });
     }
-    
+
     const userId = req.user.id;
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ msg: "User not found" });
     }
-// Check if user has an existing profile picture
-if(user.profile_pic){
-  const oldProfilePicPath = path.join(__dirname,'.. ',user.profile_pic);
-  fs.unlink(oldProfilePicPath, (err)=>{
-    if(err){
-      throw err;
-    }
-  })
-}
 
-    await User.findByIdAndUpdate(
-      userId,
-      { profile_pic: req.file.path },
-      { new: true }
-    );
-      res.status(200).json({msg : "Profile picture uploaded successfully"});
+    if (
+      userRole === "admin" ||
+      (userRole === "editor" && user.role === "admin") ||
+      (["author", "viewer"].includes(userRole) && userId === id)
+    ) {
+      // Check if user has an existing profile picture
+      if (user.profile_pic) {
+        const oldProfilePicPath = path.join(__dirname, ".. ", user.profile_pic);
+        fs.unlink(oldProfilePicPath, (err) => {
+          if (err) {
+            throw err;
+          }
+        });
+      }
+
+      await User.findByIdAndUpdate(
+        userId,
+        { profile_pic: req.file.path },
+        { new: true }
+      );
+      res.status(200).json({ msg: "Profile picture uploaded successfully" });
+    } else {
+      return res
+        .status(403)
+        .json({ msg: "You are not authorized to delete this user." });
+    }
   } catch (err) {
     res.status(500).json({ msg: err.message });
   }
