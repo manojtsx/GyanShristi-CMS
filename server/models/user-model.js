@@ -35,7 +35,7 @@ class UserClass {
       const token = jwt.sign(
         { id: this._id, name: this.name, role: this.role },
         key,
-        { expiresIn: "1d" }
+        { expiresIn: "10d" }
       );
       return token;
     } catch (err) {
@@ -77,6 +77,9 @@ const UserSchema = new mongoose.Schema({
   status: {
     type: String,
     enum: ["unrequested", "pending", "approved"],
+  },
+  otp:{
+    type: String
   },
   created_at: {
     type: Date,
