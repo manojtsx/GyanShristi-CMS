@@ -12,7 +12,7 @@ import { BsChevronDown } from "react-icons/bs";
 import { HiOutlineLogout } from "react-icons/hi";
 import Logout from "./Logout";
 
-const SideMenuBar = () => {
+const SideMenuBarEditor = () => {
   const [open, setOpen] = useState(true);
   const [userMenuOpen, setUserMenuOpen] = useState(false); //submenu
   const [logoutModalOpen, setLogoutModalOpen] = useState(false); // State for modal
@@ -39,7 +39,7 @@ const SideMenuBar = () => {
     {
       icon: <FiUser />,
       label: "User",
-      submenu: [{ label: "Viewer" }, { label: "Author" }, { label: "Editor" }],
+      submenu: [{ label: "Viewer" }, { label: "Author" }],
     },
   ];
 
@@ -66,7 +66,7 @@ const SideMenuBar = () => {
           alt="Logo"
         />
       </div>
-      <ul className="mt-8 flex-grow">
+      <ul className=" mt-10 flex-grow">
         {menuItems.map((item, index) => (
           <li key={index}>
             <div
@@ -96,7 +96,7 @@ const SideMenuBar = () => {
                 {item.submenu.map((subItem, subIndex) => (
                   <li
                     key={subIndex}
-                    className="flex items-center p-1 ml-8 text-[#D9D9D9] hover:bg-gray-700 rounded-md gap-x-4 cursor-pointer text-sm"
+                    className="flex items-center p-2 ml-8 text-[#D9D9D9] hover:bg-gray-700 rounded-md gap-x-4 cursor-pointer text-sm"
                   >
                     {subItem.label}
                   </li>
@@ -142,4 +142,4 @@ const SideMenuBar = () => {
   );
 };
 
-export default SideMenuBar;
+export default SideMenuBarEditor;
