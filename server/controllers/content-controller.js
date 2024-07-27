@@ -7,7 +7,7 @@ const path = require("path"); // Import path module
 const addPostContent = async (req, res) => {
   try {
     const { title, description, blog, userId, categoryId } = req.body; // Extract data from request body
-    const thumbnail = req.file['thumbnail'].path; // Get thumbnail from request
+    const thumbnail = req.file["thumbnail"].path; // Get thumbnail from request
     // Get userId if sent from the client side
     let userIdToUse = userId || req.user.id; // Use provided userId or authenticated user's ID
 
@@ -16,47 +16,39 @@ const addPostContent = async (req, res) => {
       return res.status(404).json({ msg: "User doesnot exists." }); // If user not found, respond with error
     }
 
+    // Work according to the role
+    if (user.role === "viewer") {
+      return res.status(401).json({ msg: "Not authorized to upload" }); // If user is a viewer, respond with error
+    }
+
     // Save blog content to a file
     const blogFileName = `post-${Date.now()}.txt`; // Generate a unique filename
     const blogFilePath = path.join("uploads/post", blogFileName); // Create file path
     fs.writeFileSync(blogFilePath, blog); // Write blog content to file
 
-    // Work according to the role
-    if (user.role === "viewer") {
-      return res.status(401).json({ msg: "Not authorized to upload" }); // If user is a viewer, respond with error
-    } else if (user.role === "author") {
-      const newContent = new Content({
-        title,
-        description,
-        location: blogFilePath,
-        thumbnail: thumbnail,
-        user_id: userIdToUse,
-        content_type: "post",
-        status: "Pending",
-        category_id : Array.isArray(categoryId) ? categoryId : [categoryId]
-      });
+    // Set the status of the content based on the user's role
+    const status = user.role === "author" ? "Pending" : "Uploaded";
 
-      await newContent.save(); // Save new content to database
-      return res
-        .status(201)
-        .json({ msg: "Content Added Successfully", content: newContent }); // Respond with success message
-    } else {
-      // This is for admin and editor
-      const newContent = new Content({
-        title,
-        description,
-        location: blogFilePath,
-        thumbnail: thumbnail,
-        user_id: userIdToUse,
-        content_type: "post",
-        status: "Uploaded",
-        category_id : Array.isArray(categoryId) ? categoryId : [categoryId]
-      });
-      await newContent.save(); // Save new content to database
-      return res
-        .status(201)
-        .json({ msg: "Content uploaded Successfully", content: newContent }); // Respond with success message
-    }
+    // Create a new Content document with the provided details
+    const newContent = new Content({
+      title,
+      description,
+      location: blogFilePath,
+      thumbnail,
+      user_id: userIdToUse,
+      content_type: "post",
+      status,
+      category_id: Array.isArray(categoryId) ? categoryId : [categoryId], // Ensure categoryId is always an array
+    });
+
+    // Respond with a success message and the newly created content
+    res.status(201).json({
+      msg:
+        user.role === "author"
+          ? "Content Added Successfully"
+          : "Content Uploaded Successfully",
+      content: newContent,
+    });
   } catch (err) {
     res.status(500).json({ msg: err.message }); // Handle any errors
   }
@@ -73,48 +65,45 @@ const addPdfContent = async (req, res) => {
       return res.status(404).json({ msg: "User doesnot exists" }); // If user not found, respond with error
     }
 
-    // This comes from the middleware upload after handling file upload
-    const pdfFilePath = req.file['pdf'].path; // Get file path from request
-    const thumbnail = req.file['thumbnail'].path; // Get thumbnail from request
-
     // Work according to the role
     if (user.role === "viewer") {
       return res.status(401).json({ msg: "Not authorized to upload" }); // If user is a viewer, respond with error
-    } else if (user.role === "author") {
-      const newContent = new Content({
-        title,
-        description,
-        location: pdfFilePath,
-        thumbnail: thumbnail,
-        user_id: userIdToUse,
-        content_type: "pdf",
-        status: "Pending",
-        category_id : Array.isArray(categoryId) ? categoryId : [categoryId]
-      });
-      await newContent.save(); // Save new content to database
-      return res
-        .status(201)
-        .json({ msg: "PDF Added Successfully", content: newContent }); // Respond with success message
-    } else {
-      const newContent = new Content({
-        title,
-        description,
-        location: pdfFilePath,
-        thumbnail: thumbnail,
-        user_id: userIdToUse,
-        content_type: "pdf",
-        status: "Uploaded",
-        category_id : Array.isArray(categoryId) ? categoryId : [categoryId]
-      });
-      await newContent.save(); // Save new content to database
-      return res
-        .status(201)
-        .json({ msg: "PDF Uploaded Successfully", content: newContent }); // Respond with success message
     }
+
+    // This comes from the middleware upload after handling file upload
+    const pdfFilePath = req.file["pdf"].path; // Get file path from request
+    const thumbnail = req.file["thumbnail"].path; // Get thumbnail from request
+
+    // Check user role and set content status
+    let status = user.role === "author" ? "Pending" : "Uploaded";
+
+    // Create and save new content
+    const newContent = new Content({
+      title,
+      description,
+      location: pdfFilePath,
+      thumbnail,
+      user_id: userIdToUse,
+      content_type: "pdf",
+      status,
+      category_id: Array.isArray(categoryId) ? categoryId : [categoryId],
+    });
+
+    await newContent.save();
+
+    // Respond with success message
+    res.status(201).json({
+      msg:
+        user.role === "author"
+          ? "PDF Added Successfully"
+          : "PDF Uploaded Successfully",
+      content: newContent,
+    });
   } catch (err) {
     res.status(500).json({ msg: err.message }); // Handle any errors
   }
 };
+
 // Add a new video content to the server
 const addVideoContent = async (req, res) => {
   try {
@@ -126,44 +115,40 @@ const addVideoContent = async (req, res) => {
       return res.status(404).json({ msg: "User doesnot exists" }); // If user not found, respond with error
     }
 
-    // This comes from the upload middleware after handling upload
-    const videoFilePath = req.file['video'].path; // Get file path from request
-    const thumbnailFilePath = req.file['thumbnail'].path; // Get thumbnail from request
-
     // Work according to the role
     if (user.role === "viewer") {
       return res.status(401).json({ msg: "Not authorized to upload" }); // If user is a viewer, respond with error
-    } else if (user.role === "author") {
-      const newContent = new Content({
-        title,
-        description,
-        location: videoFilePath,
-        thumbnail: thumbnailFilePath,
-        user_id: userIdToUse,
-        content_type: "video",
-        status: "Pending",
-        category_id : Array.isArray(categoryId) ? categoryId : [categoryId]
-      });
-      await newContent.save(); // Save new content to database
-      return res
-        .status(201)
-        .json({ msg: "Video Added Successfully", content: newContent }); // Respond with success message
-    } else {
-      const newContent = new Content({
-        title,
-        description,
-        location: videoFilePath,
-        thumbnail: thumbnailFilePath,
-        user_id: userIdToUse,
-        content_type: "video",
-        status: "Uploaded",
-        category_id : Array.isArray(categoryId) ? categoryId : [categoryId]
-      });
-      await newContent.save(); // Save new content to database
-      return res
-        .status(201)
-        .json({ msg: "Video Uploaded Successfully", content: newContent }); // Respond with success message
     }
+
+    // This comes from the upload middleware after handling upload
+    const videoFilePath = req.file["video"].path; // Get file path from request
+    const thumbnailFilePath = req.file["thumbnail"].path; // Get thumbnail from request
+
+    // Set content status based on user role
+    const status = user.role === "author" ? "Pending" : "Uploaded";
+
+    // Create and save new content
+    const newContent = new Content({
+      title,
+      description,
+      location: videoFilePath,
+      thumbnail: thumbnailFilePath,
+      user_id: userIdToUse,
+      content_type: "video",
+      status,
+      category_id: Array.isArray(categoryId) ? categoryId : [categoryId],
+    });
+
+    await newContent.save();
+
+    // Respond with success message
+    res.status(201).json({
+      msg:
+        user.role === "author"
+          ? "Video Added Successfully"
+          : "Video Uploaded Successfully",
+      content: newContent,
+    });
   } catch (err) {
     res.status(500).json({ msg: err.message }); // Handle any errors
   }
@@ -172,7 +157,7 @@ const addVideoContent = async (req, res) => {
 // Edit the post content from the server
 const editPostContent = async (req, res) => {
   try {
-    const { title, description, blog, userId,categoryId } = req.body; // Extract data from request body
+    const { title, description, blog, userId, categoryId } = req.body; // Extract data from request body
     const userIdToUse = userId || req.user.id; // Use provided userId or authenticated user's ID
     const postId = req.params.id; // Get post ID from request parameters
 
@@ -185,15 +170,11 @@ const editPostContent = async (req, res) => {
     if (!post) {
       return res.status(404).json({ msg: "Post does not exist." }); // If post not found, respond with error
     }
-    if (user.role === "viewer") {
-      return res.status(401).json({ msg: "Viewer not authorized" }); // If user is a viewer, respond with error
-    } else if (user.role === "author") {
-      if (post.user_id.toString() !== userIdToUse) {
-        return res
-          .status(401)
-          .json({ msg: "Not authorized to edit this post" }); // If user is not the author of the post, respond with error
-      }
+    // Check if user is authorized to edit the post
+    if (user.role === "viewer" || (user.role === "author" && post.user_id.toString() !== userIdToUse)) {
+      return res.status(401).json({ msg: "Not authorized to edit this post" });
     }
+
     // Unlink the previous file
     if (post.location) {
       fs.unlinkSync(path.join(__dirname, "..", post.location), (err) => {
@@ -224,7 +205,7 @@ const editPostContent = async (req, res) => {
 // Edit the PDF content from the server
 const editPdfContent = async (req, res) => {
   try {
-    const { title, description, userId,categoryId } = req.body; // Extract data from request body
+    const { title, description, userId, categoryId } = req.body; // Extract data from request body
     const userIdToUse = userId || req.user.id; // Use provided userId or authenticated user's ID
     const contentId = req.params.id; // Get content ID from request parameters
     const newFile = req.file; // Assuming the new file is uploaded and available in req.file
@@ -239,14 +220,9 @@ const editPdfContent = async (req, res) => {
       return res.status(404).json({ msg: "Content does not exist." }); // If content not found, respond with error
     }
 
-    if (user.role === "viewer") {
-      return res.status(401).json({ msg: "Viewer not authorized" }); // If user is a viewer, respond with error
-    } else if (user.role === "author") {
-      if (content.user_id.toString() !== userIdToUse) {
-        return res
-          .status(401)
-          .json({ msg: "Not authorized to edit this post" }); // If user is not the author of the content, respond with error
-      }
+    // Check if user is authorized to edit the post
+    if (user.role === "viewer" || (user.role === "author" && post.user_id.toString() !== userIdToUse)) {
+      return res.status(401).json({ msg: "Not authorized to edit this pdf" });
     }
 
     // Unlink the previous file
@@ -293,16 +269,10 @@ const editVideoContent = async (req, res) => {
       return res.status(404).json({ msg: "Content does not exist." });
     }
 
-    // Check user authorization
-    if (user.role === "viewer") {
-      return res.status(401).json({ msg: "Viewer not authorized" });
-    } else if (
-      user.role === "author" &&
-      content.user_id.toString() !== userIdToUse
-    ) {
-      return res.status(401).json({ msg: "Not authorized to edit this post" });
+     // Check if user is authorized to edit the post
+     if (user.role === "viewer" || (user.role === "author" && post.user_id.toString() !== userIdToUse)) {
+      return res.status(401).json({ msg: "Not authorized to edit this video" });
     }
-
     // Unlink the previous file if it exists
     if (content.location) {
       fs.unlinkSync(path.join(__dirname, "..", content.location), (err) => {
@@ -407,6 +377,45 @@ const approveContent = async (req, res) => {
     content.status = "Uploaded";
     await content.save();
     res.status(200).json({ msg: "Approved Content" });
+  } catch (err) {
+    res.status(500).json({ msg: err.message });
+  }
+};
+
+// Reject the content
+const rejectContent = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    // Verify the user exists
+    const user = await User.findById(userId);
+    if (!userId) {
+      return res.status(404).json({ msg: "User does not exist." });
+    }
+
+    // Verify the content exists
+    const contentId = req.params.id;
+    const content = await Content.findById(contentId);
+    if (!content) {
+      return res.status(404).json({ msg: "Content does not exist" });
+    }
+
+    // Check user authorization
+    if (user.role === "viewer" || user.role === "author") {
+      return res
+        .status(401)
+        .json({ msg: "Not authorized to perform this action." });
+    }
+
+    // Check content status and update
+    if (content.status === "Rejected") {
+      return res
+        .status(409)
+        .json({ msg: "Conflict occurred in content status" });
+    }
+    content.status = "Rejected";
+    await content.save();
+    res.status(200).json({ msg: "Rejected Content" });
   } catch (err) {
     res.status(500).json({ msg: err.message });
   }
@@ -523,8 +532,8 @@ const getAllContent = async (req, res) => {
 };
 
 // Count the content
-const countContent = async(req,res) => {
-  try{
+const countContent = async (req, res) => {
+  try {
     // Fetch all content from the database
     let content = await Content.find({});
     if (!content) {
@@ -532,16 +541,21 @@ const countContent = async(req,res) => {
     }
     // find the total content count with count of each type of content
     const totalContent = content.length;
-    const postCount = content.filter((item) => item.content_type === "post").length;
-    const pdfCount = content.filter((item) => item.content_type === "pdf").length;
-    const videoCount = content.filter((item) => item.content_type === "video").length;
+    const postCount = content.filter(
+      (item) => item.content_type === "post"
+    ).length;
+    const pdfCount = content.filter(
+      (item) => item.content_type === "pdf"
+    ).length;
+    const videoCount = content.filter(
+      (item) => item.content_type === "video"
+    ).length;
     // Return the filtered or unfiltered content
     res.status(200).json({ totalContent, postCount, pdfCount, videoCount });
-  }catch(err){
-    res.status(500).json({msg:err.message});
+  } catch (err) {
+    res.status(500).json({ msg: err.message });
   }
-
-}
+};
 
 module.exports = {
   addPostContent,
@@ -552,9 +566,10 @@ module.exports = {
   editVideoContent,
   deleteContent,
   approveContent,
+  rejectContent,
   getPostContentById,
   getPdfContentById,
   getVideoContentById,
   getAllContent,
-  countContent
+  countContent,
 };
