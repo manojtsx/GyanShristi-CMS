@@ -8,7 +8,7 @@ function NoOfUsers() {
 
   const latestContent = [
     {image: "/GirlProfile.jpg", title: "What is Photosynthesis?", author: "Usha Gurung", date: "May 21, 2024"},
-    {image: "/Girl2.jpg", title: "What is Hardware? dsahgoauerghjnajgeaihgaoubguwagadjbgagjnajkghajkhgjagjdfslkzhnsbjkendbxnfrsxfj ndfnhfgn rsjftghnjdgb vcgslkdjfgbn mm,cskerjthbgnv", author: "Seezan Shrestha", date: "May 20, 2024"},
+    {image: "/Girl2.jpg", title: "What is Hardware?", author: "Seezan Shrestha", date: "May 20, 2024"},
     {image: "/manProfile.jpg", title: "Components of Hardware?", author: "Manoj Shrestha", date: "May 20, 2024"}
   ];
 
@@ -73,7 +73,7 @@ function NoOfUsers() {
                       />
                     </div>
                     <p
-                      className="w-52 overflow-hidden text-ellipsis whitespace-nowrap text-left hover:opacity-50"
+                      className="w-52 overflow-hidden text-ellipsis whitespace-nowrap text-left hover:opacity-50 cursor-default"
                       onMouseEnter={() => setHoveredTitle(item.title)}
                       onMouseLeave={() => setHoveredTitle("")}
                     >
