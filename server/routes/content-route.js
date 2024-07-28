@@ -4,6 +4,8 @@ const multer = require("multer");
 const pdfUpload = require("../configs/pdf-upload");
 const videoUpload = require("../configs/video-upload");
 const thumbnailUpload = require("../configs/thumbnail-upload");
+const validate = require("../middlewares/validators/content-validation");
+const contentSchema = require("../utils/validators/content-validation");
 
 // Combine both upload middlewares
 const upload = multer().fields([
@@ -27,27 +29,47 @@ const contentController = require("../controllers/content-controller");
 const verifyToken = require("../middlewares/token/tokenverify");
 
 // Define routes for adding content
-router.post("/add/post", verifyToken, upload, contentController.addPostContent);
-router.post("/add/pdf", verifyToken, upload, contentController.addPdfContent);
+router.post(
+  "/add/post",
+  verifyToken,
+  upload,
+  validate(contentSchema),
+  contentController.addPostContent
+);
+router.post(
+  "/add/pdf",
+  verifyToken,
+  upload,
+  validate(contentSchema),
+  contentController.addPdfContent
+);
 router.post(
   "/add/video",
   verifyToken,
   upload,
+  validate(contentSchema),
   contentController.addVideoContent
 );
 
 // Define routes for editing content
-router.put("/edit/post/:id", verifyToken, contentController.editPostContent);
+router.put(
+  "/edit/post/:id",
+  verifyToken,
+  validate(contentSchema),
+  contentController.editPostContent
+);
 router.put(
   "/edit/pdf/:id",
   verifyToken,
   upload,
+  validate(contentSchema),
   contentController.editPdfContent
 );
 router.put(
   "/edit/video/:id",
   verifyToken,
   upload,
+  validate(contentSchema),
   contentController.editVideoContent
 );
 
