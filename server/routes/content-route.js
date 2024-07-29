@@ -4,8 +4,8 @@ const multer = require("multer");
 const pdfUpload = require("../configs/pdf-upload");
 const videoUpload = require("../configs/video-upload");
 const thumbnailUpload = require("../configs/thumbnail-upload");
-const validate = require("../middlewares/validators/content-validation");
-const contentSchema = require("../utils/validators/content-validation");
+const validate = require("../middlewares/validation/validate-middleware");
+const contentSchema = require("../utils/validators/content-validaton");
 
 // Combine both upload middlewares
 const upload = multer().fields([

@@ -1,4 +1,4 @@
-const { z, ZodLazy } = require("zod");
+const { z } = require("zod");
 
 const contentSchema = z
   .object({
@@ -29,7 +29,6 @@ const contentSchema = z
       .enum(["Pending", "Uploaded", "Rejected"], {
         required_error: "Set the status",
       })
-      .trim()
       .optional(),
   })
   .refine(
