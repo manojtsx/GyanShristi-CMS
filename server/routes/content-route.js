@@ -57,6 +57,9 @@ router.delete("/delete/:id", verifyToken, contentController.deleteContent);
 // Define routes for approving content
 router.put("/approve/:id", verifyToken, contentController.approveContent);
 
+// Define routes for rejecting content
+router.put("/reject/:id", verifyToken, contentController.rejectContent);
+
 // Define routes for getting content by ID
 router.get("/post/:id", contentController.getPostContentById);
 router.get("/pdf/:id", contentController.getPdfContentById);
