@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import { NotificationProvider } from "@/context/NotificationContext";
 import NotificationContainer from "@/components/Notification";
 import '@/app/globals.css'
+import SideMenuBarEditor from "@/components/SideMenuBarEditor";
 
 
 const inter = Inter({ subsets: ["latin"] });
@@ -18,13 +19,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <NotificationProvider>
-        <body>
-          <NotificationContainer />
-          {children}
-        </body>
-      </NotificationProvider>
-    </html>
+   <div className="flex">
+    <SideMenuBarEditor/>
+    {children}
+   </div>
   );
 }
