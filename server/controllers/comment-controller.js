@@ -7,24 +7,47 @@ const addComment = async (req, res) => {
     //Extract comment details from the request body
     const { description, parentCommentId, content_id } = req.body;
     const userId = req.user.id;
+    const userRole = req.user.role;
     const user = await User.findById(userId);
     if (!user) {
       res.status(404).json({ msg: "You may not be logged in for comment." });
     }
 
-    // Create a new comment using the Comment model
-    const comment = new Comment({
-      description,
-      user_id: userId,
-      content_id,
-      parent_comment_id: parentCommentId || null,
-    });
+    if (parentCommentId) {
+      const hasParentComment = await Comment.findOne({ parentCommentId });
+      if (!hasParentComment) {
+        return res.status(401).json({ msg: "Parent comment not found" });
+      }
 
-    //Save the comemnt to the database
-    await comment.save();
+      if (hasParentComment.parent_comment_id) {
+        return res
+          .status(400)
+          .json({ msg: "Reply to the main comment only allowed" });
+      }
+    }
 
-    //Return a success response with the created comment
-    res.status(200).json({ msg: "Comment done" });
+    if (
+      userRole === "admin" ||
+      userRole === "editor" ||
+      userRole === "author" ||
+      userRole === "viewer"
+    ) {
+      // Create a new comment using the Comment model
+      const comment = new Comment({
+        description,
+        user_id: userId,
+        content_id,
+        parent_comment_id: parentCommentId || null,
+      });
+
+      //Save the comemnt to the database
+      await comment.save();
+
+      //Return a success response with the created comment
+      res.status(200).json({ msg: "Comment done" });
+    } else {
+      res.status(401).json({ msg: "You must log in to comment" });
+    }
   } catch (err) {
     res.status(500).json({ msg: err.message });
   }
@@ -67,14 +90,20 @@ const editComment = async (req, res) => {
 // Controller to view  all comments
 const viewAllComments = async (req, res) => {
   try {
-    // Fetch all comment from the database
-    const comments = await Comment.find({});
-    if (!comments) {
-      return res.status(404).json({ msg: "No comment found" });
-    }
+    const userRole = req.user.role;
+    if(userRole === 'admin' || userRole === 'editor'){
 
-    //Return a success response with the list of comments
-    res.status(200).json({ msg: "Comment retrieved", comments });
+      // Fetch all comment from the database
+      const comments = await Comment.find({});
+      if (!comments) {
+        return res.status(404).json({ msg: "No comment found" });
+      }
+      
+      //Return a success response with the list of comments
+      res.status(200).json({ msg: "Comment retrieved", comments });
+    }else{
+      res.status(401).json({msg : "You are not authorized for this action."})
+    }
   } catch (err) {
     res.status(500).json({ msg: err.message });
   }

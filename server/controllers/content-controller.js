@@ -18,7 +18,7 @@ const addPostContent = async (req, res) => {
 
     // Work according to the role
     if (user.role === "viewer") {
-      return res.status(401).json({ msg: "Not authorized to upload" }); // If user is a viewer, respond with error
+      return res.status(401).json({ msg: "Not authorized to post" }); // If user is a viewer, respond with error
     }
 
     // Save blog content to a file
