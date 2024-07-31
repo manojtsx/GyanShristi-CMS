@@ -23,7 +23,7 @@ function page() {
         </div>
     </div>
     </div>
-  )
+  );
 }
 
-export default page
+export default page;
