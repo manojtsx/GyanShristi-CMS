@@ -3,10 +3,16 @@ import React, { useState } from 'react'
 import Image from "next/image";
 
 function LatestContent() {
-    const [hoveredTitle, setHoveredTitle] = useState("");
-    const [hoveredAuthorName, setHoveredAuthorName] = useState("");
+    const [hoveredTitle, setHoveredTitle] = useState<number | null>(null);
+    const [hoveredAuthorName, setHoveredAuthorName] = useState<number | null>(null);
   
     const latestContent = [
+      {image: "/GirlProfile.jpg", title: "What is Photosynthesis?", author: "Usha Gurung", date: "May 21, 2024"},
+      {image: "/Girl2.jpg", title: "What is Hardware?", author: "Seezan Shrestha", date: "May 20, 2024"},
+      {image: "/manProfile.jpg", title: "Components of Hardware?", author: "Manoj Shrestha", date: "May 20, 2024"},
+      {image: "/GirlProfile.jpg", title: "What is Photosynthesis?", author: "Usha Gurung", date: "May 21, 2024"},
+      {image: "/Girl2.jpg", title: "What is Hardware?", author: "Seezan Shrestha", date: "May 20, 2024"},
+      {image: "/manProfile.jpg", title: "Components of Hardware?", author: "Manoj Shrestha", date: "May 20, 2024"},
       {image: "/GirlProfile.jpg", title: "What is Photosynthesis?", author: "Usha Gurung", date: "May 21, 2024"},
       {image: "/Girl2.jpg", title: "What is Hardware?", author: "Seezan Shrestha", date: "May 20, 2024"},
       {image: "/manProfile.jpg", title: "Components of Hardware?", author: "Manoj Shrestha", date: "May 20, 2024"}
@@ -32,21 +38,21 @@ function LatestContent() {
             </div>
             <p
               className="w-40 text-sm overflow-hidden text-ellipsis whitespace-nowrap text-left hover:opacity-50 cursor-default"
-              onMouseEnter={() => setHoveredTitle(item.title)}
-              onMouseLeave={() => setHoveredTitle("")}
+              onMouseEnter={() => setHoveredTitle(index)}
+              onMouseLeave={() => setHoveredTitle(null)}
             >
               {item.title}
             </p>
             <div className="w-24">
-              <p className="text-xs text-right overflow-hidden text-ellipsis whitespace-nowrap hover:opacity-50 cursor-default" onMouseEnter={() => setHoveredAuthorName(item.author)} onMouseLeave={() => setHoveredAuthorName("")}>{item.author}</p>
+              <p className="text-xs text-right overflow-hidden text-ellipsis whitespace-nowrap hover:opacity-50 cursor-default" onMouseEnter={() => setHoveredAuthorName(index)} onMouseLeave={() => setHoveredAuthorName(null)}>{item.author}</p>
               <p className="text-xs text-[rgba(0,0,0,0.52)] text-right">{item.date}</p>
             </div>
-            {hoveredTitle === item.title && (
+            {hoveredTitle === index && (
               <div className="absolute top-8 left-0 text-sm bg-white border border-gray-300 shadow-lg rounded-md p-2 mt-1 z-10">
                 {item.title}
               </div>
             )}
-            {hoveredAuthorName === item.author && (
+            {hoveredAuthorName === index && (
               <div className="absolute bottom-10 text-sm right-0 bg-white border border-gray-300 shadow-lg rounded-md p-2 mt-1 z-10">
                 {item.author}
               </div>

@@ -11,10 +11,10 @@ function page() {
       <DashboardTopMenu/>
     <div className="flex p-5">
       <div className='flex flex-col w-4/6 pr-5 '>
-      <div className=''>
+      <div>
         <NoOfUsers />
         </div>
-        <div className=''>
+        <div>
         <LineChart />
         </div>
       </div>
