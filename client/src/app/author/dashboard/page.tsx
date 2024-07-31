@@ -10,7 +10,7 @@ function page() {
     <div className='' >
       <DashboardTopMenu/>
     <div className="flex p-5">
-      <div className='flex flex-col w-4/6 pr-5 '>
+      <div className='flex flex-col w-4/6 pr-5 gap-5'>
       <div>
         <NoOfUsers />
         </div>
@@ -18,7 +18,7 @@ function page() {
         <LineChart />
         </div>
       </div>
-        <div>
+        <div className=''>
           <LatestContent />
         </div>
     </div>

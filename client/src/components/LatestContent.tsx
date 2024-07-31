@@ -18,13 +18,13 @@ function LatestContent() {
       {image: "/manProfile.jpg", title: "Components of Hardware?", author: "Manoj Shrestha", date: "May 20, 2024"}
     ];
   return (
-    <div >
+    <div className=''>
     <div className="bg-[#525CEB] rounded-t-lg flex justify-center items-center py-3">
       <p className="text-white">See Latest Content</p>
     </div>
     {/* Contents */}
     <div className="flex items-center justify-center p-3">
-      <ul className="flex flex-col items-center justify-center gap-1">
+      <ul className="flex flex-col items-center justify-center gap-2">
         {latestContent.map((item, index) => (
           <li key={index} className="flex items-center gap-1 relative">
             <div className="w-12 h-12">

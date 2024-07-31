@@ -9,7 +9,7 @@ export default function RootLayout({
   return (
    <div className="flex gap-1">
     <SideMenuBarAuthor/>
-    <div className="w-screen">
+    <div className="">
     {children}
     </div>
    </div>

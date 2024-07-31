@@ -21,7 +21,6 @@ export default function RootLayout({
                     <body>
                         <NotificationContainer />
                         {children}
-                        {/* <LineChart /> */}
                     </body>
                 </NotificationProvider>
         </html>
