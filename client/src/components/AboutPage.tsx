@@ -2,6 +2,7 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRobot, faVolumeUp, faMicrophone, faFolderOpen, faGlobe } from '@fortawesome/free-solid-svg-icons';
+import Image from 'next/image';
 
 const About = () => {
   return (
@@ -9,11 +10,11 @@ const About = () => {
       <div className="max-w-7xl mx-auto bg-white rounded-lg shadow-xl overflow-hidden">
         
         {/* Hero Section */}
-        <div className="relative h-64 flex items-center justify-center bg-gradient-to-r from-[#3570E2] to-[#1E58C8]">
-          <img
-            src="AboutPageTopImage.webp" // Replace with your hero image URL
-            alt="Gyanshristi"
-            className="absolute inset-0 w-full h-full object-cover opacity-40"
+        <div className="relative h-64 flex items-center justify-center">
+          <Image
+            src="/AboutPageImage.webp"
+            alt="Gyanshristi" width={500} height={500}
+            className="absolute inset-0 w-full h-full object-cover"
           />
           <h1 className="relative text-4xl font-bold text-white drop-shadow-lg px-4">
             Welcome to Gyanshristi
@@ -27,9 +28,9 @@ const About = () => {
             <p className="text-gray-700 text-base mb-6">
               Gyanshristi is a cutting-edge AI-powered Content Management System designed to simplify and elevate content creation. From generating written content to audio and digital asset management, Gyanshristi provides a seamless experience.
             </p>
-            <img
-              src="AboutPageGirlImage.webp" // Replace with a relevant image URL
-              alt="Gyanshristi Overview"
+            <Image
+              src="/AboutPageGirlImage.webp"
+              alt="Gyanshristi Overview" width={500} height={500}
               className="w-full max-w-md rounded-lg shadow-lg mx-auto"
             />
           </div>
@@ -106,9 +107,9 @@ const About = () => {
             <h2 className="text-3xl font-bold text-[#3D52A0] mb-6">Why Choose Gyanshristi?</h2>
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
               <div className="flex flex-col items-center">
-                <img
-                  src="GlobalReach.webp" 
-                  alt="Innovation"
+                <Image
+                  src="/GlobalReach.webp" 
+                  alt="Innovation" width={500} height={500}
                   className="w-24 h-24 rounded-full mb-4 transform transition-transform duration-500 hover:scale-105 object-cover"
                 />
                 <h3 className="text-lg font-semibold text-[#3570E2] mb-2">Innovation</h3>
@@ -117,9 +118,9 @@ const About = () => {
                 </p>
               </div>
               <div className="flex flex-col items-center">
-                <img
-                  src="UserFriendly.webp" 
-                  alt="User-Friendly"
+                <Image
+                  src="/UserFriendly.webp" 
+                  alt="User-Friendly" width={500} height={500}
                   className="w-24 h-24 rounded-full mb-4 transform transition-transform duration-500 hover:scale-105 object-cover"
                 />
                 <h3 className="text-lg font-semibold text-[#3570E2] mb-2">User-Friendly</h3>
@@ -128,9 +129,9 @@ const About = () => {
                 </p>
               </div>
               <div className="flex flex-col items-center">
-                <img
-                  src="Accessibility.jpg" 
-                  alt="Accessibility"
+                <Image
+                  src="/Accessibility.jpg" 
+                  alt="Accessibility" width={500} height={500}
                   className="w-24 h-24 rounded-full mb-4 transform transition-transform duration-500 hover:scale-105 object-cover"
                 />
                 <h3 className="text-lg font-semibold text-[#3570E2] mb-2">Accessibility</h3>
@@ -139,9 +140,9 @@ const About = () => {
                 </p>
               </div>
               <div className="flex flex-col items-center">
-                <img
-                  src="Innovation.jpg" 
-                  alt="Global Reach"
+                <Image
+                  src="/Innovation.jpg" 
+                  alt="Global Reach" width={500} height={500}
                   className="w-24 h-24 rounded-full mb-4 transform transition-transform duration-500 hover:scale-105 object-cover"
                 />
                 <h3 className="text-lg font-semibold text-[#3570E2] mb-2">Global Reach</h3>
@@ -169,23 +170,23 @@ const About = () => {
             <h2 className="text-3xl font-bold text-[#3D52A0] text-center mb-8">Explore Gyanshristi</h2>
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               <div className="transform transition-transform duration-500 hover:scale-105">
-                <img
-                  src="https://via.placeholder.com/400x300"
-                  alt="Feature 1"
+                <Image
+                  src="/"
+                  alt="Feature 1" width={500} height={500}
                   className="rounded-lg shadow-lg w-full"
                 />
               </div>
               <div className="transform transition-transform duration-500 hover:scale-105">
-                <img
-                  src="https://via.placeholder.com/400x300"
-                  alt="Feature 2"
+                <Image
+                  src="/"
+                  alt="Feature 2" width={500} height={500}
                   className="rounded-lg shadow-lg w-full"
                 />
               </div>
               <div className="transform transition-transform duration-500 hover:scale-105">
-                <img
-                  src="https://via.placeholder.com/400x300"
-                  alt="Feature 3"
+                <Image
+                  src="/"
+                  alt="Feature 3" width={500} height={500}
                   className="rounded-lg shadow-lg w-full"
                 />
               </div>
