@@ -23,7 +23,7 @@ const About = () => {
         {/* Introduction Section */}
         <section className="py-12 bg-white text-center px-6">
           <div className="max-w-3xl mx-auto">
-            <h2 className="text-3xl font-bold text-[#3570E2] mb-6">About Gyanshristi</h2>
+            <h2 className="text-3xl font-bold text-[#3D52A0] mb-6">About Gyanshristi</h2>
             <p className="text-gray-700 text-base mb-6">
               Gyanshristi is a cutting-edge AI-powered Content Management System designed to simplify and elevate content creation. From generating written content to audio and digital asset management, Gyanshristi provides a seamless experience.
             </p>
@@ -36,17 +36,17 @@ const About = () => {
         </section>
 
         {/* Key Features Section */}
-<section className="py-16 bg-gradient-to-r from-amber-50  to-indigo-100">
+<section className="py-16">
   <div className="max-w-6xl mx-auto px-6">
-    <h2 className="text-4xl font-bold text-[#3570E2] text-center mb-12">Key Features</h2>
-    <div className="flex flex-wrap justify-center gap-10">
+    <h2 className="text-4xl font-bold text-[#3D52A0] text-center mb-12">Key Features</h2>
+    <div className="flex flex-wrap justify-center gap-14">
       
       {/* Feature 1 */}
-      <div className="w-full md:w-80 lg:w-96 bg-white rounded-lg shadow-xl overflow-hidden transform transition-transform duration-500 hover:scale-105 hover:shadow-2xl">
+      <div className="w-full md:w-80 lg:w-96 bg-gradient-to-r from-amber-50  to-indigo-100 rounded-lg shadow-xl overflow-hidden transform transition-transform duration-500 hover:scale-105 hover:shadow-2xl hover:bg-gradient-to-r hover:from-amber-100 hover:to-indigo-200">
         <div className="bg-[#3570E2] p-5 flex items-center justify-center">
         <h3 className="text-xl font-semibold text-white">AI-Powered Content</h3>
         </div>
-        <div className="p-5 text-center">
+        <div className="p-5 text-center ">
         <FontAwesomeIcon icon={faRobot} className="text-3xl text-[#3570E2] mb-4" />
           <p className="text-gray-700">
             Generate high-quality content effortlessly with advanced AI tools designed for ease and efficiency.
@@ -55,7 +55,7 @@ const About = () => {
       </div>
 
       {/* Feature 2 */}
-      <div className="w-full md:w-80 lg:w-96 bg-white rounded-lg shadow-xl overflow-hidden transform transition-transform duration-500 hover:scale-105 hover:shadow-2xl">
+      <div className="w-full md:w-80 lg:w-96 bg-gradient-to-r from-amber-50  to-indigo-100 rounded-lg shadow-xl overflow-hidden transform transition-transform duration-500 hover:scale-105 hover:shadow-2xl hover:bg-gradient-to-r hover:from-amber-100 hover:to-indigo-200">
         <div className="bg-[#3570E2] p-5 flex items-center justify-center">
         <h3 className="text-xl font-semibold text-white">Text-to-Speech</h3>
         </div>
@@ -69,7 +69,7 @@ const About = () => {
       </div>
 
       {/* Feature 3 */}
-      <div className="w-full md:w-80 lg:w-96 bg-white rounded-lg shadow-xl overflow-hidden transform transition-transform duration-500 hover:scale-105 hover:shadow-2xl">
+      <div className="w-full md:w-80 lg:w-96 bg-gradient-to-r from-amber-50  to-indigo-100 rounded-lg shadow-xl overflow-hidden transform transition-transform duration-500 hover:scale-105 hover:shadow-2xl hover:bg-gradient-to-r hover:from-amber-100 hover:to-indigo-200">
         <div className="bg-[#3570E2] p-5 flex items-center justify-center">
         <h3 className="text-xl font-semibold text-white">Voice Recognition</h3>
         </div>
@@ -82,7 +82,7 @@ const About = () => {
       </div>
 
       {/* Feature 4 */}
-      <div className="w-full md:w-80 lg:w-96 bg-white rounded-lg shadow-xl overflow-hidden transform transition-transform duration-500 hover:scale-105 hover:shadow-2xl">
+      <div className="w-full md:w-80 lg:w-96 bg-gradient-to-r from-amber-50  to-indigo-100 rounded-lg shadow-xl overflow-hidden transform transition-transform duration-500 hover:scale-105 hover:shadow-2xl hover:bg-gradient-to-r hover:from-amber-100 hover:to-indigo-200">
         <div className="bg-[#3570E2] p-5 flex items-center justify-center">
         <h3 className="text-xl font-semibold text-white">Content Management</h3>
         </div>
@@ -103,7 +103,7 @@ const About = () => {
         {/* Why Choose Us Section */}
         <section className="py-12  text-center px-6">
           <div className="max-w-5xl mx-auto">
-            <h2 className="text-3xl font-bold text-[#3570E2] mb-6">Why Choose Gyanshristi?</h2>
+            <h2 className="text-3xl font-bold text-[#3D52A0] mb-6">Why Choose Gyanshristi?</h2>
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
               <div className="flex flex-col items-center">
                 <img
@@ -166,7 +166,7 @@ const About = () => {
         {/* Image Gallery */}
         <section className="py-12 bg-white">
           <div className="max-w-6xl mx-auto">
-            <h2 className="text-3xl font-bold text-[#3570E2] text-center mb-8">Explore Gyanshristi</h2>
+            <h2 className="text-3xl font-bold text-[#3D52A0] text-center mb-8">Explore Gyanshristi</h2>
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               <div className="transform transition-transform duration-500 hover:scale-105">
                 <img
