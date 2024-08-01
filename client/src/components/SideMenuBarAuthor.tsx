@@ -42,7 +42,7 @@ const SideMenuBarAuthor = () => {
       } duration-300 relative flex flex-col`}
     >
       <BsArrowLeftShort
-        className={`text-[#011936] text-2xl bg-slate-50 rounded-full border border-[#011936] absolute -right-3 top-9 cursor-pointer ${
+        className={`text-[#011936] text-2xl bg-slate-50 rounded-full border border-[#011936] absolute -right-3 top-5 cursor-pointer ${
           !open && "rotate-180"
         }`}
         onClick={() => setOpen(!open)}
@@ -63,7 +63,7 @@ const SideMenuBarAuthor = () => {
           <li key={index}>
             <div
               className={`flex items-center p-3 text-gray-300 mb-2 hover:bg-gray-700 rounded-md cursor-pointer ${
-                !open ? "justify-center" : "ml-6"
+                !open ? "justify-center" : "pl-6"
               } duration-300`}
             >
               <div className="text-2xl">{item.icon}</div>
@@ -79,8 +79,8 @@ const SideMenuBarAuthor = () => {
         ))}
       </ul>
       <div
-        className={`flex items-center text-gray-300 space-x-4 mb-4 hover:bg-gray-700 rounded-md cursor-pointer ${
-          !open ? "justify-center" : "ml-5"
+        className={`flex items-center text-gray-300 space-x-3 mb-4 hover:bg-gray-700 rounded-md cursor-pointer ${
+          !open ? "justify-center" : "pl-5"
         } duration-300`}
       >
         <Image
@@ -96,7 +96,7 @@ const SideMenuBarAuthor = () => {
       </div>
       <div
         className={`flex items-center p-1 text-[#D9D9D9] space-x-4 mb-12 hover:bg-gray-700 rounded-md cursor-pointer ${
-          !open ? "justify-center" : "ml-9"
+          !open ? "justify-center" : "pl-6"
         }`}
         onClick={handleLogoutClick}
       >
