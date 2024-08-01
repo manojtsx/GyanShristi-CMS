@@ -3,7 +3,7 @@ import React from 'react'
 
 function DashboardTopMenu() {
   return (
-    <div className="flex justify-between items-center px-5 py-2 shadow-md w-screen">
+    <div className="flex justify-between items-center px-5 py-2 shadow-md">
         <p>Dashboard</p>
         <div className="w-10 h-10">
           <Image

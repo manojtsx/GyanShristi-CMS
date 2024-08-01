@@ -116,8 +116,8 @@ function LineChart() {
   };
 
   return (
-    <div>
-      <Line data={chartData} options={options}></Line>
+    <div className="w-full h-full">
+      <Line data={chartData} options={options} />
     </div>
   );
 }

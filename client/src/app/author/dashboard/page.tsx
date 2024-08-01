@@ -1,29 +1,28 @@
-import NoOfUsers from '@/components/common-component/NoOfUsers'
-import DashboardTopMenu from '@/components/DashboardTopMenu'
-import LatestContent from '@/components/LatestContent'
-import LineChart from '@/components/LineChart'
-import SideMenuBarAuthor from '@/components/SideMenuBarAuthor'
-import React from 'react'
+import NoOfUsers from '@/components/common-component/NoOfUsers';
+import DashboardTopMenu from '@/components/DashboardTopMenu';
+import LatestContent from '@/components/LatestContent';
+import LineChart from '@/components/LineChart';
+import React from 'react';
 
-function page() {
+function Page() {
   return (
-    <div className='' >
-      <DashboardTopMenu/>
-    <div className="flex p-5">
-      <div className='flex flex-col w-4/6 pr-5 gap-5'>
-      <div>
-        <NoOfUsers />
+    <div className="flex flex-col h-full">
+      <DashboardTopMenu />
+      <div className="flex flex-1 p-5">
+        <div className='flex flex-col flex-grow pr-5 gap-5'>
+          <div className='flex-1'>
+            <NoOfUsers />
+          </div>
+          <div>
+            <LineChart />
+          </div>
         </div>
-        <div>
-        <LineChart />
-        </div>
-      </div>
-        <div className=''>
+        <div className='flex-1'>
           <LatestContent />
         </div>
-    </div>
+      </div>
     </div>
   );
 }
 
-export default page;
+export default Page;

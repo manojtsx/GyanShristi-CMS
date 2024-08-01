@@ -18,7 +18,7 @@ function LatestContent() {
       {image: "/manProfile.jpg", title: "Components of Hardware?", author: "Manoj Shrestha", date: "May 20, 2024"}
     ];
   return (
-    <div className=''>
+    <>  
     <div className="bg-[#525CEB] rounded-t-lg flex justify-center items-center py-3">
       <p className="text-white">See Latest Content</p>
     </div>
@@ -61,7 +61,7 @@ function LatestContent() {
         ))}
       </ul>
     </div>
-  </div>
+  </>
   )
 }
 
