@@ -1,9 +1,13 @@
-import React from 'react'
+import NoOfUsers from "@/components/common-component/NoOfUsers";
+import SideMenuBarAdmin from "@/components/SideMenuBarAdmin";
+import React from "react";
 
-function Page({params} : {params : {id : string}}) {
+function Page({ params }: { params: { id: string } }) {
   return (
-    <div>This is dashboard route</div>
-  )
+    <div>
+      <SideMenuBarAdmin />
+    </div>
+  );
 }
 
-export default Page
+export default Page;
