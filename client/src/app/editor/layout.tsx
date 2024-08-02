@@ -6,9 +6,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex">
+    <div className="flex h-screen">
       <SideMenuBarEditor />
-      {children}
+      <div className="flex-1 overflow-hidden">{children}</div>
     </div>
   );
 }
