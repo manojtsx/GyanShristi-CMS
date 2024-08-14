@@ -6,7 +6,7 @@ import Image from "next/image";
 
 export default function Page() {
   return (
-    <div>
+    <div className="dark:bg-gray-900 dark:text-white">
       <div>
         <p>Dashboard</p>
         

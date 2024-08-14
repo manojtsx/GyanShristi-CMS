@@ -5,7 +5,7 @@ import { faEnvelope, faLocationDot, faPhone } from '@fortawesome/free-solid-svg-
 
 function Footer() {
   return (
-    <footer className=' bg-[#1E58C8] pt-10 pb-10'>
+    <footer className=' bg-[#1E58C8] pt-10 pb-10 dark:bg-gray-900 dark:text-white'>
         {/* Mobile Responsive */}
         <div className='sm:hidden text-white flex flex-col gap-7 p-5'>
         <div className='flex flex-col gap-2'>

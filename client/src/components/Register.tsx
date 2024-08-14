@@ -108,7 +108,7 @@ function Register() {
     }
   };
   return (
-    <main className=" flex min-h-screen">
+    <main className=" flex min-h-screen dark:bg-gray-800 dark:text-white">
       <div className="flex flex-col items-start justify-center w-1/2 pl-40">
         <h1 className=" font-bold text-4xl">GyanShristi</h1>
         <p className=" text-gray-400 mt-4">

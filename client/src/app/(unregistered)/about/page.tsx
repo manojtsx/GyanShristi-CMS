@@ -7,7 +7,7 @@ import ApplyAsAuthorButton from '@/components/mini-component/ApplyAsAuthorButton
 
 const About = () => {
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen dark:bg-gray-900 dark:text-white">
         {/* Hero Section Top Image*/}
           <Image
             src="/GyanShristiBanner.png"
