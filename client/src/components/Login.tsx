@@ -58,14 +58,14 @@ function Login() {
     } 
   }
   return (
-    <div className='flex justify-center items-center min-h-[90vh] dark:bg-gray-700 dark:text-white'>
-    <form onSubmit={handleSubmit} className='flex justify-center items-center flex-col gap-8 bg-[#FBF9F9] p-10 shadow-lg rounded-md dark:bg-gray-800 dark:text-white'>
+    <div className='flex justify-center items-center min-h-[90vh] dark:bg-[#121212]'>
+    <form onSubmit={handleSubmit} className='flex justify-center items-center flex-col gap-8 bg-[#FBF9F9] p-10 shadow-lg rounded-md dark:bg-[#1A1A1A] dark:text-white'>
         <Logo />
         <Textbox name="username" value={user.username} placeholder="Username" onChange={handleInputChange}/>
         <PasswordBox name="password" value={user.password} placeholder="Password" onChange={handleInputChange}/>
         <SubmitButton text="Login"/>
         <hr />
-        <p>Don't have an account? <Link href="/register" className='font-bold'>Sign Up</Link></p>
+        <p className='dark:text-[#B0B0B0]'>Don't have an account? <Link href="/register" className='font-bold text-white'>Sign Up</Link></p>
     </form>
     </div>
   )

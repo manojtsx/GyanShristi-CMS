@@ -15,7 +15,7 @@ function Textbox({ name, value, placeholder, onChange }: TextBoxProps) {
         value={value}
         placeholder={placeholder}
         onChange={onChange}
-        className="bg-white border-none shadow-md w-[300px] dark:bg-gray-400 dark:text-white"
+        className="bg-white border-none shadow-md w-[300px] dark:bg-[#2C2C2C] dark:border-[#303030] dark:text-white"
       />
     </>
   );

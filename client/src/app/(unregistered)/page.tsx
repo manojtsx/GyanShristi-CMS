@@ -6,16 +6,12 @@ import Image from "next/image";
 
 export default function Page() {
   return (
-    <div className="dark:bg-gray-900 dark:text-white">
-      <div>
-        <p>Dashboard</p>
-        
-      </div>
+    <div className="dark:bg-[#121212] dark:text-white">
     <div className="hidden sm:flex justify-between gap-10 px-20 py-16" >
       <div className="flex flex-col justify-center gap-5">
         <div className="flex flex-col gap-1">
-        <h1 className="font-medium text-4xl ">GyanShristi</h1>
-        <p className="font-medium text-sm max-w-72" >An AI Based CMS with Voice Recognition and Text-to-Speech Technology</p>
+        <h1 className="font-medium text-4xl dark:text-[#E0E0E0]">GyanShristi</h1>
+        <p className="font-medium text-sm max-w-72 dark:text-[#B0B0B0]" >An AI Based CMS with Voice Recognition and Text-to-Speech Technology</p>
         </div>
         <ApplyAsAuthorButton/>
       </div>

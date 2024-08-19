@@ -32,13 +32,13 @@ function Navbar() {
   ]
 
   return (
-    <nav className="dark:bg-gray-900 dark:text-white">
+    <nav className="dark:bg-[#1A1A1A] dark:text-white">
       <Image src='/GyanShristiAdBanner.png' width={500} height={500} alt="Advertisement" className="w-screen h-28 object-fit" />
       <div className="h-12 flex justify-between items-center pl-1 pr-3">
       <Image src="/logo.png" alt="CMS Logo" width={45} height={45} className="rounded-[50%]"/>
         <ul className="hidden sm:flex justify-between gap-8 font-semibold">
           {navItems.map((item,index)=>(
-            <Link href={item.link} key={index}> <li className={`hover:bg-[rgb(162,204,243)] p-2 ${activeLink === item.id ?'border-b-2 border-[#1E58C8]' : ''}`} onClick={() => handleActiveLink(item.id)}>{item.name}</li></Link>
+            <Link href={item.link} key={index}> <li className={`dark:text-[#E0E0E0] hover:bg-[rgb(162,204,243)] dark:hover:bg-[#1E58C8] p-2 ${activeLink === item.id ?'border-b-2 border-[#1E58C8]' : ''}`} onClick={() => handleActiveLink(item.id)}>{item.name}</li></Link>
           )
         )}
 
@@ -73,7 +73,7 @@ function Navbar() {
       {isClick && (
           <ul className="w-screen flex flex-col items-start font-semibold sm:hidden">
              {navItems.map((item, index)=>(
-          <Link href={item.link} key={index}><li className="w-[inherit] flex justify-center hover:bg-[rgb(162,204,243)] p-2">{item.name}</li></Link>
+          <Link href={item.link} key={index}><li className="w-[inherit] flex justify-center hover:bg-[rgb(162,204,243)] dark:hover:bg-[#1E58C8] p-2">{item.name}</li></Link>
         )
       )}    
         </ul>
