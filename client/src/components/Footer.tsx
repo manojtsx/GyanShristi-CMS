@@ -11,9 +11,9 @@ function Footer() {
         <div className='flex flex-col gap-2'>
             <p className='text-lg font-semibold'>Contact Us</p>
             <ul className='text-[15px] flex flex-col gap-1 mb-5'>
-                <li className='flex gap-2'><FontAwesomeIcon icon={faPhone} className='pt-[4px]'/>9800000000</li>
-                <li className='flex gap-2'><FontAwesomeIcon icon={faEnvelope} className='pt-[4px]'/>abcde@gmail.com</li>
-                <li className='flex gap-2'><FontAwesomeIcon icon={faLocationDot} className='pt-[4px]'/><address>Damauli, Tanahun</address></li>
+                <li className='flex gap-2'><FontAwesomeIcon icon={faPhone} className='pt-[4px] dark:text-[#1E58C8]'/>9800000000</li>
+                <li className='flex gap-2'><FontAwesomeIcon icon={faEnvelope} className='pt-[4px] dark:text-[#1E58C8]'/>abcde@gmail.com</li>
+                <li className='flex gap-2'><FontAwesomeIcon icon={faLocationDot} className='pt-[4px] dark:text-[#1E58C8]'/><address>Damauli, Tanahun</address></li>
             </ul>
         <hr className='border-[rgb(216,197,197)]'/>
         </div>
@@ -21,10 +21,10 @@ function Footer() {
             <div className='flex gap-5'>
             <p className='text-lg font-semibold'>Social Media</p>
             <ul className='flex gap-2'>
-                <li><FontAwesomeIcon icon={faLinkedin} className='size-[35px]' /></li>
-                <li><FontAwesomeIcon icon={faSquareFacebook} className='size-[35px]' /></li>
-                <li><FontAwesomeIcon icon={faSquareInstagram} className='size-[35px]' /></li>
-                <li><FontAwesomeIcon icon={faSquareGithub} className='size-[35px]' /></li>
+                <li><FontAwesomeIcon icon={faLinkedin} className='size-[35px] dark:text-[#3570E2]' /></li>
+                <li><FontAwesomeIcon icon={faSquareFacebook} className='size-[35px] dark:text-[#3570E2]' /></li>
+                <li><FontAwesomeIcon icon={faSquareInstagram} className='size-[35px] dark:text-[#3570E2]' /></li>
+                <li><FontAwesomeIcon icon={faSquareGithub} className='size-[35px] dark:text-[#3570E2]' /></li>
             </ul>
             </div>
         <hr className='border-[rgb(216,197,197)]'/>
