@@ -18,7 +18,6 @@ const register = async (req, res) => {
 
     let isOTPValid = false;
     for (const user of users) {
-        console.log(user.otp, otp);
       if (await verifyOTP(otp, user.otp)) {
         
         isOTPValid = true;

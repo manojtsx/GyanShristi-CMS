@@ -6,6 +6,7 @@ const fs = require("fs");
 const getUser = async (req, res) => {
   try {
     const users = await User.find({}).select("-password");
+    console.log(req.user.role);
     if (req.user.role === "viewer" || req.user.role === "author") {
       return res
         .status(403)
@@ -188,7 +189,7 @@ const changeEmail = async (req, res) => {
     const user = await User.findById(id);
     if (!user) {
       res.status(404).json({ msg: "User not found" });
-    }
+    } 
 
     // Authorize check
     if (
@@ -215,9 +216,11 @@ const changeEmail = async (req, res) => {
 // approve viewer as author
 const approveAsAuthor = async (req, res) => {
   try {
-    const { viewerId, approve } = req.params.id;
+    const viewerId  = req.params.id;
+    const approve = req.query.approve === 'true';
     const userRole = req.user.role;
 
+    console.log(viewerId)
     const user = await User.findById(viewerId);
     if (!user) {
       return res.status(404).json({ msg: "User doesnot exists." });
@@ -240,7 +243,7 @@ const approveAsAuthor = async (req, res) => {
         user.status = "unrequested";
         return res.status(200).json({msg : "Viewer request rejected."})
       } else {
-        return res.status(409).json({ msg: "User isnot a viewer" });
+        return res.status(409).json({ msg: "User isnot a pending viewer" });
       }
       await user.save();
 
@@ -276,7 +279,7 @@ const changeUserToEditor = async (req, res) => {
     } else {
       return res
         .status(403)
-        .json({ msg: "You are not authorized to delete this user." });
+        .json({ msg: "You are not authorized to make this user editor." });
     }
   } catch (err) {
     res.status(500).json({ msg: err.message });
@@ -331,8 +334,8 @@ const uploadProfilePicture = async (req, res) => {
       (["author", "viewer"].includes(userRole) && userId === id)
     ) {
       // Check if user has an existing profile picture
-      if (user.profile_pic) {
-        const oldProfilePicPath = path.join(__dirname, ".. ", user.profile_pic);
+      if (user.profile_pic && user.profile_pic.trim() !== "") {
+        const oldProfilePicPath = path.join(__dirname, "..", user.profile_pic);
         fs.unlink(oldProfilePicPath, (err) => {
           if (err) {
             throw err;
@@ -341,15 +344,15 @@ const uploadProfilePicture = async (req, res) => {
       }
 
       await User.findByIdAndUpdate(
-        userId,
-        { profile_pic: req.file.path },
+        id,
+        { profile_pic: path.normalize(req.file.path) },
         { new: true }
       );
       res.status(200).json({ msg: "Profile picture uploaded successfully" });
     } else {
       return res
         .status(403)
-        .json({ msg: "You are not authorized to delete this user." });
+        .json({ msg: "You are not authorized to change profile picture." });
     }
   } catch (err) {
     res.status(500).json({ msg: err.message });
