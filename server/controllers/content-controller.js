@@ -7,28 +7,30 @@ const path = require("path"); // Import path module
 const addPostContent = async (req, res) => {
   try {
     const { title, description, blog, userId, categoryId } = req.body; // Extract data from request body
-    const thumbnail = req.file["thumbnail"].path; // Get thumbnail from request
+    console.log(req.file)
+    const thumbnail = req.file.path; // Get thumbnail from request
     // Get userId if sent from the client side
     let userIdToUse = userId || req.user.id; // Use provided userId or authenticated user's ID
-
+    
     const user = await User.findById(userIdToUse); // Find user by ID
     if (!user) {
       return res.status(404).json({ msg: "User doesnot exists." }); // If user not found, respond with error
     }
-
+    
     // Work according to the role
     if (user.role === "viewer") {
       return res.status(401).json({ msg: "Not authorized to post" }); // If user is a viewer, respond with error
     }
-
+    
     // Save blog content to a file
     const blogFileName = `post-${Date.now()}.txt`; // Generate a unique filename
     const blogFilePath = path.join("uploads/post", blogFileName); // Create file path
     fs.writeFileSync(blogFilePath, blog); // Write blog content to file
-
+    console.log(thumbnail)
+    
     // Set the status of the content based on the user's role
     const status = user.role === "author" ? "Pending" : "Uploaded";
-
+    
     // Create a new Content document with the provided details
     const newContent = new Content({
       title,
@@ -59,7 +61,7 @@ const addPdfContent = async (req, res) => {
   try {
     const { title, description, userId, categoryId } = req.body; // Extract data from request body
     const userIdToUse = userId || req.user.id; // Use provided userId or authenticated user's ID
-
+console.log(req.file)
     const user = await User.findById(userIdToUse); // Find user by ID
     if (!user) {
       return res.status(404).json({ msg: "User doesnot exists" }); // If user not found, respond with error
@@ -71,8 +73,9 @@ const addPdfContent = async (req, res) => {
     }
 
     // This comes from the middleware upload after handling file upload
-    const pdfFilePath = req.file["pdf"].path; // Get file path from request
-    const thumbnail = req.file["thumbnail"].path; // Get thumbnail from request
+    console.log(req.files)  
+    const pdfFilePath = req.files["pdf"][0].path; // Get file path from request
+    const thumbnail = req.files["thumbnail"][0].path; // Get thumbnail from request
 
     // Check user role and set content status
     let status = user.role === "author" ? "Pending" : "Uploaded";
