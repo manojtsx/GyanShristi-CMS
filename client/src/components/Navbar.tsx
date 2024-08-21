@@ -29,9 +29,9 @@ function Navbar() {
   ]
 
   return (
-    <nav className="dark:bg-[#1A1A1A] dark:text-white fixed top-0 left-0 w-full z-10">
+    <nav className="dark:bg-[#1A1A1A] dark:text-white w-full">
       <Image src='/GyanShristiAdBanner.png' width={500} height={500} alt="Advertisement" className="w-screen h-28 object-cover" />
-      <div className="h-12 flex justify-between items-center pl-1 pr-3 bg-white dark:bg-[#1A1A1A] shadow-md">
+      <div className="h-12 flex justify-between items-center pl-1 pr-3 sticky top-0 left-0 z-10 bg-white dark:bg-[#1A1A1A] shadow-md">
       <Image src="/logo.png" alt="CMS Logo" width={45} height={45} className="rounded-full"/>
         <ul className="hidden sm:flex justify-between gap-8 font-semibold">
           {navItems.map((item,index)=>(
