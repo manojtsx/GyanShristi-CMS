@@ -1,4 +1,5 @@
 const Comment = require("../models/comment-model");
+const Content = require('../models/content-model');
 const User = require("../models/user-model");
 
 // Controller to add a new comment
@@ -91,23 +92,64 @@ const editComment = async (req, res) => {
 const viewAllComments = async (req, res) => {
   try {
     const userRole = req.user.role;
-    if(userRole === 'admin' || userRole === 'editor'){
 
-      // Fetch all comment from the database
+    if (userRole === 'admin' || userRole === 'editor') {
+      // Fetch all comments from the database
       const comments = await Comment.find({});
-      if (!comments) {
-        return res.status(404).json({ msg: "No comment found" });
+
+      // Fetch user and content details for each comment
+      const commentsWithDetails = await Promise.all(
+        comments.map(async (comment) => {
+          try {
+            // Fetch user details based on user_id
+            const user = await User.findById(comment.user_id);
+            const userDetails = user
+              ? { username: user.username, name: user.name, email: user.email }
+              : { username: "unknown", name: "unknown", email: "unknown" };
+
+            // Fetch content details based on content_id
+            const content = await Content.findById(comment.content_id);
+            const contentDetails = content
+              ? { title: content.title, description: content.description }
+              : { title: "unknown", description: "unknown" };
+
+            // Return comment with enriched details
+            return {
+              ...comment._doc, // Spread existing comment fields
+              user: userDetails, // Add user details
+              content: contentDetails, // Add content details
+            };
+          } catch (err) {
+            // Handle errors in fetching user or content details
+            console.error('Error fetching details for comment:', err.message);
+            return {
+              ...comment._doc,
+              user: { username: "unknown", name: "unknown", email: "unknown" },
+              content: { title: "unknown", description: "unknown" },
+            };
+          }
+        })
+      );
+
+      // Respond with the comments enriched with user and content details
+      if (commentsWithDetails.length === 0) {
+        return res.status(404).json({ msg: "No comments found" });
       }
-      
-      //Return a success response with the list of comments
-      res.status(200).json({ msg: "Comment retrieved", comments });
-    }else{
-      res.status(401).json({msg : "You are not authorized for this action."})
+
+      res.status(200).json({ msg: "Comments retrieved successfully", comments: commentsWithDetails });
+    } else {
+      // User is not authorized
+      res.status(401).json({ msg: "You are not authorized for this action" });
     }
   } catch (err) {
-    res.status(500).json({ msg: err.message });
+    // Log the error for debugging
+    console.error('Error fetching comments:', err.message);
+
+    // Handle any errors
+    res.status(500).json({ msg: 'Server error', error: err.message });
   }
 };
+
 
 // Controller to view comments by content
 const viewCommentByContent = async (req, res) => {

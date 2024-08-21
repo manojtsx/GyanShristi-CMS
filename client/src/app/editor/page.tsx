@@ -1,5 +1,5 @@
-import CategoryTable from "@/components/common-component/CategoryTable";
-import CommentTable from "@/components/common-component/CommentTable";
+import CategoryTable from "@/components/admin-component/CategoryTable";
+import CommentTable from "@/components/admin-component/CommentTable";
 import ContentTable from "@/components/common-component/ContentTable";
 import UserTable from "@/components/common-component/UserTable";
 import SpeechToTextEditor from "@/components/SpeechToTextEditor";

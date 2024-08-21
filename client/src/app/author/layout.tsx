@@ -1,4 +1,4 @@
-import SideMenuBarAuthor from "@/components/SideMenuBarAuthor";
+import SideMenuBarAuthor from "@/components/author-component/SideMenuBarAuthor";
 
 export default function RootLayout({
   children,

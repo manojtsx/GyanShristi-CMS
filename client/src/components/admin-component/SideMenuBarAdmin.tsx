@@ -10,7 +10,7 @@ import { TbCategoryFilled } from "react-icons/tb";
 import { FiUser } from "react-icons/fi";
 import { BsChevronDown } from "react-icons/bs";
 import { HiOutlineLogout } from "react-icons/hi";
-import Logout from "./Logout";
+import Logout from "../Logout";
 
 const SideMenuBarAdmin = () => {
   const [open, setOpen] = useState(true);
