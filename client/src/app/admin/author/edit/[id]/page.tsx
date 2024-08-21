@@ -11,7 +11,7 @@ function page() {
 
     }
   return (
-    <div className='flex flex-col h-screen justify-center items-center'>
+    <form action="" className='flex flex-col h-screen justify-center items-center'>
         
     <div className='flex flex-col justify-center items-center w-96 gap-5 px-10 py-3 shadow-lg bg-[#F9F7F7]'>
     <div className="w-24 relative">
@@ -43,7 +43,7 @@ function page() {
         <SubmitButton text="Save"/>
         <Link href="/" className='text-[#1E43C8]'>Change Password</Link>
     </div>
-</div>
+</form>
   )
 }
 
