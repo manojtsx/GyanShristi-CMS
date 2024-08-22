@@ -25,11 +25,11 @@ function page() {
             </div>
     <div className='flex flex-col justify-center items-center gap-7 px-10 py-3 shadow-lg bg-[#F9F7F7]'>
         <div className='w-full flex flex-col'>
-        <label htmlFor="createdBy" className='w-32 text-lg font-semibold'>Created By </label>
+        <label htmlFor="createdBy" className='w-32 text-lg'>Created By </label>
         <Textbox name='createdBy' value='createdBy' placeholder='Created By' onChange={handleEditUserChange}/>
         </div>
         <div className='w-full flex flex-col'>
-        <label htmlFor="category" className='w-32 text-lg font-semibold'>Category </label>
+        <label htmlFor="category" className='w-32 text-lg'>Category </label>
         <Textbox name='category' value='Contact' placeholder='Category' onChange={handleEditUserChange}/>
         </div>
         <SubmitButton text="Save"/>
