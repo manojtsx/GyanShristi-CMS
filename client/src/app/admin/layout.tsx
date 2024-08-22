@@ -1,4 +1,4 @@
-import SideMenuBarAdmin from "@/components/admin-component/SideMenuBarAdmin";
+import SideMenuBarAdmin from "@/components/SideMenuBarAdmin";
 
 export default function RootLayout({
   children,
@@ -8,9 +8,7 @@ export default function RootLayout({
   return (
     <div className="flex h-screen">
       <SideMenuBarAdmin />
-      <div className="flex-1 overflow-hidden">
-        {children}
-      </div>
+      <div className="flex-1 overflow-hidden">{children}</div>
     </div>
   );
 }

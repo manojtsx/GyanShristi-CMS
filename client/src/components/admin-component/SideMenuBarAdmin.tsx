@@ -10,9 +10,11 @@ import { TbCategoryFilled } from "react-icons/tb";
 import { FiUser } from "react-icons/fi";
 import { BsChevronDown } from "react-icons/bs";
 import { HiOutlineLogout } from "react-icons/hi";
-import Logout from "../Logout";
+import Logout from "./Logout";
+import { useRouter } from "next/navigation";
 
 const SideMenuBarAdmin = () => {
+  const router = useRouter();
   const [open, setOpen] = useState(true);
   const [userMenuOpen, setUserMenuOpen] = useState(false); //submenu
   const [logoutModalOpen, setLogoutModalOpen] = useState(false); // State for modal
@@ -29,17 +31,28 @@ const SideMenuBarAdmin = () => {
     // Add your logout logic here
     setLogoutModalOpen(false);
   };
+  const handleNavigation = (path: any) => {
+    router.push(path);
+  };
 
   const menuItems = [
-    { icon: <GoHome />, label: "Home" },
-    { icon: <BiSolidBookContent />, label: "Content" },
-    { icon: <VscCommentDiscussion />, label: "Comment" },
-    { icon: <FaRegBell />, label: "Notification" },
-    { icon: <TbCategoryFilled />, label: "Category" },
+    { icon: <GoHome />, label: "Home", path: "/admin/dashboard" },
+    { icon: <BiSolidBookContent />, label: "Content", path: "/admin/content" },
+    {
+      icon: <VscCommentDiscussion />,
+      label: "Comment",
+      path: "/admin/comment",
+    },
+    { icon: <FaRegBell />, label: "Notification", path: "/admin/notification" },
+    { icon: <TbCategoryFilled />, label: "Category", path: "/admin/category" },
     {
       icon: <FiUser />,
       label: "User",
-      submenu: [{ label: "Viewer" }, { label: "Author" }, { label: "Editor" }],
+      submenu: [
+        { label: "Viewer", path: "/admin/viewer" },
+        { label: "Author", path: "/admin/author" },
+        { label: "Editor", path: "/admin/editor" },
+      ],
     },
   ];
 
@@ -50,7 +63,7 @@ const SideMenuBarAdmin = () => {
       } duration-300 relative flex flex-col`}
     >
       <BsArrowLeftShort
-        className={`text-[#011936] text-2xl bg-slate-50 rounded-full border border-[#011936] absolute -right-3 top-9 cursor-pointer ${
+        className={`text-[#011936] text-2xl bg-slate-50 rounded-full border border-[#011936] absolute -right-3 top-5 cursor-pointer ${
           !open && "rotate-180"
         }`}
         onClick={() => setOpen(!open)}
@@ -71,10 +84,14 @@ const SideMenuBarAdmin = () => {
           <li key={index}>
             <div
               className={`flex items-center p-2 text-gray-300 mb-2 hover:bg-gray-700 rounded-md cursor-pointer ${
-                !open ? "justify-center" : "ml-6"
+                !open ? "justify-center" : "pl-6"
               } duration-300`}
               onClick={() => {
-                if (item.label === "User") setUserMenuOpen(!userMenuOpen);
+                if (item.label === "User") {
+                  setUserMenuOpen(!userMenuOpen);
+                } else {
+                  handleNavigation(item.path);
+                }
               }}
             >
               <div className="text-2xl">{item.icon}</div>
@@ -97,6 +114,7 @@ const SideMenuBarAdmin = () => {
                   <li
                     key={subIndex}
                     className="flex items-center p-1 ml-8 text-[#D9D9D9] hover:bg-gray-700 rounded-md gap-x-4 cursor-pointer text-sm"
+                    onClick={() => handleNavigation(subItem.path)}
                   >
                     {subItem.label}
                   </li>
@@ -107,9 +125,10 @@ const SideMenuBarAdmin = () => {
         ))}
       </ul>
       <div
-        className={`flex items-center text-gray-300 space-x-4 mb-4 hover:bg-gray-700 rounded-md cursor-pointer ${
-          !open ? "justify-center" : "ml-5"
+        className={`flex items-center text-gray-300 space-x-3 mb-4 hover:bg-gray-700 rounded-md cursor-pointer ${
+          !open ? "justify-center" : "pl-5"
         } duration-300`}
+        onClick={() => router.push("/admin/profile")}
       >
         <Image
           src="/logo.png"
@@ -124,7 +143,7 @@ const SideMenuBarAdmin = () => {
       </div>
       <div
         className={`flex items-center p-1 text-[#D9D9D9] space-x-4 mb-12 hover:bg-gray-700 rounded-md cursor-pointer ${
-          !open ? "justify-center" : "ml-9"
+          !open ? "justify-center" : "pl-6"
         }`}
         onClick={handleLogoutClick}
       >

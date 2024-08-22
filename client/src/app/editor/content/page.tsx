@@ -1,11 +1,11 @@
-import CommentTable from "@/components/common-component/CommentTable";
+import ContentTable from "@/components/common-component/ContentTable";
 import React from "react";
 
 function Page() {
   return (
     <div>
       <div className=" ml-24">
-        <CommentTable />
+        <ContentTable />
       </div>
     </div>
   );

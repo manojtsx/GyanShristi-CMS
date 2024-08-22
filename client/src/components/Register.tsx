@@ -136,7 +136,7 @@ function Register() {
                   type="email"
                   value={user.email}
                   name="email"
-                  className="bg-white border-none shadow-md w-[300px]"
+                  className="bg-white border-none shadow-md w-[300px] dark:bg-[#2C2C2C] dark:border-[#303030] dark:text-white"
                   placeholder="Email ID"
                   onChange={handleInputChange}
                 />

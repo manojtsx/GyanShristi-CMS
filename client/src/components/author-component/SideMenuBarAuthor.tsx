@@ -9,8 +9,10 @@ import { FaRegBell } from "react-icons/fa6";
 import { TbCategoryFilled } from "react-icons/tb";
 import { HiOutlineLogout } from "react-icons/hi";
 import Logout from "./Logout";
+import { useRouter } from "next/navigation";
 
 const SideMenuBarAuthor = () => {
+  const router = useRouter();
   const [open, setOpen] = useState(true);
   const [logoutModalOpen, setLogoutModalOpen] = useState(false); // State for modal
 
@@ -26,13 +28,28 @@ const SideMenuBarAuthor = () => {
     // Add your logout logic here
     setLogoutModalOpen(false);
   };
+  const handleNavigation = (path: any) => {
+    router.push(path);
+  };
 
   const menuItems = [
-    { icon: <GoHome />, label: "Home" },
-    { icon: <BiSolidBookContent />, label: "Content" },
-    { icon: <VscCommentDiscussion />, label: "Comment" },
+    { icon: <GoHome />, label: "Home", path: "/author/dashboard" },
+    {
+      icon: <BiSolidBookContent />,
+      label: "Content",
+      path: "/author/content",
+    },
+    {
+      icon: <VscCommentDiscussion />,
+      label: "Comment",
+      path: "/author/comment",
+    },
     { icon: <FaRegBell />, label: "Notification" },
-    { icon: <TbCategoryFilled />, label: "Category" },
+    {
+      icon: <TbCategoryFilled />,
+      label: "Category",
+      path: "/author/category",
+    },
   ];
 
   return (
@@ -42,7 +59,7 @@ const SideMenuBarAuthor = () => {
       } duration-300 relative flex flex-col`}
     >
       <BsArrowLeftShort
-        className={`text-[#011936] text-2xl bg-slate-50 rounded-full border border-[#011936] absolute -right-3 top-9 cursor-pointer ${
+        className={`text-[#011936] text-2xl bg-slate-50 rounded-full border border-[#011936] absolute -right-3 top-5 cursor-pointer ${
           !open && "rotate-180"
         }`}
         onClick={() => setOpen(!open)}
@@ -63,8 +80,9 @@ const SideMenuBarAuthor = () => {
           <li key={index}>
             <div
               className={`flex items-center p-3 text-gray-300 mb-2 hover:bg-gray-700 rounded-md cursor-pointer ${
-                !open ? "justify-center" : "ml-6"
+                !open ? "justify-center" : "pl-6"
               } duration-300`}
+              onClick={() => handleNavigation(item.path)}
             >
               <div className="text-2xl">{item.icon}</div>
               <span
@@ -79,9 +97,10 @@ const SideMenuBarAuthor = () => {
         ))}
       </ul>
       <div
-        className={`flex items-center text-gray-300 space-x-4 mb-4 hover:bg-gray-700 rounded-md cursor-pointer ${
-          !open ? "justify-center" : "ml-5"
+        className={`flex items-center text-gray-300 space-x-3 mb-4 hover:bg-gray-700 rounded-md cursor-pointer ${
+          !open ? "justify-center" : "pl-5"
         } duration-300`}
+        onClick={() => router.push("/author/profile")}
       >
         <Image
           src="/logo.png"
@@ -96,7 +115,7 @@ const SideMenuBarAuthor = () => {
       </div>
       <div
         className={`flex items-center p-1 text-[#D9D9D9] space-x-4 mb-12 hover:bg-gray-700 rounded-md cursor-pointer ${
-          !open ? "justify-center" : "ml-9"
+          !open ? "justify-center" : "pl-6"
         }`}
         onClick={handleLogoutClick}
       >
