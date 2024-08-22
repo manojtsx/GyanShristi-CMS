@@ -11,7 +11,8 @@ function page() {
 
     }
   return (
-    <form action="" className='flex flex-col h-screen justify-center items-center'>
+    <div>
+         <form action="" className='flex flex-col h-screen justify-center items-center'>
       <div className="w-24 relative">
               <Image
                 src="/GirlProfile.jpg"
@@ -34,7 +35,7 @@ function page() {
         <SubmitButton text="Save"/>
     </div>
 </form>
-
+    </div>
   )
 }
 
