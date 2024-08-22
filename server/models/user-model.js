@@ -33,7 +33,9 @@ class UserClass {
   assignToken() {
     try {
       const token = jwt.sign(
-        { id: this._id},
+        { id: this._id,
+          role : this.role
+        },
         key,
         { expiresIn: "10d" }
       );

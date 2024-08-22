@@ -8,6 +8,7 @@ import SubmitButton from './mini-component/SubmitButton'
 import Image from 'next/image'
 import Logo from './mini-component/Logo'
 import { useNotifications } from '@/context/NotificationContext'
+import { useAuth } from '@/context/AuthContext'
 
 interface User {
   username : string, 
@@ -19,6 +20,7 @@ const API = process.env.NEXT_PUBLIC_BACKEND_API;
 
 function Login() {
   const {addNotification} = useNotifications();
+  const {login} = useAuth();
   const router = useRouter();
   const [user,setUser] = useState<User>({username : "", password : ""});
   
@@ -51,8 +53,9 @@ function Login() {
       if(!res.ok){
         throw new Error(data.msg);
       }
+      console.log(data);
+      await login(data.token, data.login.user_id);
       addNotification(data.msg, 'success');
-      router.push('/dashboard')
     }catch(err : any){
       addNotification(err.message, 'error');
     } 

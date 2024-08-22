@@ -8,11 +8,14 @@ import { VscCommentDiscussion } from "react-icons/vsc";
 import { FaRegBell } from "react-icons/fa6";
 import { TbCategoryFilled } from "react-icons/tb";
 import { HiOutlineLogout } from "react-icons/hi";
-import Logout from "./Logout";
+import Logout from "../Logout";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
 
 const SideMenuBarAuthor = () => {
   const router = useRouter();
+  const {user, logout} = useAuth();
+  console.log(user)
   const [open, setOpen] = useState(true);
   const [logoutModalOpen, setLogoutModalOpen] = useState(false); // State for modal
 
@@ -24,9 +27,17 @@ const SideMenuBarAuthor = () => {
     setLogoutModalOpen(false);
   };
 
-  const handleConfirmLogout = () => {
-    // Add your logout logic here
-    setLogoutModalOpen(false);
+  const handleConfirmLogout = async() => {
+    try {
+      await logout(); 
+      router.push('/login'); 
+    } catch (error) {
+      console.error('Logout failed', error);
+
+    } finally {
+      setLogoutModalOpen(false);
+    }
+
   };
   const handleNavigation = (path: any) => {
     router.push(path);
@@ -110,7 +121,7 @@ const SideMenuBarAuthor = () => {
           alt="Logo"
         />
         <p className={` text-[#D9D9D9] mt-2 ${!open && "hidden"} duration-300`}>
-          Usha Gurung
+           {user?.name || 'User'}
         </p>
       </div>
       <div

@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "@/app/globals.css";
 import { NotificationProvider } from "@/context/NotificationContext";
 import NotificationContainer from "@/components/Notification";
+import { AuthProvider } from "@/context/AuthContext";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -17,12 +18,14 @@ export default function RootLayout({
 }) {
     return (
         <html lang="en">
+            <AuthProvider>
                 <NotificationProvider>
                     <body>
                         <NotificationContainer />
                         {children}
                     </body>
                 </NotificationProvider>
+            </AuthProvider>
         </html>
     );
 }
