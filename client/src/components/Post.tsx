@@ -1,10 +1,76 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import SpeechToTextEditor from "./SpeechToTextEditor";
+import { useAuth } from "@/context/AuthContext";
+import { useNotifications } from "@/context/NotificationContext";
+
+// Call the backend api
+const API = process.env.NEXT_PUBLIC_BACKEND_API;
 
 function Post() {
+  const {token} = useAuth();
+  const {addNotification} = useNotifications();
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const [isAuthorOpen, setIsAuthorOpen] = useState(false);
+  const [categories, setCategories] = useState([{
+    _id : "",
+    title : ""
+  }]);
+  const [users, setUsers] = useState([{
+    name : "",
+    _id :""
+  }
+  ]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const fetchCategoriesAndUsers = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      // Fetch categories
+      const categoriesResponse = await fetch(`${API}api/category`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (!categoriesResponse.ok) throw new Error("Failed to fetch categories");
+      const categoriesData = await categoriesResponse.json();
+      setCategories(categoriesData);
+
+      // Fetch users excluding "viewer" role
+      const usersResponse = await fetch(`${API}api/user/role?role=non-viewer`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+      if (!usersResponse.ok) throw new Error("Failed to fetch users");
+      const usersData = await usersResponse.json();
+
+      console.log("Users data:", usersData); // Debugging
+
+      // Ensure usersData is an array
+      if (Array.isArray(usersData)) {
+        setUsers(usersData);
+      } else {
+        throw new Error("Users data is not an array");
+      }
+    } catch (error : any) {
+      addNotification(error.message, 'error')
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchCategoriesAndUsers();
+  }, []);
+
 
   return (
     <div className=" flex gap-x-28">
@@ -33,9 +99,12 @@ function Post() {
               className="rounded-lg h-10 w-[200px] text-center"
               onClick={() => setIsCategoryOpen(!isCategoryOpen)}
             >
-              <option value="option1">Math</option>
-              <option value="option2">Science</option>
-              <option value="option3">Computer</option>
+               <option value="">Select Category</option>
+              {categories.map((category) => (
+                <option key={category._id} value={category._id}>
+                  {category.title}
+                </option>
+              ))}
             </select>
           </div>
         </div>
@@ -48,9 +117,12 @@ function Post() {
               className="rounded-lg h-10 w-[200px] text-center"
               onClick={() => setIsAuthorOpen(!isAuthorOpen)}
             >
-              <option value="option1">usha gurung</option>
-              <option value="option2">seezan shrestha</option>
-              <option value="option3">Manoj shrestha</option>
+               <option value="">Select Author</option>
+              {users.map((user) => (
+                <option key={user._id} value={user._id}>
+                  {user.name}
+                </option>
+              ))}
             </select>
           </div>
         </div>

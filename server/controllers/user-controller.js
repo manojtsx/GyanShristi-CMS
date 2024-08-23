@@ -34,7 +34,16 @@ const getUserByRole = async (req, res) => {
         .status(403)
         .json({ msg: "You are not authorized to view this data." });
     }
-    const users = await User.find({ role }).select("-password");
+    let users;
+
+    // Fetch users based on role or exclude 'viewer' role
+    if (role === "non-viewer") {
+      // Exclude 'viewer' role
+      users = await User.find({ role: { $ne: "viewer" } }).select("-password");
+    } else {
+      // Fetch users with the specified role
+      users = await User.find({ role }).select("-password");
+    }
     if (!users || users.length === 0) {
       return res
         .status(404)
