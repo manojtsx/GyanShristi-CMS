@@ -108,14 +108,14 @@ function Register() {
     }
   };
   return (
-    <main className=" flex min-h-screen">
-      <div className="flex flex-col items-start justify-center w-1/2 pl-40">
+    <main className=" flex min-h-screen dark:bg-[#121212] dark:text-white">
+      <div className="flex flex-col items-start justify-center w-1/2 pl-40 ">
         <h1 className=" font-bold text-4xl">GyanShristi</h1>
         <p className=" text-gray-400 mt-4">
           Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
           eiusmod tempor incididunt ut labore et dolore magna.
         </p>
-        <button className="w-[200px] h-12 bg-[#3570E2] rounded-md text-white font-semibold mt-6">
+        <button className="w-[200px] h-12 bg-[#3742FA] rounded-md text-white font-semibold mt-6 ">
           Know About Us
         </button>
       </div>
@@ -124,7 +124,7 @@ function Register() {
 
           <form onSubmit={handleSubmit}>
             {isFirstForm ? (
-              <div className="flex justify-center items-center flex-col gap-5 bg-[#FBF9F9] p-10 rounded-lg shadow-lg">
+              <div className="dark:bg-[#1A1A1A] flex justify-center items-center flex-col gap-5 bg-[#FBF9F9] p-10 rounded-lg shadow-lg">
                 <Logo />
                 <Textbox
                   name="name"
@@ -136,7 +136,7 @@ function Register() {
                   type="email"
                   value={user.email}
                   name="email"
-                  className="bg-white border-none shadow-md w-[300px]"
+                  className="bg-white border-none shadow-md w-[300px] dark:bg-[#2C2C2C] dark:border-[#303030] dark:text-white"
                   placeholder="Email ID"
                   onChange={handleInputChange}
                 />
@@ -161,7 +161,7 @@ function Register() {
               </div>
             ) : (
               // second form
-              <div className="flex justify-center items-center flex-col gap-5 bg-[#FBF9F9] p-10 rounded-lg shadow-lg">
+              <div className="flex justify-center items-center flex-col gap-5 bg-[#FBF9F9] p-10 rounded-lg shadow-lg dark:bg-[#1A1A1A]">
                 <Logo />
                 <Textbox
                   name="username"
@@ -195,7 +195,7 @@ function Register() {
             )}
           </form>
         ) : (
-          <form onSubmit={handleOTPSubmit} className="flex flex-col items-center space-y-4 p-4 bg-white shadow-md rounded-lg">
+          <form onSubmit={handleOTPSubmit} className="flex flex-col items-center space-y-4 p-4 bg-white shadow-md rounded-lg dark:bg-[#1A1A1A]">
           <input
             type="text"
             name="otp"

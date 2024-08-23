@@ -6,24 +6,6 @@ const videoUpload = require("../configs/video-upload");
 const thumbnailUpload = require("../configs/thumbnail-upload");
 const validate = require("../middlewares/validation/validate-middleware");
 const contentSchema = require("../utils/validators/content-validaton");
-
-// Combine both upload middlewares
-const upload = multer().fields([
-  {
-    name: "thumbnail",
-    maxCount: 1,
-    storage: thumbnailUpload,
-    limits: thumbnailUpload.limits,
-  },
-  { name: "pdf", maxCount: 1, storage: pdfUpload, limits: pdfUpload.limits },
-  {
-    name: "video",
-    maxCount: 1,
-    storage: videoUpload,
-    limits: videoUpload.limits,
-  },
-]);
-
 // Import controller functions
 const contentController = require("../controllers/content-controller");
 const verifyToken = require("../middlewares/token/tokenverify");
@@ -32,21 +14,23 @@ const verifyToken = require("../middlewares/token/tokenverify");
 router.post(
   "/add/post",
   verifyToken,
-  upload,
+  thumbnailUpload,
   validate(contentSchema),
   contentController.addPostContent
 );
 router.post(
   "/add/pdf",
   verifyToken,
-  upload,
+  // thumbnailUpload,
+  pdfUpload,
   validate(contentSchema),
   contentController.addPdfContent
 );
 router.post(
   "/add/video",
   verifyToken,
-  upload,
+  thumbnailUpload,
+  videoUpload,
   validate(contentSchema),
   contentController.addVideoContent
 );
@@ -55,20 +39,23 @@ router.post(
 router.put(
   "/edit/post/:id",
   verifyToken,
+  thumbnailUpload,
   validate(contentSchema),
   contentController.editPostContent
 );
 router.put(
   "/edit/pdf/:id",
   verifyToken,
-  upload,
+  thumbnailUpload,
+  pdfUpload,
   validate(contentSchema),
   contentController.editPdfContent
 );
 router.put(
   "/edit/video/:id",
   verifyToken,
-  upload,
+  thumbnailUpload,
+  videoUpload,
   validate(contentSchema),
   contentController.editVideoContent
 );
