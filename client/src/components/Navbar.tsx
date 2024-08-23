@@ -41,7 +41,7 @@ function Navbar() {
         alt="Advertisement"
         className="w-screen h-28 object-cover"
       />
-      <div className="h-12 flex justify-between items-center pl-1 pr-3 sticky top-0 left-0 z-10 bg-white dark:bg-[#1A1A1A] shadow-md">
+      <div className="h-12 flex justify-between items-center pl-1 pr-3 bg-white dark:bg-[#1A1A1A] shadow-md sticky z-10 top-0">
         <Image
           src="/logo.png"
           alt="CMS Logo"
@@ -66,23 +66,6 @@ function Navbar() {
 
           <ViewMode />
         </ul>
-        {/* {
-        !isClick?(<FontAwesomeIcon icon={faBars} onClick={toggleMenu} className="h-[60%] sm:hidden"/>): (<FontAwesomeIcon icon={faXmark}  onClick={toggleMenu} className="h-[60%] md:hidden"/>)
-      }
-      </div>
-      
-      {isClick && (
-          <ul className="w-screen flex flex-col items-start font-semibold bg-white dark:bg-[#1A1A1A] sm:hidden">
-             {navItems.map((item, index)=>(
-          <Link href={item.link} key={index}><li className="w-[inherit] flex justify-center hover:bg-[rgb(162,204,243)] dark:hover:bg-[#1E58C8] p-2">{item.name}</li></Link>
-        )
-      )}    
-        </ul>
-      )
-    }
-    </nav>
-  );
-} */}
 
         {/* Mobile Menu Toggle */}
         <FontAwesomeIcon
