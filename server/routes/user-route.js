@@ -5,6 +5,7 @@ const verifyToken = require('../middlewares/token/tokenverify')
 const upload = require('../configs/profile-upload')
 
 // Define routes
+router.route("/count-user").get(userController.countUser);
 router.route("/").get(verifyToken,userController.getUser);
 router.route("/role").get(verifyToken,userController.getUserByRole);
 router.route("/upload-profile-picture/:id").put(verifyToken,upload, userController.uploadProfilePicture);

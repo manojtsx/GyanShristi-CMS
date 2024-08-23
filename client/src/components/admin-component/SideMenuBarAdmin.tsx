@@ -7,13 +7,16 @@ import { BiSolidBookContent } from "react-icons/bi";
 import { VscCommentDiscussion } from "react-icons/vsc";
 import { FaRegBell } from "react-icons/fa6";
 import { TbCategoryFilled } from "react-icons/tb";
+import { FiUser } from "react-icons/fi";
+import { BsChevronDown } from "react-icons/bs";
 import { HiOutlineLogout } from "react-icons/hi";
-import Logout from "./Logout";
+import Logout from "../Logout";
 import { useRouter } from "next/navigation";
 
-const SideMenuBarAuthor = () => {
+const SideMenuBarAdmin = () => {
   const router = useRouter();
   const [open, setOpen] = useState(true);
+  const [userMenuOpen, setUserMenuOpen] = useState(false); //submenu
   const [logoutModalOpen, setLogoutModalOpen] = useState(false); // State for modal
 
   const handleLogoutClick = () => {
@@ -33,22 +36,23 @@ const SideMenuBarAuthor = () => {
   };
 
   const menuItems = [
-    { icon: <GoHome />, label: "Home", path: "/author/dashboard" },
-    {
-      icon: <BiSolidBookContent />,
-      label: "Content",
-      path: "/author/content",
-    },
+    { icon: <GoHome />, label: "Home", path: "/admin/dashboard" },
+    { icon: <BiSolidBookContent />, label: "Content", path: "/admin/content" },
     {
       icon: <VscCommentDiscussion />,
       label: "Comment",
-      path: "/author/comment",
+      path: "/admin/comment",
     },
-    { icon: <FaRegBell />, label: "Notification" },
+    { icon: <FaRegBell />, label: "Notification", path: "/admin/notification" },
+    { icon: <TbCategoryFilled />, label: "Category", path: "/admin/category" },
     {
-      icon: <TbCategoryFilled />,
-      label: "Category",
-      path: "/author/category",
+      icon: <FiUser />,
+      label: "User",
+      submenu: [
+        { label: "Viewer", path: "/admin/viewer" },
+        { label: "Author", path: "/admin/author" },
+        { label: "Editor", path: "/admin/editor" },
+      ],
     },
   ];
 
@@ -75,14 +79,20 @@ const SideMenuBarAuthor = () => {
           alt="Logo"
         />
       </div>
-      <ul className="mt-10 flex-grow">
+      <ul className="mt-8 flex-grow">
         {menuItems.map((item, index) => (
           <li key={index}>
             <div
-              className={`flex items-center p-3 text-gray-300 mb-2 hover:bg-gray-700 rounded-md cursor-pointer ${
+              className={`flex items-center p-2 text-gray-300 mb-2 hover:bg-gray-700 rounded-md cursor-pointer ${
                 !open ? "justify-center" : "pl-6"
               } duration-300`}
-              onClick={() => handleNavigation(item.path)}
+              onClick={() => {
+                if (item.label === "User") {
+                  setUserMenuOpen(!userMenuOpen);
+                } else {
+                  handleNavigation(item.path);
+                }
+              }}
             >
               <div className="text-2xl">{item.icon}</div>
               <span
@@ -92,7 +102,25 @@ const SideMenuBarAuthor = () => {
               >
                 {item.label}
               </span>
+              {item.submenu && open && (
+                <BsChevronDown
+                  className={`${!userMenuOpen && "rotate-180"} ml-16 text-sm`}
+                />
+              )}
             </div>
+            {item.submenu && userMenuOpen && open && (
+              <ul>
+                {item.submenu.map((subItem, subIndex) => (
+                  <li
+                    key={subIndex}
+                    className="flex items-center p-1 ml-8 text-[#D9D9D9] hover:bg-gray-700 rounded-md gap-x-4 cursor-pointer text-sm"
+                    onClick={() => handleNavigation(subItem.path)}
+                  >
+                    {subItem.label}
+                  </li>
+                ))}
+              </ul>
+            )}
           </li>
         ))}
       </ul>
@@ -100,7 +128,7 @@ const SideMenuBarAuthor = () => {
         className={`flex items-center text-gray-300 space-x-3 mb-4 hover:bg-gray-700 rounded-md cursor-pointer ${
           !open ? "justify-center" : "pl-5"
         } duration-300`}
-        onClick={() => router.push("/author/profile")}
+        onClick={() => router.push("/admin/profile")}
       >
         <Image
           src="/logo.png"
@@ -133,4 +161,4 @@ const SideMenuBarAuthor = () => {
   );
 };
 
-export default SideMenuBarAuthor;
+export default SideMenuBarAdmin;

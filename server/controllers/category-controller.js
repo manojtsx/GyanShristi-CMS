@@ -100,15 +100,53 @@ const getCategoryById = async (req, res) => {
   }
 };
 
-// Function to get all categories
-const getAllCategories = async (_, res) => {
+const getAllCategories = async (req, res) => {
   try {
-    const categories = await Category.find(); // Find all categories
-    res.status(200).json(categories); // Respond with the found categories
+    // Find all categories
+    const categories = await Category.find();
+
+    // Map through categories to enrich with user details
+    const categoriesWithUserDetails = await Promise.all(
+      categories.map(async (category) => {
+        // Fetch user details based on user_id
+        let user;
+        try {
+          user = await User.findById(category.user_id);
+        } catch (err) {
+          user = null;
+        }
+
+        // If user is not found, set details to "unknown"
+        const userDetails = user
+          ? {
+              username: user.username,
+              name: user.name,
+              email: user.email,
+              address: user.address,
+            }
+          : {
+              username: "unknown",
+              name: "unknown",
+              email: "unknown",
+              address: "unknown",
+            };
+
+        // Return category with enriched user details
+        return {
+          ...category._doc, // Spread existing category fields
+          user: userDetails, // Add user details
+        };
+      })
+    );
+
+    // Respond with the categories enriched with user details
+    res.status(200).json(categoriesWithUserDetails);
   } catch (err) {
-    res.status(500).json({ msg: err.message }); // Handle any errors
+    // Handle any errors
+    res.status(500).json({ msg: 'Server error', error: err.message });
   }
 };
+
 
 // Export the functions as module
 module.exports = {

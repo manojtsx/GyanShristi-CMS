@@ -78,6 +78,6 @@ router.get("/video/:id", contentController.getVideoContentById);
 router.get("/", contentController.getAllContent);
 
 // Define routes for getting all content count
-router.get("/count", contentController.countContent);
+router.get("/count-content", contentController.countContent);
 
 module.exports = router;
