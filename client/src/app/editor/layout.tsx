@@ -1,4 +1,4 @@
-import SideMenuBarEditor from "@/components/SideMenuBarEditor";
+import SideMenuBarEditor from "@/components/editor-component/SideMenuBarEditor";
 
 export default function RootLayout({
   children,
