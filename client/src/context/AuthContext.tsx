@@ -20,10 +20,31 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const router = useRouter();
   const [token, setToken] = useState<string | null>(null);
-  const [user, setUser] = useState<any | null>(null);
+  const [user, setUser] = useState<any | null>({
+    _id : ""
+  });
 
   // Load token and user from localStorage when the app initializes
   useEffect(() => {
+    const fetchUser = async() =>{
+      console.log(user._id)
+      const storedUser =  localStorage.getItem('user');
+      if(storedUser){
+        const userData = JSON.parse(storedUser)
+        setUser(userData)
+        const response = await fetch(`${API}api/user/${userData._id}`, {
+          method : "GET",
+          headers: {
+            'Content-Type' : 'application/json'
+          }
+        });
+        const newUserData = await response.json();
+        setUser(newUserData);
+        localStorage.setItem('user', JSON.stringify(userData));
+      }
+      }
+    fetchUser();
+
     const storedToken = localStorage.getItem('token');
     const storedUser = localStorage.getItem('user');
 

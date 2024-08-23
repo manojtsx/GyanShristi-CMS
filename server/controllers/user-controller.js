@@ -391,6 +391,49 @@ const countUser = async (req, res) => {
   }
 };
 
+const addUser = async (req, res) => {
+  try {
+    const { name, username, address, password, email, role, phone_number } = req.body;
+
+    // Check if the user has the correct role to perform this action
+    if (req.user.role !== 'admin' && req.user.role !== 'editor') {
+      return res.status(403).json({ message: 'Access denied. You do not have permission to add users.' });
+    }
+
+    // Check if all fields are provided
+    if (!name || !username || !address || !password || !email || !role || !phone_number) {
+      return res.status(400).json({ message: 'All fields are required' });
+    }
+
+    // Check if the user already exists by username or email
+    const existingUser = await User.findOne({ $or: [{ username }, { email }] });
+    if (existingUser) {
+      return res.status(400).json({ message: 'Username or Email already exists' });
+    }
+
+    // Create a new user object
+    const newUser = new User({
+      name,
+      username,
+      address,
+      password,  // Password will be hashed automatically by Mongoose pre-save middleware
+      email,
+      role,
+      phone_number  
+    });
+
+    // Save the new user to the database
+    await newUser.save();
+
+    // Return success response with the newly created user's details
+    return res.status(201).json({ message: 'User added successfully', user: newUser });
+
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+
 module.exports = {
   getUser,
   getUserByRole,
@@ -403,5 +446,6 @@ module.exports = {
   changeUserToEditor,
   promoteToAdmin,
   uploadProfilePicture,
-  countUser
+  countUser,
+  addUser
 };

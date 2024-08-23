@@ -26,6 +26,15 @@ function Post() {
   ]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [post, setPost] = useState({
+    title : "",
+    description : "asdfadfadfadfad",
+    blog : "",
+    userId : "",
+    categoryId : ""
+  });
+
+  
 
   const fetchCategoriesAndUsers = async () => {
     try {
@@ -93,6 +102,69 @@ function Post() {
       // Handle file upload logic here if necessary
     }
   };
+
+  const handleBlogChange = (newBlogContent: string) => {
+    setPost((prevPost) => ({
+      ...prevPost,
+      blog: newBlogContent,
+    }));
+  };
+
+  const handleSubmit = async () => {
+    try {
+      // Prepare the FormData object
+      const formData = new FormData();
+  
+      // Append text fields from the post state
+      formData.append("title", post.title);
+      formData.append("description", post.description);
+      formData.append("blog", post.blog);
+      formData.append("userId", post.userId);
+      formData.append("categoryId", post.categoryId);
+  
+      // If a photo has been selected, append it to the formData
+      if (fileInputRef.current?.files?.[0]) {
+        formData.append("thumbnail", fileInputRef.current.files[0]);
+      }
+  
+      // Make the POST request with the FormData
+      const response = await fetch(`${API}api/content/add/post`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          // No need for "Content-Type": "multipart/form-data"
+          // as the browser sets it automatically with the correct boundary.
+        },
+        body: formData,
+      });
+  
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.msg);
+      }
+  
+      addNotification("Post saved successfully", "success");
+  
+      // Optionally, clear the form after successful submission
+      setPost({
+        title: "",
+        description: "sdfadfadfadf",
+        blog: "",
+        userId: "",
+        categoryId: "",
+
+      });
+      setPhotoPreview(null);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+  
+    } catch (error: any) {
+      addNotification(error.message, "error");
+    }
+  };
+  
+
   return (
     <div className=" flex gap-x-28">
       <div className="flex flex-col items-center justify-center mb-16">
@@ -103,11 +175,16 @@ function Post() {
               type="text"
               name="title"
               className=" h-9 rounded-lg border-gray-300 bg-gray-200"
+              value={post.title}
+              onChange={(e) =>
+                setPost({ ...post, title: e.target.value })
+              }
+              required
             />
           </div>
         </div>
         <div className=" mt-4">
-          <SpeechToTextEditor />
+          <SpeechToTextEditor value={post.blog} onChange={handleBlogChange} />
         </div>
       </div>
       <div className="flex flex-col items-center gap-y-7 mt-16">
@@ -119,6 +196,11 @@ function Post() {
               name="categories"
               className="rounded-lg h-10 w-[200px] text-center"
               onClick={() => setIsCategoryOpen(!isCategoryOpen)}
+              value={post.categoryId}
+              onChange={(e) =>
+                setPost({ ...post, categoryId: e.target.value })
+              }
+              required
             >
               <option value="">Select Category</option>
               {categories.map((category) => (
@@ -137,6 +219,11 @@ function Post() {
               name="author"
               className="rounded-lg h-10 w-[200px] text-center"
               onClick={() => setIsAuthorOpen(!isAuthorOpen)}
+              value={post.userId}
+              onChange={(e) =>
+                setPost({ ...post, userId: e.target.value })
+              }
+              required
             >
               <option value="">Select Author</option>
               {users.map((user) => (
@@ -148,7 +235,7 @@ function Post() {
           </div>
         </div>
         <div className=" text-center">
-          <label>Feature Photo :</label>
+          <label>Featured Photo :</label>
           <div
             className="w-40 h-36 border border-gray-300 rounded-lg cursor-pointer flex items-center justify-center"
             onClick={handlePhotoClick}
@@ -167,12 +254,14 @@ function Post() {
             type="file"
             ref={fileInputRef}
             style={{ display: "none" }}
+             accept="image/*"
             onChange={handleFileChange}
+            required
           />
         </div>
         <button
           className="w-[100px] h-9 bg-[#3570E2] rounded-md text-white"
-          type="submit"
+          onClick={handleSubmit}
         >
           Save
         </button>
