@@ -1,6 +1,8 @@
 "use client";
 import React from "react";
 import { BsXLg } from "react-icons/bs";
+import { useAuth } from "@/context/AuthContext";
+import { useRouter } from 'next/navigation'
 
 interface LogoutModalProps {
   isOpen: boolean;
@@ -8,8 +10,15 @@ interface LogoutModalProps {
   onConfirm: () => void;
 }
 
-const Logout: React.FC<LogoutModalProps> = ({ isOpen, onClose, onConfirm }) => {
+const Logout: React.FC<LogoutModalProps> = ({ isOpen, onClose}) => {
   if (!isOpen) return null;
+  const {logout} = useAuth();
+  const router = useRouter();
+  const onConfirm = async() => {
+    await logout();
+    router.push('/login')
+  }
+
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">

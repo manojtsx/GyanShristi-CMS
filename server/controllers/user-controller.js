@@ -117,7 +117,7 @@ const deleteUserById = async (req, res) => {
     }
     // Authorization check
     if (
-      userRole === "admin" || 
+      userRole === "admin" ||
       (userRole === "editor" && user.role !== "admin") ||
       (["author", "viewer"].includes(userRole) && userId === id)
     ) {
@@ -171,7 +171,9 @@ const changePassword = async (req, res) => {
     } else {
       return res
         .status(403)
-        .json({ msg: "You are not authorized to change password for this user." });
+        .json({
+          msg: "You are not authorized to change password for this user.",
+        });
     }
   } catch (err) {
     res.status(500).json({ msg: err.message });
@@ -189,7 +191,7 @@ const changeEmail = async (req, res) => {
     const user = await User.findById(id);
     if (!user) {
       res.status(404).json({ msg: "User not found" });
-    } 
+    }
 
     // Authorize check
     if (
@@ -216,11 +218,11 @@ const changeEmail = async (req, res) => {
 // approve viewer as author
 const approveAsAuthor = async (req, res) => {
   try {
-    const viewerId  = req.params.id;
-    const approve = req.query.approve === 'true';
+    const viewerId = req.params.id;
+    const approve = req.query.approve === "true";
     const userRole = req.user.role;
 
-    console.log(viewerId)
+    console.log(viewerId);
     const user = await User.findById(viewerId);
     if (!user) {
       return res.status(404).json({ msg: "User doesnot exists." });
@@ -241,7 +243,7 @@ const approveAsAuthor = async (req, res) => {
         approve === false
       ) {
         user.status = "unrequested";
-        return res.status(200).json({msg : "Viewer request rejected."})
+        return res.status(200).json({ msg: "Viewer request rejected." });
       } else {
         return res.status(409).json({ msg: "User isnot a pending viewer" });
       }
@@ -251,7 +253,9 @@ const approveAsAuthor = async (req, res) => {
     } else {
       return res
         .status(403)
-        .json({ msg: "You are not authorized to approve this user as author." });
+        .json({
+          msg: "You are not authorized to approve this user as author.",
+        });
     }
   } catch (err) {
     res.status(500).json({ msg: err.message });
@@ -286,32 +290,32 @@ const changeUserToEditor = async (req, res) => {
   }
 };
 
-  // promote user to admin
-  const promoteToAdmin = async (req, res) => {
-    try {
-      const userId = req.params.id;
-      const userRole = req.user.role;
-      const user = await User.findById(userId);
-      if (!user) {
-        return res.status(404).json({ msg: "User doesnot exists." });
-      }
-      if (userRole === "admin") {
-        if (user.role === "admin") {
-          return res.status(409).json({ msg: "Selected user is already admin." });
-        }
-        user.role = "admin";
-        user.status = "approved";
-        await user.save();
-        return res.status(200).json({ msg: "User role changed to admin", user });
-      } else {
-        return res
-          .status(403)
-          .json({ msg: "You are not authorized to delete this user" });
-      }
-    } catch (err) {
-      res.status(500).json({ msg: err.message });
+// promote user to admin
+const promoteToAdmin = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const userRole = req.user.role;
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ msg: "User doesnot exists." });
     }
-  };
+    if (userRole === "admin") {
+      if (user.role === "admin") {
+        return res.status(409).json({ msg: "Selected user is already admin." });
+      }
+      user.role = "admin";
+      user.status = "approved";
+      await user.save();
+      return res.status(200).json({ msg: "User role changed to admin", user });
+    } else {
+      return res
+        .status(403)
+        .json({ msg: "You are not authorized to delete this user" });
+    }
+  } catch (err) {
+    res.status(500).json({ msg: err.message });
+  }
+};
 
 // save profile picture path
 const uploadProfilePicture = async (req, res) => {
@@ -359,6 +363,25 @@ const uploadProfilePicture = async (req, res) => {
   }
 };
 
+// get user count
+const countUser = async (req, res) => {
+  try {
+    const adminCount = await User.find({ role: "admin" }).countDocuments();
+    const editorCount = await User.find({ role: "editor" }).countDocuments();
+    const authorCount = await User.find({ role: "author" }).countDocuments();
+    const viewerCount = await User.find({ role: "viewer" }).countDocuments();
+
+    res.status(200).json({
+      admin: adminCount,
+      editor: editorCount,
+      author: authorCount,
+      viewer: viewerCount,
+    });
+  } catch (err) {
+    res.status(500).json({ msg: err.message });
+  }
+};
+
 module.exports = {
   getUser,
   getUserByRole,
@@ -371,4 +394,5 @@ module.exports = {
   changeUserToEditor,
   promoteToAdmin,
   uploadProfilePicture,
+  countUser
 };

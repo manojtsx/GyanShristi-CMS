@@ -75,6 +75,8 @@ const login = async (req, res) => {
     const token = isUserPresent.assignToken();
     const login = new Login({
       user_id: isUserPresent._id,
+      role : isUserPresent.role,
+      name : isUserPresent.name
     });
     await login.save();
     if (!isVerifiedUser) {

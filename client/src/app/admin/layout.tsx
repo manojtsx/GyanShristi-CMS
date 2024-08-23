@@ -1,4 +1,4 @@
-import SideMenuBarAdmin from "@/components/SideMenuBarAdmin";
+import SideMenuBarAdmin from "@/components/admin-component/SideMenuBarAdmin";
 
 export default function RootLayout({
   children,
