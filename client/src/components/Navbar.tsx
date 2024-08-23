@@ -14,7 +14,6 @@ function Navbar() {
   function toggleMenu() {
     setIsClick(!isClick);
   }
-
   function handleActiveLink(linkName: string) {
     setActiveLink(linkName);
     setIsClick(false);

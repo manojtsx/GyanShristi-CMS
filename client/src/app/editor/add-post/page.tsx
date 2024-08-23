@@ -1,12 +1,12 @@
-import SpeechToTextEditor from '@/components/SpeechToTextEditor'
-import React from 'react'
+import SpeechToTextEditor from "@/components/SpeechToTextEditor";
+import React from "react";
 
 function page() {
   return (
     <div>
-         <SpeechToTextEditor />
+      <SpeechToTextEditor />
     </div>
-  )
+  );
 }
 
-export default page
+export default page;
