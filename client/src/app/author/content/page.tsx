@@ -1,12 +1,10 @@
-import ContentTable from "@/components/common-component/ContentTable";
+import TopMenuContent from "@/components/TopMenuContent";
 import React from "react";
 
 function Page() {
   return (
-    <div>
-      <div className=" ml-24">
-        <ContentTable />
-      </div>
+    <div className="flex flex-col h-full">
+      <TopMenuContent />
     </div>
   );
 }
