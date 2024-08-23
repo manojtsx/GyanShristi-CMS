@@ -1,9 +1,29 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 
 function Pdf() {
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const [isAuthorOpen, setIsAuthorOpen] = useState(false);
+  const [photoPreview, setPhotoPreview] = useState<string | null>(null); // State to hold the photo preview URL
+  // Define the fileInputRef with the correct type
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const handlePhotoClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      // Create a preview URL for the selected file
+      const previewUrl = URL.createObjectURL(file);
+      setPhotoPreview(previewUrl);
+      console.log("File selected:", file.name);
+      // Handle file upload logic here if necessary
+    }
+  };
+
   return (
     <div className=" flex gap-x-28">
       <div className="flex flex-col items-center justify-center mb-16">
@@ -54,13 +74,32 @@ function Pdf() {
         </div>
         <div className=" text-center">
           <label>Feature Photo :</label>
-          <div className=" w-40 h-36 border border-gray-300 rounded-lg"></div>
+          <div
+            className="w-40 h-36 border border-gray-300 rounded-lg cursor-pointer flex items-center justify-center"
+            onClick={handlePhotoClick}
+          >
+            {photoPreview ? (
+              <img
+                src={photoPreview}
+                alt="Uploaded Photo"
+                className="w-full h-full object-cover rounded-lg"
+              />
+            ) : (
+              <span className="text-gray-500">Upload</span>
+            )}
+          </div>
+          <input
+            type="file"
+            ref={fileInputRef}
+            style={{ display: "none" }}
+            onChange={handleFileChange}
+          />
         </div>
         <button
           className="w-[100px] h-9 bg-[#3570E2] rounded-md text-white"
           type="submit"
         >
-          Upload
+          Save
         </button>
       </div>
     </div>

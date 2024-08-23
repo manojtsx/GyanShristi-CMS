@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import SpeechToTextEditor from "./SpeechToTextEditor";
 import { useAuth } from "@/context/AuthContext";
 import { useNotifications } from "@/context/NotificationContext";
@@ -8,18 +8,21 @@ import { useNotifications } from "@/context/NotificationContext";
 const API = process.env.NEXT_PUBLIC_BACKEND_API;
 
 function Post() {
-  const {token} = useAuth();
-  const {addNotification} = useNotifications();
+  const { token } = useAuth();
+  const { addNotification } = useNotifications();
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const [isAuthorOpen, setIsAuthorOpen] = useState(false);
-  const [categories, setCategories] = useState([{
-    _id : "",
-    title : ""
-  }]);
-  const [users, setUsers] = useState([{
-    name : "",
-    _id :""
-  }
+  const [categories, setCategories] = useState([
+    {
+      _id: "",
+      title: "",
+    },
+  ]);
+  const [users, setUsers] = useState([
+    {
+      name: "",
+      _id: "",
+    },
   ]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -59,8 +62,8 @@ function Post() {
       } else {
         throw new Error("Users data is not an array");
       }
-    } catch (error : any) {
-      addNotification(error.message, 'error')
+    } catch (error: any) {
+      addNotification(error.message, "error");
       setError(error.message);
     } finally {
       setLoading(false);
@@ -71,7 +74,25 @@ function Post() {
     fetchCategoriesAndUsers();
   }, []);
 
+  const [photoPreview, setPhotoPreview] = useState<string | null>(null); // State to hold the photo preview URL
+  // Define the fileInputRef with the correct type
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const handlePhotoClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
 
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      // Create a preview URL for the selected file
+      const previewUrl = URL.createObjectURL(file);
+      setPhotoPreview(previewUrl);
+      console.log("File selected:", file.name);
+      // Handle file upload logic here if necessary
+    }
+  };
   return (
     <div className=" flex gap-x-28">
       <div className="flex flex-col items-center justify-center mb-16">
@@ -99,7 +120,7 @@ function Post() {
               className="rounded-lg h-10 w-[200px] text-center"
               onClick={() => setIsCategoryOpen(!isCategoryOpen)}
             >
-               <option value="">Select Category</option>
+              <option value="">Select Category</option>
               {categories.map((category) => (
                 <option key={category._id} value={category._id}>
                   {category.title}
@@ -117,7 +138,7 @@ function Post() {
               className="rounded-lg h-10 w-[200px] text-center"
               onClick={() => setIsAuthorOpen(!isAuthorOpen)}
             >
-               <option value="">Select Author</option>
+              <option value="">Select Author</option>
               {users.map((user) => (
                 <option key={user._id} value={user._id}>
                   {user.name}
@@ -128,13 +149,32 @@ function Post() {
         </div>
         <div className=" text-center">
           <label>Feature Photo :</label>
-          <div className=" w-40 h-36 border border-gray-300 rounded-lg"></div>
+          <div
+            className="w-40 h-36 border border-gray-300 rounded-lg cursor-pointer flex items-center justify-center"
+            onClick={handlePhotoClick}
+          >
+            {photoPreview ? (
+              <img
+                src={photoPreview}
+                alt="Uploaded Photo"
+                className="w-full h-full object-cover rounded-lg"
+              />
+            ) : (
+              <span className="text-gray-500">Upload</span>
+            )}
+          </div>
+          <input
+            type="file"
+            ref={fileInputRef}
+            style={{ display: "none" }}
+            onChange={handleFileChange}
+          />
         </div>
         <button
           className="w-[100px] h-9 bg-[#3570E2] rounded-md text-white"
           type="submit"
         >
-          Upload
+          Save
         </button>
       </div>
     </div>
