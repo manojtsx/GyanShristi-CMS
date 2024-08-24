@@ -1,6 +1,7 @@
 'use client'
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Loading from '@/components/Loading';
 
 // Define the types for the context
 interface AuthContextType {
@@ -49,10 +50,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             localStorage.setItem('user', JSON.stringify(updatedUser));
           } else {
             logout();
+            router.push('/login')
+            return;
           }
         } catch (error) {
           console.error("Failed to fetch user data:", error);
           logout();
+          router.push('/login')
+          return; 
         }
       }
 
@@ -98,7 +103,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   if (loading) {
-    return <div>Loading...</div>;  // Render a loading state while initializing
+    return <Loading />;  // Render a loading state while initializing
   }
 
   return (
