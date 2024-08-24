@@ -8,8 +8,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import { useAuth } from "@/context/AuthContext";
 
 function Profile() {
+  const {user} = useAuth();
+  
     const handleEditUserChange = (e: React.ChangeEvent<HTMLInputElement>) => {};
   return (
     <form
@@ -36,7 +39,7 @@ function Profile() {
           </label>
         </div>
           <div>
-        <Link href="/editor/edit-profile"> <button className="bg-[#3742FA] px-4 py-2 rounded-md text-white font-medium flex justify-center items-center gap-1 hover:bg-[#2B34CC]"> 
+        <Link href={`/${user?.role}/edit-profile`}> <button className="bg-[#3742FA] px-4 py-2 rounded-md text-white font-medium flex justify-center items-center gap-1 hover:bg-[#2B34CC]"> 
             <FontAwesomeIcon icon={faPen} /> Edit
           </button>
           </Link>
@@ -46,7 +49,7 @@ function Profile() {
               Name:
             </p>
             <p className="text-left text-[#333333] font-medium">
-              ABCD XYZ
+            {user?.name || 'Name'}
             </p>
           </div>
 
@@ -55,7 +58,7 @@ function Profile() {
               Username:
             </p>
             <p className="text-left text-[#333333] font-medium">
-              hjghjgjhghjg
+            {user?.username || 'Username'}
             </p>
           </div>
 
@@ -64,7 +67,7 @@ function Profile() {
               Address:
             </p>
             <p className="text-left text-[#333333] font-medium">
-              
+            {user?.address || '123 Street'}
             </p>
           </div>
 
@@ -73,7 +76,7 @@ function Profile() {
               Contact:
             </p>
             <p className="text-left text-[#333333] font-medium">
-              
+            {user?.phone_number || '98XXXXXXXXX'}
             </p>
           </div>
 
@@ -82,7 +85,7 @@ function Profile() {
               Email Id:
             </p>
             <p className="text-left text-[#333333] font-medium">
-              
+            {user?.email || 'abc@email.com'}
             </p>
           </div>
         </div>

@@ -1,31 +1,60 @@
 "use client";
-import React, { useState } from "react";
+import { useNotifications } from "@/context/NotificationContext";
+import React, { useEffect, useState } from "react";
 import { MdOutlineEdit } from "react-icons/md";
 import { RiDeleteBin6Line } from "react-icons/ri";
+import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
+
+// Call the backend api
+const API = process.env.NEXT_PUBLIC_BACKEND_API;
 
 function CategoryTable() {
-  const [data, setData] = useState([
-    { id: 1, createdby: "Manoj shrestha", categories: "Math", date: "June 2" },
-    // Add more rows here if needed
-  ]);
+  const {addNotification} = useNotifications();
+  const {token, user} = useAuth();
+  const router = useRouter();
+  const [category, setCategory] = useState([{
+    _id : "",
+    title : "",
+    user : {
+      name : ""
+    }
+  }])
 
-  const handleDelete = (id: any) => {
-    setData(data.filter((row) => row.id !== id));
-  };
+  const getCategoryList = async() =>{
+    try{
+      const res = await fetch(`${API}api/category/`,{
+        method : "GET",
+        headers : {
+          'Content-Type' : 'application/json',
+          'Authorization' : `Bearer ${token}`
+        }
+      });
+      const data = await res.json();
+      console.log(data);
+      setCategory(data);
+    }catch(err : any){
+      addNotification(err.message, 'error');
+    }
+  }
 
+  useEffect(()=>{
+    getCategoryList();1
+  },[])
+ 
   return (
-    <div className=" w-[1000px] overflow-x-auto shadow-md sm:rounded-lg">
+    <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
       <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
         <thead className="text-xs text-gray-200 uppercase bg-[#011936]">
           <tr>
             <th scope="col" className="px-6 py-3">
-              Created by
+             SN
             </th>
             <th scope="col" className="px-6 py-3">
-              Categories
+              Title
             </th>
             <th scope="col" className="px-6 py-3">
-              Date
+              Created By
             </th>
             <th scope="col" className="px-6 py-3">
               Action
@@ -33,19 +62,18 @@ function CategoryTable() {
           </tr>
         </thead>
         <tbody>
-          {data.map((row) => (
+          {category.map((row, index) => (
             <tr
-              key={row.id}
+              key={row._id}
               className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600"
             >
-              <td className="px-6 py-4">{row.createdby}</td>
-              <td className="px-6 py-4">{row.categories}</td>
-              <td className="px-6 py-4">{row.date}</td>
+              <td className="px-6 py-4">{index + 1}</td>
+              <td className="px-6 py-4">{row.title}</td>
+              <td className="px-6 py-4">{row.user.name}</td>
               <td className="flex space-x-5 px-6 py-4">
-                <MdOutlineEdit className="text-[#011936] text-xl" />
+                <MdOutlineEdit className="text-[#011936] text-xl cursor-pointer" onClick={()=>{router.push(`/${user.role}/category/edit/${row._id}`)}} />
                 <RiDeleteBin6Line
                   className="text-[#011936] text-xl cursor-pointer"
-                  onClick={() => handleDelete(row.id)}
                 />
               </td>
             </tr>

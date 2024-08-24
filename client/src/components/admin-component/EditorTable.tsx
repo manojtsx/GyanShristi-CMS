@@ -3,13 +3,14 @@ import { useNotifications } from "@/context/NotificationContext";
 import React, { useEffect, useState } from "react";
 import { MdOutlineEdit } from "react-icons/md";
 import { RiDeleteBin6Line } from "react-icons/ri";
+import { useAuth } from "@/context/AuthContext";
 
 // Call the backend api
 const API = process.env.NEXT_PUBLIC_BACKEND_API;
-const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2YjYxMDA4NDk5Njk5MmIzZDVkYjMwYyIsImlhdCI6MTcyNDI0ODQzNiwiZXhwIjoxNzI1MTEyNDM2fQ.Xe6jCTRp-thit70iTNjMyMVtokkayHveD9gbcJdT_UM';
 
 function EditorTable() {
   const {addNotification} = useNotifications();
+  const {token}=useAuth();
   const [users, setUsers] = useState([{
     _id : 1,
     username : "",
@@ -29,9 +30,10 @@ function EditorTable() {
         }
       });
       const data = await res.json();
+      console.log(data)
       if(res.status === 404){
         addNotification(data.msg, 'error');
-        return;
+        return; 
       }
       console.log(data);
       setUsers(data);

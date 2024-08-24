@@ -12,7 +12,7 @@ const contentSchema = z
       .trim()
       .min(3, { message: "Description must be at least 3 characters long" })
       .max(255, { message: "Description must be at most 255 characters long" }),
-    location: z
+    location: z 
       .string({
         required_error: "Cannot find location to save content",
       })

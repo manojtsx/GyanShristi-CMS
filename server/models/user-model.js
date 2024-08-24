@@ -12,6 +12,7 @@ class UserClass {
     this.name = user.name;
     this.username = user.username;
     this.password = user.password;
+    this.address = user.address;
     this.email = user.email;
     this.profile_pic = user.profile_pic;
     this.phone_number = user.phone_number;
@@ -63,6 +64,10 @@ const UserSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
+  },
+  address: {
+    type : String,
+    required : true,
   },
   profile_pic: {
     type: String,

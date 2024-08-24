@@ -12,9 +12,11 @@ import { BsChevronDown } from "react-icons/bs";
 import { HiOutlineLogout } from "react-icons/hi";
 import Logout from "../Logout";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
 
 const SideMenuBarEditor = () => {
   const router = useRouter();
+  const {user,token} = useAuth();
   const [open, setOpen] = useState(true);
   const [userMenuOpen, setUserMenuOpen] = useState(false); //submenu
   const [logoutModalOpen, setLogoutModalOpen] = useState(false); // State for modal
@@ -149,7 +151,7 @@ const SideMenuBarEditor = () => {
           alt="Logo"
         />
         <p className={` text-[#D9D9D9] mt-2 ${!open && "hidden"} duration-300`}>
-          Usha Gurung
+        {user?.name || 'User'}
         </p>
       </div>
       <div

@@ -21,39 +21,40 @@ const getUser = async (req, res) => {
   }
 };
 
-// controller to get user data according to role
-const getUserByRole = async (req, res) => {
-  try {
-    // localhost:3001/api/user/role=<role>
-    const { role } = req.query;
-    if (!role) {
-      return res.status(400).json({ msg: "Role parameter is required" });
-    }
-    if (req.user.role === "viewer" || req.user.role === "author") {
-      return res
+  // controller to get user data according to role
+  const getUserByRole = async (req, res) => {
+    try {
+      // localhost:3001/api/user/role=<role>  
+      const { role } = req.query;
+      if (!role || !["admin", "editor", "author", "viewer", "non-viewer"].includes(role)) {
+        return res.status(400).json({ msg: "Role parameter is required" });
+      }
+      if (req.user.role === "viewer" || req.user.role === "author") {
+        return res
         .status(403)
         .json({ msg: "You are not authorized to view this data." });
+      }
+      let users;
+      
+      console.log(role)
+      // Fetch users based on role or exclude 'viewer' role
+      if (role === "non-viewer") {
+        // Exclude 'viewer' role
+        users = await User.find({ role: { $ne: "viewer" } }).select("-password");
+      } else {
+        // Fetch users with the specified role  
+        users = await User.find({ role }).select("-password");
+      }
+      if (!users || users.length === 0) {
+        return res
+          .status(404)
+          .json({ msg: "No users found for the specified role" });
+      }
+      res.status(200).json(users); 
+    } catch (err) {
+      res.status(500).json({ msg: err.message });
     }
-    let users;
-
-    // Fetch users based on role or exclude 'viewer' role
-    if (role === "non-viewer") {
-      // Exclude 'viewer' role
-      users = await User.find({ role: { $ne: "viewer" } }).select("-password");
-    } else {
-      // Fetch users with the specified role
-      users = await User.find({ role }).select("-password");
-    }
-    if (!users || users.length === 0) {
-      return res
-        .status(404)
-        .json({ msg: "No users found for the specified role" });
-    }
-    res.status(200).json(users);
-  } catch (err) {
-    res.status(500).json({ msg: err.message });
-  }
-};
+  };
 
 // get user data according to the id
 const getUserById = async (req, res) => {
@@ -391,6 +392,50 @@ const countUser = async (req, res) => {
   }
 };
 
+const addUser = async (req, res) => {
+  try {
+    const { name, username, address, password, email, role, phone_number } = req.body;
+    console.log(req.body)
+
+    // Check if the user has the correct role to perform this action
+    if (req.user.role !== 'admin' && req.user.role !== 'editor') {
+      return res.status(403).json({ message: 'Access denied. You do not have permission to add users.' });
+    }
+
+    // Check if all fields are provided
+    if (!name || !username || !address || !password || !email || !role || !phone_number) {
+      return res.status(400).json({ message: 'All fields are required' });
+    }
+
+    // Check if the user already exists by username or email
+    const existingUser = await User.findOne({ $or: [{ username }, { email }] });
+    if (existingUser) {
+      return res.status(400).json({ message: 'Username or Email already exists' });
+    }
+
+    // Create a new user object
+    const newUser = new User({
+      name,
+      username,
+      address,
+      password,  // Password will be hashed automatically by Mongoose pre-save middleware
+      email,
+      role,
+      phone_number  
+    });
+
+    // Save the new user to the database
+    await newUser.save();
+
+    // Return success response with the newly created user's details
+    return res.status(201).json({ message: 'User added successfully', user: newUser });
+
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+
 module.exports = {
   getUser,
   getUserByRole,
@@ -403,5 +448,6 @@ module.exports = {
   changeUserToEditor,
   promoteToAdmin,
   uploadProfilePicture,
-  countUser
+  countUser,
+  addUser
 };

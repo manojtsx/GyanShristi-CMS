@@ -28,24 +28,36 @@ const FroalaEditorComponent = dynamic(() => import("react-froala-wysiwyg"), {
   ssr: false,
 });
 
-const SpeechToTextEditor: React.FC = () => {
+const SpeechToTextEditor: React.FC<{ value: string; onChange: (content: string) => void; }> = ({value, onChange}) => {
   const [editorInstance, setEditorInstance] = useState<any>(null);
   const { transcript, resetTranscript } = useSpeechRecognition();
 
   const updateEditorContent = useCallback(
     debounce((transcript: string) => {
       if (editorInstance) {
-        editorInstance.html.insert(" " + transcript);
-        resetTranscript();
+        const currentContent = editorInstance.html.get();
+        const updatedContent = currentContent + " " + transcript;
+        editorInstance.html.set(updatedContent);
+        resetTranscript();  
+
+        onChange(updatedContent);
       }
     }, 100), // Adjust the debounce delay as needed
-    [editorInstance, resetTranscript]
+    [editorInstance, resetTranscript, onChange]
   );
+
+  useEffect(() => {
+    if (transcript) {
+      updateEditorContent(transcript);
+    }
+  }, [transcript, updateEditorContent]);
+
 
   useEffect(() => {
     if (editorInstance) {
       const handleContentChanged = () => {
         const currentContent = editorInstance.html.get();
+        onChange(currentContent); 
       };
 
       // Attach the contentChanged event handler
@@ -58,7 +70,7 @@ const SpeechToTextEditor: React.FC = () => {
         }
       };
     }
-  }, [editorInstance]);
+  }, [editorInstance, onChange]);
 
   useEffect(() => {
     if (transcript) {
@@ -96,6 +108,8 @@ const SpeechToTextEditor: React.FC = () => {
       <div className="w-[650px] h-92 ">
         <FroalaEditorComponent
           tag="textarea"
+          model={value}
+          onModelChange={(content : any) => onChange(content)}
           config={{
             placeholderText: "Start writing the content...",
             events: {
