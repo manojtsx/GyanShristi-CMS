@@ -5,6 +5,7 @@ import { MdOutlineEdit } from "react-icons/md";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
+import { useHandleDelete } from "@/utils/useHandleDelete";
 
 // Call the backend api
 const API = process.env.NEXT_PUBLIC_BACKEND_API;
@@ -13,6 +14,7 @@ function EditorTable() {
   const {addNotification} = useNotifications();
   const {token, user}=useAuth();
   const router = useRouter();
+  const { handleDelete } = useHandleDelete();
   const [users, setUsers] = useState([{
     _id : 1,
     username : "",
@@ -87,6 +89,7 @@ function EditorTable() {
                 <MdOutlineEdit className="text-[#011936] text-xl" onClick={()=> router.push(`/${user.role}/user/edit/${row._id}`)} />
                 <RiDeleteBin6Line
                   className="text-[#011936] text-xl cursor-pointer"
+                  onClick={()=>{handleDelete(row._id.toString(), token)}}
                 />
               </td>
             </tr>

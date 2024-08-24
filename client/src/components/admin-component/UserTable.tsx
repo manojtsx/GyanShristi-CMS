@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { MdOutlineEdit } from "react-icons/md";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { useAuth } from "@/context/AuthContext";
+import { useHandleDelete } from "@/utils/useHandleDelete";
 
 // Call the backend api
 const API = process.env.NEXT_PUBLIC_BACKEND_API;
@@ -11,6 +12,7 @@ const API = process.env.NEXT_PUBLIC_BACKEND_API;
 function UserTable() {
   const {addNotification} = useNotifications();
   const {token} = useAuth();
+  const { handleDelete } = useHandleDelete();
   const [users, setUsers] = useState([{
     _id : 1,
     username : "",
@@ -85,6 +87,7 @@ function UserTable() {
                 <MdOutlineEdit className="text-[#011936] text-xl" />
                 <RiDeleteBin6Line
                   className="text-[#011936] text-xl cursor-pointer"
+                  onClick={()=>{handleDelete(row._id.toString(), token)}}
                 />
               </td>
             </tr>
