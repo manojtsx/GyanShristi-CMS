@@ -40,7 +40,7 @@ function Navbar() {
         alt="Advertisement"
         className="w-screen h-28 object-cover"
       />
-      <div className="h-12 flex justify-between items-center pl-1 pr-3 bg-white dark:bg-[#1A1A1A] shadow-md sticky z-10 top-0">
+      <div className="h-12 flex justify-between items-center pl-1 pr-3 bg-white dark:bg-[#1A1A1A] shadow-md">
         <Image
           src="/logo.png"
           alt="CMS Logo"
