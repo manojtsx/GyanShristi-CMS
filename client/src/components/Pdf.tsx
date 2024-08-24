@@ -48,7 +48,7 @@ function Pdf() {
             <select
               id="categories"
               name="categories"
-              className="rounded-lg h-10 w-[200px] text-center"
+              className="rounded-lg h-10 w-[200px] text-center cursor-pointer"
               onClick={() => setIsCategoryOpen(!isCategoryOpen)}
             >
               <option value="option1">Math</option>
@@ -63,7 +63,7 @@ function Pdf() {
             <select
               id="author"
               name="author"
-              className="rounded-lg h-10 w-[200px] text-center"
+              className="rounded-lg h-10 w-[200px] text-center cursor-pointer"
               onClick={() => setIsAuthorOpen(!isAuthorOpen)}
             >
               <option value="option1">usha gurung</option>
@@ -96,7 +96,7 @@ function Pdf() {
           />
         </div>
         <button
-          className="w-[100px] h-9 bg-[#3570E2] rounded-md text-white"
+          className="w-[100px] h-9 bg-[#3570E2] rounded-md text-white cursor-pointer"
           type="submit"
         >
           Save

@@ -52,7 +52,7 @@ function CommentTable() {
               <td className="px-1 py-4">{row.comment}</td>
               <td className="px-6 py-4">{row.date}</td>
               <td className="flex space-x-5 px-6 py-4">
-                <ImReply className="text-[#011936] text-xl" />
+                <ImReply className="text-[#011936] text-xl cursor-pointer" />
                 <RiDeleteBin6Line
                   className="text-[#011936] text-xl cursor-pointer"
                   onClick={() => handleDelete(row.id)}
