@@ -3,6 +3,7 @@ import { useNotifications } from "@/context/NotificationContext";
 import React, { useEffect, useState } from "react";
 import { ImReply } from "react-icons/im";
 import { RiDeleteBin6Line } from "react-icons/ri";
+import { useAuth } from "@/context/AuthContext";
 
 // Call the backend api
 const API = process.env.NEXT_PUBLIC_BACKEND_API;
@@ -10,6 +11,7 @@ const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2YjYxMDA4NDk5Njk5
 
 function CommentTable() {
   const { addNotification } = useNotifications();
+  const {token} = useAuth();
   const [comments, setComments] = useState([{
     _id : "",
     description : "",

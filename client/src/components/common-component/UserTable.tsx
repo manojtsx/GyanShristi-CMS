@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { MdOutlineEdit } from "react-icons/md";
 import { RiDeleteBin6Line } from "react-icons/ri";
 
-function UserTable() {
+function  UserTable() {
   const [data, setData] = useState([
     {
       id: 1,

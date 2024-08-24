@@ -21,39 +21,40 @@ const getUser = async (req, res) => {
   }
 };
 
-// controller to get user data according to role
-const getUserByRole = async (req, res) => {
-  try {
-    // localhost:3001/api/user/role=<role>
-    const { role } = req.query;
-    if (!role) {
-      return res.status(400).json({ msg: "Role parameter is required" });
-    }
-    if (req.user.role === "viewer" || req.user.role === "author") {
-      return res
+  // controller to get user data according to role
+  const getUserByRole = async (req, res) => {
+    try {
+      // localhost:3001/api/user/role=<role>  
+      const { role } = req.query;
+      if (!role || !["admin", "editor", "author", "viewer", "non-viewer"].includes(role)) {
+        return res.status(400).json({ msg: "Role parameter is required" });
+      }
+      if (req.user.role === "viewer" || req.user.role === "author") {
+        return res
         .status(403)
         .json({ msg: "You are not authorized to view this data." });
+      }
+      let users;
+      
+      console.log(role)
+      // Fetch users based on role or exclude 'viewer' role
+      if (role === "non-viewer") {
+        // Exclude 'viewer' role
+        users = await User.find({ role: { $ne: "viewer" } }).select("-password");
+      } else {
+        // Fetch users with the specified role  
+        users = await User.find({ role }).select("-password");
+      }
+      if (!users || users.length === 0) {
+        return res
+          .status(404)
+          .json({ msg: "No users found for the specified role" });
+      }
+      res.status(200).json(users); 
+    } catch (err) {
+      res.status(500).json({ msg: err.message });
     }
-    let users;
-
-    // Fetch users based on role or exclude 'viewer' role
-    if (role === "non-viewer") {
-      // Exclude 'viewer' role
-      users = await User.find({ role: { $ne: "viewer" } }).select("-password");
-    } else {
-      // Fetch users with the specified role
-      users = await User.find({ role }).select("-password");
-    }
-    if (!users || users.length === 0) {
-      return res
-        .status(404)
-        .json({ msg: "No users found for the specified role" });
-    }
-    res.status(200).json(users);
-  } catch (err) {
-    res.status(500).json({ msg: err.message });
-  }
-};
+  };
 
 // get user data according to the id
 const getUserById = async (req, res) => {
@@ -394,6 +395,7 @@ const countUser = async (req, res) => {
 const addUser = async (req, res) => {
   try {
     const { name, username, address, password, email, role, phone_number } = req.body;
+    console.log(req.body)
 
     // Check if the user has the correct role to perform this action
     if (req.user.role !== 'admin' && req.user.role !== 'editor') {

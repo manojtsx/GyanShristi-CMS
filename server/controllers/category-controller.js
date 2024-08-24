@@ -37,7 +37,7 @@ const addCategory = async (req, res) => {
 const editCategory = async (req, res) => {
   try {
     const categoryId = req.params.id;
-    const { title } = req.body;
+    const { title, user_id } = req.body;
     const userRole = req.user.role;
 
     if (userRole === "admin" || userRole === "editor") {
@@ -48,7 +48,7 @@ const editCategory = async (req, res) => {
 
       const updatedCategory = await Category.findByIdAndUpdate(
         categoryId,
-        { title },
+        { title, user_id },
         { new: true }
       ); // Update the category
       if (!updatedCategory) {
@@ -86,17 +86,27 @@ const deleteCategory = async (req, res) => {
   }
 };
 
-// Function to get a category by ID
 const getCategoryById = async (req, res) => {
   try {
-    const { id } = req.params; // Extract category ID from request parameters
-    const category = await Category.findById(id); // Find the category by ID
+    const { id } = req.params;
+    const category = await Category.findById(id);
+    
     if (!category) {
-      return res.status(404).json({ msg: "Category not found" }); // If category not found, respond with error
+      return res.status(404).json({ msg: "Category not found" });
     }
-    res.status(200).json(category); // Respond with the found category
+
+    const owner = await User.findById(category.user_id).select('name username email');
+    
+    const categoryWithOwner = {
+      ...category._doc, // Spread the category details
+      ownerName: owner ? owner.name : "Unknown",
+      ownerUsername: owner ? owner.username : "Unknown",
+      ownerEmail: owner ? owner.email : "Unknown"
+    };
+
+    res.status(200).json(categoryWithOwner);
   } catch (err) {
-    res.status(500).json({ msg: err.message }); // Handle any errors
+    res.status(500).json({ msg: err.message });
   }
 };
 

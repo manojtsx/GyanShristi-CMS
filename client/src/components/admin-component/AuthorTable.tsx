@@ -3,13 +3,16 @@ import { useNotifications } from "@/context/NotificationContext";
 import React, { useEffect, useState } from "react";
 import { MdOutlineEdit } from "react-icons/md";
 import { RiDeleteBin6Line } from "react-icons/ri";
+import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
 
 // Call the backend api
 const API = process.env.NEXT_PUBLIC_BACKEND_API;
-const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2YjYxMDA4NDk5Njk5MmIzZDVkYjMwYyIsImlhdCI6MTcyNDI0ODQzNiwiZXhwIjoxNzI1MTEyNDM2fQ.Xe6jCTRp-thit70iTNjMyMVtokkayHveD9gbcJdT_UM';
 
 function AuthorTable() {
   const {addNotification} = useNotifications();
+  const {token, user}=useAuth();
+  const router = useRouter();
   const [users, setUsers] = useState([{
     _id : 1,
     username : "",
@@ -21,6 +24,7 @@ function AuthorTable() {
 
   const getUserList = async() =>{
     try{
+      console.log(token, 'hello')
       const res = await fetch(`${API}api/user/role?role=author`,{
         method : "GET",
         headers : {
@@ -29,6 +33,9 @@ function AuthorTable() {
         }
       });
       const data = await res.json();
+      if(!res.ok){
+        throw Error(data.msg)
+      }
       if(res.status === 404){
         addNotification(data.msg, 'error');
         return;
@@ -36,6 +43,7 @@ function AuthorTable() {
       console.log(data);
       setUsers(data);
     }catch(err : any){
+      setUsers([])
       addNotification(err.message, 'error');
     }
   }
@@ -80,7 +88,7 @@ function AuthorTable() {
               <td className="px-6 py-4">{row.email}</td>
               <td className="px-6 py-4">{row.phone_number}</td>
               <td className="flex space-x-5 px-6 py-4">
-                <MdOutlineEdit className="text-[#011936] text-xl" />
+                <MdOutlineEdit className="text-[#011936] text-xl" onClick={()=> router.push(`/${user.role}/author/edit/${row._id}`)}/>
                 <RiDeleteBin6Line
                   className="text-[#011936] text-xl cursor-pointer"
                 />
