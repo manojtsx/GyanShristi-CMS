@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import React from 'react'
 
-function PopularContents() {
+function ViewerLatestContent() {
   return (
     <div>
         <div>
@@ -10,7 +10,7 @@ function PopularContents() {
             <p>Why is Photosynthesis Important?</p>
             <p>Get Updated with GyanShristi</p>
             </div>
-            <Image src='/GirlProfile.jpg' alt='Profile Picture' width='500' height='500' className="h-10 w-10 rounded-full"/>
+            <Image src='/photosynthesis.jpeg' alt='Profile Picture' width='500' height='500' className="h-24 w-12"/>
             </div>
             <button>Read More</button>
             <div>
@@ -28,4 +28,4 @@ function PopularContents() {
   )
 }
 
-export default PopularContents
+export default ViewerLatestContent
