@@ -28,10 +28,11 @@ function Post() {
   const [error, setError] = useState(null);
   const [post, setPost] = useState({
     title: "",
-    description: "asdfadfadfadfad",
+    description: "",
     blog: "",
-    userId: "",
-    categoryId: "",
+    user_id: "",
+    category_id: "",
+    content_type : "post"
   });
 
   const fetchCategoriesAndUsers = async () => {
@@ -117,8 +118,9 @@ function Post() {
       formData.append("title", post.title);
       formData.append("description", post.description);
       formData.append("blog", post.blog);
-      formData.append("userId", post.userId);
-      formData.append("categoryId", post.categoryId);
+      formData.append("user_id", post.user_id);
+      formData.append("category_id", post.category_id);
+      formData.append("content_type", post.content_type);
 
       // If a photo has been selected, append it to the formData
       if (fileInputRef.current?.files?.[0]) {
@@ -141,16 +143,17 @@ function Post() {
         throw new Error(data.msg);
       }
 
-      addNotification("Post saved successfully", "success");
+      addNotification(data.msg, "success");
 
       // Optionally, clear the form after successful submission
-      setPost({
-        title: "",
-        description: "sdfadfadfadf",
-        blog: "",
-        userId: "",
-        categoryId: "",
-      });
+      // setPost({
+      //   title: "",
+      //   description: "",
+      //   blog: "",
+      //   user_id: "",
+      //   category_id: "",
+        
+      // });
       setPhotoPreview(null);
       if (fileInputRef.current) {
         fileInputRef.current.value = "";
@@ -161,101 +164,109 @@ function Post() {
   };
 
   return (
-    <div className=" flex gap-x-28">
-      <div className="flex flex-col items-center justify-center mb-16">
-        <div className=" text-center">
-          <label>Title :</label>
-          <div>
-            <input
-              type="text"
-              name="title"
-              className=" h-9 rounded-lg border-gray-300 bg-gray-200"
-              value={post.title}
-              onChange={(e) => setPost({ ...post, title: e.target.value })}
-              required
-            />
-          </div>
-        </div>
-        <div className=" mt-4">
-          <SpeechToTextEditor value={post.blog} onChange={handleBlogChange} />
-        </div>
-      </div>
-      <div className="flex flex-col items-center gap-y-7 mt-16">
-        <div className="text-center">
-          <label htmlFor="categories">Categories:</label>
-          <div className={`${isCategoryOpen ? "mb-10" : "mb-0"}`}>
-            <select
-              id="categories"
-              name="categories"
-              className="rounded-lg h-10 w-[200px] text-center cursor-pointer"
-              onClick={() => setIsCategoryOpen(!isCategoryOpen)}
-              value={post.categoryId}
-              onChange={(e) => setPost({ ...post, categoryId: e.target.value })}
-              required
-            >
-              <option value="">Select Category</option>
-              {categories.map((category) => (
-                <option key={category._id} value={category._id}>
-                  {category.title}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-        <div className="text-center">
-          <label htmlFor="author">Author:</label>
-          <div className={`${isAuthorOpen ? "mb-10" : "mb-0"}`}>
-            <select
-              id="author"
-              name="author"
-              className="rounded-lg h-10 w-[200px] text-center cursor-pointer"
-              onClick={() => setIsAuthorOpen(!isAuthorOpen)}
-              value={post.userId}
-              onChange={(e) => setPost({ ...post, userId: e.target.value })}
-              required
-            >
-              <option value="">Select Author</option>
-              {users.map((user) => (
-                <option key={user._id} value={user._id}>
-                  {user.name}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-        <div className=" text-center">
-          <label>Featured Photo :</label>
-          <div
-            className="w-40 h-36 border border-gray-300 rounded-lg cursor-pointer flex items-center justify-center"
-            onClick={handlePhotoClick}
-          >
-            {photoPreview ? (
-              <img
-                src={photoPreview}
-                alt="Uploaded Photo"
-                className="w-full h-full object-cover rounded-lg"
-              />
-            ) : (
-              <span className="text-gray-500">Upload</span>
-            )}
-          </div>
-          <input
-            type="file"
-            ref={fileInputRef}
-            style={{ display: "none" }}
-            accept="image/*"
-            onChange={handleFileChange}
-            required
-          />
-        </div>
-        <button
-          className="w-[100px] h-9 bg-[#3570E2] rounded-md text-white"
-          onClick={handleSubmit}
-        >
-          Save
-        </button>
-      </div>
+    <div className="flex flex-col md:flex-row gap-y-10 gap-x-14 p-8 bg-white rounded-xl shadow-lg">
+  <div className="flex flex-col items-start justify-center md:w-2/3 max-h-full  min-h-[80vh] overflow-y-auto">
+    <div className="w-full mb-8">
+      <label htmlFor="title" className="block text-lg font-medium text-gray-800 mb-2">Title:</label>
+      <input
+        type="text"
+        name="title"
+        className="w-full h-10 px-4 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        value={post.title}
+        onChange={(e) => setPost({ ...post, title: e.target.value })}
+        required
+      />
     </div>
+    <div className="w-full mb-8">
+      <label htmlFor="description" className="block text-lg font-medium text-gray-800 mb-2">Description:</label>
+      <input
+        type="text"
+        name="description"
+        className="w-full h-10 px-4 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        value={post.description}
+        onChange={(e) => setPost({ ...post, description: e.target.value })}
+        required
+      />
+    </div>
+    <div className="w-full mb-8">
+      <label className="block text-lg font-medium text-gray-800 mb-2">Content:</label>
+      <SpeechToTextEditor value={post.blog} onChange={handleBlogChange} />
+    </div>
+  </div>
+
+  <div className="flex flex-col items-start justify-start md:w-1/3 gap-y-6">
+    <div className="w-full">
+      <label htmlFor="categories" className="block text-lg font-medium text-gray-800 mb-2">Categories:</label>
+      <select
+        id="categories"
+        name="categories"
+        className="w-full h-10 px-4 rounded-lg border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+        value={post.category_id}
+        onChange={(e) => setPost({ ...post, category_id: e.target.value })}
+        required
+      >
+        <option value="">Select Category</option>
+        {categories.map((category) => (
+          <option key={category._id} value={category._id}>
+            {category.title}
+          </option>
+        ))}
+      </select>
+    </div>
+
+    <div className="w-full">
+      <label htmlFor="author" className="block text-lg font-medium text-gray-800 mb-2">Author:</label>
+      <select
+        id="author"
+        name="author"
+        className="w-full h-10 px-4 rounded-lg border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+        value={post.user_id}
+        onChange={(e) => setPost({ ...post, user_id: e.target.value })}
+        required
+      >
+        <option value="">Select Author</option>
+        {users.map((user) => (
+          <option key={user._id} value={user._id}>
+            {user.name}
+          </option>
+        ))}
+      </select>
+    </div>
+
+    <div className="w-full">
+      <label className="block text-lg font-medium text-gray-800 mb-2">Featured Photo:</label>
+      <div
+        className="w-full h-36 border border-gray-300 rounded-lg cursor-pointer flex items-center justify-center bg-gray-50 hover:bg-gray-100 transition-all"
+        onClick={handlePhotoClick}
+      >
+        {photoPreview ? (
+          <img
+            src={photoPreview}
+            alt="Uploaded Photo"
+            className="w-full h-full object-cover rounded-lg"
+          />
+        ) : (
+          <span className="text-gray-500">Upload</span>
+        )}
+      </div>
+      <input
+        type="file"
+        ref={fileInputRef}
+        style={{ display: "none" }}
+        accept="image/*"
+        onChange={handleFileChange}
+        required
+      />
+    </div>
+
+    <button
+      className="self-start w-32 h-10 bg-blue-600 hover:bg-blue-700 transition-colors rounded-md text-white font-semibold mt-4"
+      onClick={handleSubmit}
+    >
+      Save
+    </button>
+  </div>
+</div>  
   );
 }
 

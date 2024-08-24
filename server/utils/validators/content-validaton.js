@@ -12,14 +12,20 @@ const contentSchema = z
       .trim()
       .min(3, { message: "Description must be at least 3 characters long" })
       .max(255, { message: "Description must be at most 255 characters long" }),
-    location: z 
-      .string({
-        required_error: "Cannot find location to save content",
-      })
+    location: z
+      .string({ required_error: "Cannot find location to save content" })
       .optional(),
     blog: z
       .string({ required_error: "Blog must be defined" })
       .optional(),
+    user_id: z
+      .string({ required_error: "User ID is required" })
+      .regex(/^[0-9a-fA-F]{24}$/, "Invalid User ID format"),  // Assuming MongoDB ObjectId format
+    category_id: z
+      .string({ required_error: "Category ID is required" })
+      .regex(/^[0-9a-fA-F]{24}$/, "Invalid Category ID format"), // Assuming MongoDB ObjectId format
+    content_type: z
+      .enum(["post", "pdf", "video"], { required_error: "Content type is required" }),
   })
   .refine(
     (data) => {
