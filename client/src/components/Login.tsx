@@ -54,8 +54,8 @@ function Login() {
         throw new Error(data.msg);
       }
       console.log(data);
-      await login(data.token, data.login.user_id);
       addNotification(data.msg, 'success');
+      await login(data.token, data.login.user_id);
     }catch(err : any){
       addNotification(err.message, 'error');
     } 
@@ -68,7 +68,7 @@ function Login() {
         <PasswordBox name="password" value={user.password} placeholder="Password" onChange={handleInputChange}/>
         <SubmitButton text="Login"/>
         <hr />
-        <p className='dark:text-[#B0B0B0]'>Don't have an account? <Link href="/register" className='font-bold text-white'>Sign Up</Link></p>
+        <p className='dark:text-[#B0B0B0]'>Don't have an account? <Link href="/register" className='font-bold '>Sign Up</Link></p>
     </form>
     </div>
   )

@@ -88,7 +88,7 @@ function AuthorTable() {
               <td className="px-6 py-4">{row.email}</td>
               <td className="px-6 py-4">{row.phone_number}</td>
               <td className="flex space-x-5 px-6 py-4">
-                <MdOutlineEdit className="text-[#011936] text-xl" onClick={()=> router.push(`/${user.role}/author/edit/${row._id}`)}/>
+                <MdOutlineEdit className="text-[#011936] text-xl" onClick={()=> router.push(`/${user.role}/user/edit/${row._id}`)}/>
                 <RiDeleteBin6Line
                   className="text-[#011936] text-xl cursor-pointer"
                 />

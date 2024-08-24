@@ -73,7 +73,7 @@ const getUserById = async (req, res) => {
 const editUserById = async (req, res) => {
   try {
     const id = req.params.id;
-    const { name, username, phone_number } = req.body;
+    const { name, username, phone_number, address } = req.body;
     const userRole = req.user.role;
     const userId = req.user.id;
 
@@ -98,7 +98,7 @@ const editUserById = async (req, res) => {
       // Update user details
       const updatedUser = await User.findByIdAndUpdate(
         id,
-        { name, username, phone_number },
+        { name, username, phone_number, address },
         { new: true, select: "-password" }
       );
       res

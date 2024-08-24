@@ -91,7 +91,7 @@ function Profile() {
         </div>
         </div>
 
-        <Link href="/" className="text-[#1E43C8] hover:text-[#2B34CC] font-semibold">
+        <Link href={`/${user.role}/change-password`} className="text-[#1E43C8] hover:text-[#2B34CC] font-semibold">
           Change Password
         </Link>
       </div>
