@@ -39,7 +39,7 @@ function ViewerLatestContent() {
   return (
     <div className='bg-[#1E58C8] flex flex-col justify-center'>
       <p className='text-white text-2xl font-bold pt-5 text-center'>Latest Contents</p>
-      <div className='flex flex-col lg:flex-row items-center justify-around cursor-pointer lg:px-12'>
+      <div className='flex flex-col lg:flex-row items-center justify-around cursor-pointer lg:px-10'>
         {contents.map((content, index) => (
           <div key={index} className='bg-white rounded-2xl hover:scale-105 transition-transform duration-300 mt-8'>
             <div className='flex flex-col justify-center items-center px-4 pt-4 pb-2 gap-1'>

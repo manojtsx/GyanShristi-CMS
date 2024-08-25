@@ -1,3 +1,4 @@
+import AddUser from "@/components/common-component/AddUser";
 import Login from "@/components/Login";
 import ApplyAsAuthorButton from "@/components/mini-component/ApplyAsAuthorButton";
 import Register from "@/components/Register";
