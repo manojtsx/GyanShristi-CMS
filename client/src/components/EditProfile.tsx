@@ -91,7 +91,7 @@ function EditProfile() {
             <Textbox name='contact' value={updatedUser.phone_number} placeholder='Contact' onChange={handleEditUserChange}/>
             </div>
             <SubmitButton text="Save"/>
-            <Link href="/" className='text-[#1E43C8]'>Change Password</Link>
+            <Link href={`/${user.role}/change-password`} className='text-[#1E43C8]'>Change Password</Link>
         </div>
     </form>
   )

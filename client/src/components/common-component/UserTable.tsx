@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { MdOutlineEdit } from "react-icons/md";
 import { RiDeleteBin6Line } from "react-icons/ri";
 
-function  UserTable() {
+function UserTable() {
   const [data, setData] = useState([
     {
       id: 1,
@@ -56,7 +56,7 @@ function  UserTable() {
               <td className="px-1 py-4">{row.email}</td>
               <td className="px-6 py-4">{row.profile}</td>
               <td className="flex space-x-5 px-6 py-4">
-                <MdOutlineEdit className="text-[#011936] text-xl" />
+                <MdOutlineEdit className="text-[#011936] text-xl cursor-pointer" />
                 <RiDeleteBin6Line
                   className="text-[#011936] text-xl cursor-pointer"
                   onClick={() => handleDelete(row.id)}

@@ -6,11 +6,12 @@ const path = require("path"); // Import path module
 // Add a new post content to the server
 const addPostContent = async (req, res) => {
   try {
-    const { title, description, blog, userId, categoryId } = req.body; // Extract data from request body
+    const { title, description, blog, user_id, category_id } = req.body; // Extract data from request body
+    console.log(title, description, blog, user_id, category_id)
     console.log(req.file)
     const thumbnail = req.file.path; // Get thumbnail from request
     // Get userId if sent from the client side
-    let userIdToUse = userId || req.user.id; // Use provided userId or authenticated user's ID
+    let userIdToUse = user_id || req.user.id; // Use provided userId or authenticated user's ID
     
     const user = await User.findById(userIdToUse); // Find user by ID
     if (!user) {
@@ -40,9 +41,10 @@ const addPostContent = async (req, res) => {
       user_id: userIdToUse,
       content_type: "post",
       status,
-      category_id: Array.isArray(categoryId) ? categoryId : [categoryId], // Ensure categoryId is always an array
+      category_id: Array.isArray(category_id) ? category_id : [category_id], // Ensure category_id is always an array
     });
 
+    newContent.save();
     // Respond with a success message and the newly created content
     res.status(201).json({
       msg:

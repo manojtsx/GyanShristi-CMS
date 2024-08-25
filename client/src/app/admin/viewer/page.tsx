@@ -1,11 +1,11 @@
-import UserTable from "@/components/common-component/UserTable";
+import ViewerTable from "@/components/admin-component/ViewerTable";
 import React from "react";
 
 function page() {
   return (
     <div>
       <div className=" ml-24">
-        <UserTable />
+        <ViewerTable />
       </div>
     </div>
   );

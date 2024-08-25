@@ -42,7 +42,7 @@ function VideoTable() {
               <td className="px-6 py-4">{row.category}</td>
               <td className="px-6 py-4">{row.date}</td>
               <td className="flex space-x-5 px-6 py-4">
-                <MdOutlineEdit className="text-[#011936] text-xl" />
+                <MdOutlineEdit className="text-[#011936] text-xl cursor-pointer" />
                 <RiDeleteBin6Line
                   className="text-[#011936] text-xl cursor-pointer"
                   onClick={() => handleDelete(row.id)}

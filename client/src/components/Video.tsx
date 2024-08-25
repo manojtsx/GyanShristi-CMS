@@ -13,7 +13,6 @@ function Video() {
     }
   };
 
- 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
@@ -48,7 +47,7 @@ function Video() {
             <select
               id="categories"
               name="categories"
-              className="rounded-lg h-10 w-[200px] text-center"
+              className="rounded-lg h-10 w-[200px] text-center cursor-pointer"
               onClick={() => setIsCategoryOpen(!isCategoryOpen)}
             >
               <option value="option1">Math</option>
@@ -63,7 +62,7 @@ function Video() {
             <select
               id="author"
               name="author"
-              className="rounded-lg h-10 w-[200px] text-center"
+              className="rounded-lg h-10 w-[200px] text-center cursor-pointer"
               onClick={() => setIsAuthorOpen(!isAuthorOpen)}
             >
               <option value="option1">usha gurung</option>

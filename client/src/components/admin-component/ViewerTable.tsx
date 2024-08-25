@@ -4,13 +4,17 @@ import React, { useEffect, useState } from "react";
 import { MdOutlineEdit } from "react-icons/md";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
+import { useHandleDelete } from "@/utils/useHandleDelete";
 
 // Call the backend api
 const API = process.env.NEXT_PUBLIC_BACKEND_API;
 
 function ViewerTable() {
   const {addNotification} = useNotifications();
-  const {token }= useAuth();
+  const {token, user }= useAuth();
+  const router = useRouter();
+  const { handleDelete } = useHandleDelete();
   const [users, setUsers] = useState([{
     _id : 1,
     username : "",
@@ -81,9 +85,10 @@ function ViewerTable() {
               <td className="px-6 py-4">{row.email}</td>
               <td className="px-6 py-4">{row.phone_number}</td>
               <td className="flex space-x-5 px-6 py-4">
-                <MdOutlineEdit className="text-[#011936] text-xl" />
+                <MdOutlineEdit className="text-[#011936] text-xl" onClick={()=> router.push(`/${user.role}/user/edit/${row._id}`)}/>
                 <RiDeleteBin6Line
                   className="text-[#011936] text-xl cursor-pointer"
+                  onClick={()=>{handleDelete(row._id.toString(), token)}}
                 />
               </td>
             </tr>

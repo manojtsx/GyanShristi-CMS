@@ -5,13 +5,84 @@ import { faPenToSquare } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Image from 'next/image'
 import Link from 'next/link'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useAuth } from '@/context/AuthContext'
 import { useNotifications } from '@/context/NotificationContext'
-import { useRouter } from 'next/navigation'
+import { useRouter, useParams } from 'next/navigation'
+
+// Call the backend api
+const API = process.env.NEXT_PUBLIC_BACKEND_API;
 
 function EditUserProfile() {
+  const {user, token} = useAuth();
+  const {addNotification} = useNotifications();
+  const router = useRouter();
+  const {id : userId} = useParams();
+  const [updatedUser, setUpdatedUser] = useState({
+    name: '',
+    username: '',
+    address: '',
+    phone_number: ''
+  })
+
+  useEffect(()=>{
+    const getUpdatedUser = async() =>{
+      try{
+        const res = await fetch(`${API}api/user/${userId}`,{
+          method : "GET",
+          headers : {
+            'Content-Type' : 'application/json'
+          }
+        });
+        const data = await res.json();
+        console.log(data);
+        setUpdatedUser(data);
+      }catch(err : any){
+        addNotification(err.message, 'error')
+      }
+    }
+    getUpdatedUser()  ;
+  }
+  ,[])
+  const handleEditUserChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setUpdatedUser(prevState => ({
+      ...prevState,
+      [name]: value.toString()
+    }));
+    console.log(updatedUser)
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const response = await fetch(`${API}api/user/${userId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(updatedUser)
+      });
+
+      const result = await response.json();
+      if (!response.ok) {
+        throw new Error(result.msg);
+      }
+
+      console.log('User updated successfully:', result);
+      addNotification(result.msg, 'success')
+      router.push(`/${user?.role}/dashboard`)
+      
+      // Optionally update localStorage and context here
+    } catch (error : any) {
+      console.error('Error updating user:', error);
+      addNotification(error.message,'error')
+    }
+  };
+
   return (
+
     <form onSubmit={handleSubmit} className='flex flex-col h-screen justify-center items-center'>
         
         <div className='flex flex-col justify-center items-center w-96 gap-5 px-10 py-3 shadow-lg bg-[#F9F7F7]'>
@@ -38,11 +109,11 @@ function EditUserProfile() {
             <Textbox name='address' value={updatedUser.address} placeholder='Address' onChange={handleEditUserChange}/>
             </div>
             <div className='w-full flex justify-between items-center'>
-            <label htmlFor="contact" className='text-left w-32'>Contact: </label>
-            <Textbox name='contact' value={updatedUser.phone_number} placeholder='Contact' onChange={handleEditUserChange}/>
+            <label htmlFor="phone_number" className='text-left w-32'>Contact: </label>
+            <Textbox name='phone_number' value={updatedUser.phone_number} placeholder='Contact' onChange={handleEditUserChange}/>
             </div>
             <SubmitButton text="Save"/>
-            <Link href="/" className='text-[#1E43C8]'>Change Password</Link>
+            <Link href={`/${user.role}/user/edit/password/${userId}`} className='text-[#1E43C8]'>Change Password</Link>
         </div>
     </form>
   )
