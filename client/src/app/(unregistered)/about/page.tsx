@@ -12,7 +12,7 @@ const About = () => {
           <Image
             src="/GyanShristiBanner.png"
             alt="Gyanshristi" width={1000} height={1000}
-            className="h-96 w-screen object-fit"
+            className="h-96 w-screen object-cover"
           />
         {/* Introduction Section */}
         <section className="py-8 bg-white text-center px-6 md:flex justify-around dark:bg-[#1A1A1A] dark:text-[#B0B0B0]">
