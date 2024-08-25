@@ -518,10 +518,13 @@ const getAllContent = async (req, res) => {
   try {
     const { filter } = req.query;
 
-    // Fetch all content from the database
-    let content = await Content.find({});
-    if (!content) {
-      res.status(404).json({ msg: "No content found" });
+    // Fetch all content from the database and populate user and category details
+    let content = await Content.find({})
+      .populate('user_id', 'name email profile_pic') // Populate user details, fetching only name and email
+      .populate('category_id', 'title'); // Populate category details, fetching only the title
+
+    if (!content || content.length === 0) {
+      return res.status(404).json({ msg: "No content found" });
     }
 
     // Apply filter if provided
@@ -535,6 +538,7 @@ const getAllContent = async (req, res) => {
     res.status(500).json({ msg: err.message });
   }
 };
+
 
 // Count the content
 const countContent = async (req, res) => {

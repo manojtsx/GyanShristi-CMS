@@ -1,10 +1,10 @@
-import EditPassword from '@/components/EditPassword'
+import EditUserProfile from '@/components/EditUserProfile'
 import React from 'react'
 
 function page() {
   return (
     <div>
-      <EditPassword />
+      <EditUserProfile />
     </div>
   )
 }
