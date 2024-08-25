@@ -1,10 +1,12 @@
 import Login from "@/components/Login";
 import ApplyAsAuthorButton from "@/components/mini-component/ApplyAsAuthorButton";
 import Register from "@/components/Register";
+import ViewerLatestContent from "@/components/viewer-component/ViewerLatestContent";
 import Image from "next/image";
 
 export default function Page() {
   return (
+    <div>
     <div className="dark:bg-[#121212] dark:text-white">
     <div className="hidden sm:flex justify-between gap-10 px-20 py-16" >
       <div className="flex flex-col justify-center gap-5">
@@ -30,6 +32,8 @@ export default function Page() {
         <Image src="/GyanShristi_playingLaptop.webp" alt="Browsing Laptop" width={500} height={500} className="rounded-md opacity-60"/>
       </div>    
     </div>
+    </div>
+    <ViewerLatestContent/>
     </div>
   );
 }
