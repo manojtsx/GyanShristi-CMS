@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const path = require('path')
 const cors = require("cors");
 const corsOption = require("./configs/corsConfig");
 require("./configs/env");
@@ -30,6 +31,9 @@ app.use("/api/user", userRouter);
 app.use("/api/content", contentRouter);
 app.use("/api/category", categoryRouter);
 app.use("/api/comment", commentRouter);
+
+// Serve static files from the "uploads" directory
+app.use('/files', express.static(path.join(__dirname, 'uploads')));
 
 app.get("/", async (req, res) => {
   res.status(200).send("hello world");

@@ -436,20 +436,36 @@ const getPostContentById = async (req, res) => {
     if (!content) {
       return res.status(404).json({ msg: "Content does not exist" });
     }
-
+    
     // Check content type
     if (content.content_type !== "post") {
       return res
-        .status(403)
-        .json({ msg: "You are trying to open post but this is a video/pdf." });
+      .status(403)
+      .json({ msg: "You are trying to open post but this is a video/pdf." });
     }
-
+    
     // Fetch and return the post content
-    const contentToShow = await Content.find({
-      content_type: "post",
-      _id: contentId,
+    const contentToShow = await Content.findById(contentId);
+    
+    // Read file content
+    const filePath = path.join(__dirname, '../' ,contentToShow.location);
+    console.log(filePath)
+if (!fs.existsSync(filePath)) {
+  return res.status(404).json({ msg: "File not found" });
+}
+
+    fs.readFile(filePath, 'utf8', (err, data) => {
+      if (err) {
+        return res.status(500).json({ msg: "Error reading file" });
+      }
+      
+      console.log(data)
+      // Send back both the content details and file content
+      res.status(200).json({
+        ...contentToShow._doc, // Spread operator to include all content fields
+        fileContent: data // Add file content to the response
+      });
     });
-    res.status(200).json({ content: contentToShow });
   } catch (err) {
     res.status(500).json({ msg: err.message });
   }
