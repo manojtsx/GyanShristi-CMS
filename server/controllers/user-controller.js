@@ -399,18 +399,18 @@ const addUser = async (req, res) => {
 
     // Check if the user has the correct role to perform this action
     if (req.user.role !== 'admin' && req.user.role !== 'editor') {
-      return res.status(403).json({ message: 'Access denied. You do not have permission to add users.' });
+      return res.status(403).json({ msg: 'Access denied. You do not have permission to add users.' });
     }
 
     // Check if all fields are provided
     if (!name || !username || !address || !password || !email || !role || !phone_number) {
-      return res.status(400).json({ message: 'All fields are required' });
+      return res.status(400).json({ msg: 'All fields are required' });
     }
 
     // Check if the user already exists by username or email
     const existingUser = await User.findOne({ $or: [{ username }, { email }] });
     if (existingUser) {
-      return res.status(400).json({ message: 'Username or Email already exists' });
+      return res.status(400).json({ msg: 'Username or Email already exists' });
     }
 
     // Create a new user object
@@ -428,10 +428,10 @@ const addUser = async (req, res) => {
     await newUser.save();
 
     // Return success response with the newly created user's details
-    return res.status(201).json({ message: 'User added successfully', user: newUser });
+    return res.status(201).json({ msg: 'User added successfully', user: newUser });
 
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    return res.status(500).json({ msg: error.message });
   }
 };
 
