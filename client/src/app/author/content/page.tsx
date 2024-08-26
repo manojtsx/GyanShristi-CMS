@@ -1,4 +1,4 @@
-import TopMenuContent from "@/components/TopMenuContent";
+import TopMenuContent from "@/components/topmenu-component/TopMenuContent";
 import React from "react";
 
 function Page() {

@@ -14,10 +14,11 @@ import { useAuth } from "@/context/AuthContext";
 
 const SideMenuBarAuthor = () => {
   const router = useRouter();
-  const {user, logout} = useAuth();
-  console.log(user)
+  const { user, logout } = useAuth();
+  console.log(user);
   const [open, setOpen] = useState(true);
   const [logoutModalOpen, setLogoutModalOpen] = useState(false); // State for modal
+  const [activeMenuItem, setActiveMenuItem] = useState<string>(""); // Active menu item
 
   const handleLogoutClick = () => {
     setLogoutModalOpen(true);
@@ -27,20 +28,19 @@ const SideMenuBarAuthor = () => {
     setLogoutModalOpen(false);
   };
 
-  const handleConfirmLogout = async() => {
+  const handleConfirmLogout = async () => {
     try {
-      await logout(); 
-      router.push('/login'); 
+      await logout();
+      router.push("/login");
     } catch (error) {
-      console.error('Logout failed', error);
-
+      console.error("Logout failed", error);
     } finally {
       setLogoutModalOpen(false);
     }
-
   };
-  const handleNavigation = (path: any) => {
-    router.push(path);
+  const handleNavigation = (path?: string, label?: string) => {
+    setActiveMenuItem(label || "Default Label");
+    router.push(path || "/default-path");
   };
 
   const menuItems = [
@@ -91,9 +91,11 @@ const SideMenuBarAuthor = () => {
           <li key={index}>
             <div
               className={`flex items-center p-3 text-gray-300 mb-2 hover:bg-gray-700 rounded-md cursor-pointer ${
-                !open ? "justify-center" : "pl-6"
-              } duration-300`}
-              onClick={() => handleNavigation(item.path)}
+                activeMenuItem === item.label
+                  ? "bg-gray-700"
+                  : "hover:bg-gray-700"
+              }  ${!open ? "justify-center" : "pl-6"} duration-300`}
+              onClick={() => handleNavigation(item.path, item.label)}
             >
               <div className="text-2xl">{item.icon}</div>
               <span
@@ -109,9 +111,14 @@ const SideMenuBarAuthor = () => {
       </ul>
       <div
         className={`flex items-center text-gray-300 space-x-3 mb-4 hover:bg-gray-700 rounded-md cursor-pointer ${
+          activeMenuItem === "Profile" ? "bg-gray-700" : "hover:bg-gray-700"
+        } ${
           !open ? "justify-center" : "pl-5"
         } duration-300`}
-        onClick={() => router.push("/author/profile")}
+        onClick={() => {
+          setActiveMenuItem("Profile");
+          router.push("/editor/profile");
+        }}
       >
         <Image
           src="/logo.png"
@@ -121,7 +128,7 @@ const SideMenuBarAuthor = () => {
           alt="Logo"
         />
         <p className={` text-[#D9D9D9] mt-2 ${!open && "hidden"} duration-300`}>
-           {user?.name || 'User'}
+          {user?.name || "User"}
         </p>
       </div>
       <div

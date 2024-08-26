@@ -1,13 +1,13 @@
 "use client";
 import React, { useState } from "react";
 import { ImSearch } from "react-icons/im";
-import Post from "./Post";
-import Video from "./Video";
-import Pdf from "./Pdf";
-import ContentTable from "./common-component/ContentTable";
-import PostTable from "./common-component/PostTable";
-import VideoTable from "./common-component/VideoTable";
-import PdfTable from "./common-component/PdfTable";
+import Post from "../Post";
+import Video from "../Video";
+import Pdf from "../Pdf";
+import ContentTable from "../common-component/ContentTable";
+import PostTable from "../common-component/PostTable";
+import VideoTable from "../common-component/VideoTable";
+import PdfTable from "../common-component/PdfTable";
 
 function TopMenuContent() {
   const [activeLink, setActiveLink] = useState("all");
@@ -125,7 +125,7 @@ function TopMenuContent() {
       </div>
 
       {/* Render content below the TopMenuContent */}
-      <div className="p-3 ml-20">{renderContent()}</div>
+      <div className="p-3 ml-12 mt-5">{renderContent()}</div>
     </div>
   );
 }
