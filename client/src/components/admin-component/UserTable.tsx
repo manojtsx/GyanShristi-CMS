@@ -10,39 +10,39 @@ import { useHandleDelete } from "@/utils/useHandleDelete";
 const API = process.env.NEXT_PUBLIC_BACKEND_API;
 
 function UserTable() {
-  const {addNotification} = useNotifications();
-  const {token} = useAuth();
+  const { addNotification } = useNotifications();
+  const { token } = useAuth();
   const { handleDelete } = useHandleDelete();
   const [users, setUsers] = useState([{
-    _id : 1,
-    username : "",
-    name : "",
-    role : "",
-    phone_number : "",
-    email : ""
+    _id: 1,
+    username: "",
+    name: "",
+    role: "",
+    phone_number: "",
+    email: ""
   }])
-  
 
-  const getUserList = async() =>{
-    try{
-      const res = await fetch(`${API}api/user/`,{
-        method : "GET",
-        headers : {
-          'Content-Type' : 'application/json',
-          'Authorization' : `Bearer ${token}`
+
+  const getUserList = async () => {
+    try {
+      const res = await fetch(`${API}api/user/`, {
+        method: "GET",
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         }
       });
       const data = await res.json();
       console.log(data);
       setUsers(data);
-    }catch(err : any){
+    } catch (err: any) {
       addNotification(err.message, 'error');
     }
   }
 
-  useEffect(()=>{
+  useEffect(() => {
     getUserList();
-  },[])
+  }, [])
   return (
     <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
       <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
@@ -55,7 +55,7 @@ function UserTable() {
               Username
             </th>
             <th scope="col" className="px-6 py-3">
-             Name
+              Name
             </th>
             <th scope="col" className="px-6 py-3">
               Email
@@ -72,26 +72,35 @@ function UserTable() {
           </tr>
         </thead>
         <tbody>
-          {users.map((row,index) => (
-            <tr
-              key={row._id}
-              className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600"
-            >
-              <td className="px-6 py-4">{index + 1}</td>
-              <td className="px-6 py-4">{row.username}</td>
-              <td className="px-6 py-4">{row.name}</td>
-              <td className="px-6 py-4">{row.email}</td>
-              <td className="px-1 py-4">{row.role}</td>
-              <td className="px-6 py-4">{row.phone_number}</td>
-              <td className="flex space-x-5 px-6 py-4">
-                <MdOutlineEdit className="text-[#011936] text-xl" />
-                <RiDeleteBin6Line
-                  className="text-[#011936] text-xl cursor-pointer"
-                  onClick={()=>{handleDelete(row._id.toString(), token)}}
-                />
+          {users.length > 0 ? (
+            users.map((row, index) => (
+              <tr
+                key={row._id}
+                className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600"
+              >
+                <td className="px-6 py-4">{index + 1}</td>
+                <td className="px-6 py-4">{row.username}</td>
+                <td className="px-6 py-4">{row.name}</td>
+                <td className="px-6 py-4">{row.email}</td>
+                <td className="px-1 py-4">{row.role}</td>
+                <td className="px-6 py-4">{row.phone_number}</td>
+                <td className="flex space-x-5 px-6 py-4">
+                  <MdOutlineEdit className="text-[#011936] text-xl" />
+                  <RiDeleteBin6Line
+                    className="text-[#011936] text-xl cursor-pointer"
+                    onClick={() => { handleDelete(row._id.toString(), token) }}
+                  />
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan={7} className="text-center px-6 py-4">
+                No users found
               </td>
             </tr>
-          ))}
+          )
+          }
         </tbody>
       </table>
     </div>

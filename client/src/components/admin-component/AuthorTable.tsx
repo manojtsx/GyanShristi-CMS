@@ -46,7 +46,6 @@ function AuthorTable() {
       setUsers(data);
     }catch(err : any){
       setUsers([])
-      addNotification(err.message, 'error');
     }
   }
 
@@ -79,25 +78,34 @@ function AuthorTable() {
           </tr>
         </thead>
         <tbody>
-          {users.map((row,index) => (
-            <tr
-              key={row._id}
-              className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600"
-            >
-              <td className="px-6 py-4">{index + 1}</td>
-              <td className="px-6 py-4">{row.username}</td>
-              <td className="px-6 py-4">{row.name}</td>
-              <td className="px-6 py-4">{row.email}</td>
-              <td className="px-6 py-4">{row.phone_number}</td>
-              <td className="flex space-x-5 px-6 py-4">
-                <MdOutlineEdit className="text-[#011936] text-xl" onClick={()=> router.push(`/${user.role}/user/edit/${row._id}`)}/>
-                <RiDeleteBin6Line
-                  className="text-[#011936] text-xl cursor-pointer"
-                  onClick={()=>{handleDelete(row._id.toString(), token)}}
-                />
+        {users.length > 0 ? (
+            users.map((row, index) => (
+              <tr
+                key={row._id}
+                className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600"
+              >
+                <td className="px-6 py-4">{index + 1}</td>
+                <td className="px-6 py-4">{row.username}</td>
+                <td className="px-6 py-4">{row.name}</td>
+                <td className="px-6 py-4">{row.email}</td>
+                <td className="px-6 py-4">{row.phone_number}</td>
+                <td className="flex space-x-5 px-6 py-4">
+                  <MdOutlineEdit className="text-[#011936] text-xl" />
+                  <RiDeleteBin6Line
+                    className="text-[#011936] text-xl cursor-pointer"
+                    onClick={() => { handleDelete(row._id.toString(), token) }}
+                  />
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan={7} className="text-center px-6 py-4">
+                No author found
               </td>
             </tr>
-          ))}
+          )
+          }
         </tbody>
       </table>
     </div>
