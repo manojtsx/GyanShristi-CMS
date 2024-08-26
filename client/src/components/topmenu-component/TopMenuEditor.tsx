@@ -1,8 +1,13 @@
+"use client"
 import React from "react";
 import { LiaUserEditSolid } from "react-icons/lia";
 import { ImSearch } from "react-icons/im";
+import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
 
 function TopMenuEditor() {
+  const {user} = useAuth();
+  const router = useRouter();
   return (
     <div className="flex justify-between items-center px-5 py-2 shadow-md">
       <div className="flex items-center space-x-2 pl-2">
@@ -20,8 +25,8 @@ function TopMenuEditor() {
             <ImSearch className="text-gray-500" />
           </span>
         </div>
-        <button className="w-[150px] h-9 bg-[#3570E2] rounded-md text-white">
-          Add Editor
+        <button className="w-[150px] h-9 bg-[#3570E2] rounded-md text-white" onClick={()=>router.push(`/${user.role}/user/add`)}>
+          Add User
         </button>
       </div>
     </div>
