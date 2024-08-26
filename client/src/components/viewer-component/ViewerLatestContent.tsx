@@ -51,6 +51,10 @@ function ViewerLatestContent() {
   // Slice to get the last three contents
   const latestContents = contents.slice(-3);
 
+  if(latestContents.length === 0){
+    return <div>No contents found..</div>
+  }
+
   return (
     <div className='bg-[#1E58C8] flex flex-col justify-center'>
       <p className='text-white text-2xl font-bold pt-5 text-center'>Latest Contents</p>
@@ -82,7 +86,7 @@ function ViewerLatestContent() {
             </div>
             <div className='flex justify-between items-center bg-[#E8E4E4] rounded-br-2xl rounded-bl-2xl p-4'>
               <div className='flex items-center gap-1'>
-                <Image src={content.user_id.profile_pic} alt='Author Picture' width='500' height='500' className="h-10 w-10 rounded-full" />
+                {/* <Image src={content.user_id.profile_pic || ""} alt='Author Picture' width='500' height='500' className="h-10 w-10 rounded-full" /> */}
                 <p
                   className='overflow-hidden text-ellipsis whitespace-nowrap font-semibold text-sm'
                   title={content.user_id.name} // Using title attribute for tooltip
