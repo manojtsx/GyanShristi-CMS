@@ -1,17 +1,17 @@
 "use client";
 import React, { useState } from "react";
-import { useRouter } from "next/navigation";
 import { ImSearch } from "react-icons/im";
-import ContentTable from "./common-component/ContentTable";
-import PostTable from "./common-component/PostTable";
-import VideoTable from "./common-component/VideoTable";
-import PdfTable from "./common-component/PdfTable";
-import { useAuth } from "@/context/AuthContext";
+import Post from "../Post";
+import Video from "../Video";
+import Pdf from "../Pdf";
+import ContentTable from "../common-component/ContentTable";
+import PostTable from "../common-component/PostTable";
+import VideoTable from "../common-component/VideoTable";
+import PdfTable from "../common-component/PdfTable";
 
 function TopMenuContent() {
   const [activeLink, setActiveLink] = useState("all");
-  const router = useRouter();
-  const {user} = useAuth();
+  const [showAddNew, setShowAddNew] = useState(false);
 
   const contentItems = [
     { id: "all", name: "All" },
@@ -23,13 +23,41 @@ function TopMenuContent() {
   const renderContent = () => {
     switch (activeLink) {
       case "post":
-        return <PostTable />;
+        return showAddNew ? (
+          <div>
+            <Post />
+          </div>
+        ) : (
+          <div>
+            <PostTable />
+          </div>
+        );
       case "video":
-        return <VideoTable />;
+        return showAddNew ? (
+          <div>
+            <Video />
+          </div>
+        ) : (
+          <div>
+            <VideoTable />
+          </div>
+        );
       case "pdf":
-        return <PdfTable />;
+        return showAddNew ? (
+          <div>
+            <Pdf />
+          </div>
+        ) : (
+          <div>
+            <PdfTable />
+          </div>
+        );
       default:
-        return <ContentTable />;
+        return (
+          <div>
+            <ContentTable />
+          </div>
+        );
     }
   };
 
@@ -47,18 +75,8 @@ function TopMenuContent() {
   };
 
   const handleButtonClick = () => {
-    switch (activeLink) {
-      case "post":
-        router.push(`/${user.role}/content/add-post`);
-        break;
-      case "video":
-        router.push(`/${user.role}/content/add-video`);
-        break;
-      case "pdf":
-        router.push(`/${user.role}/content/add-pdf`);
-        break;
-      default:
-        break;
+    if (activeLink !== "all") {
+      setShowAddNew(true); // Set showAddNew to true to display the Post component
     }
   };
 
@@ -76,6 +94,7 @@ function TopMenuContent() {
               }`}
               onClick={() => {
                 setActiveLink(item.id);
+                setShowAddNew(false); // Reset showAddNew when a different tab is clicked
               }}
             >
               <button>{item.name}</button>

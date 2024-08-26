@@ -1,5 +1,5 @@
 import React from "react";
-import TopMenuContent from "@/components/TopMenuContent";
+import TopMenuContent from "@/components/topmenu-component/TopMenuContent";
 
 function Page() {
   return (

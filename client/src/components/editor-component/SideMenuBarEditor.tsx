@@ -16,10 +16,11 @@ import { useAuth } from "@/context/AuthContext";
 
 const SideMenuBarEditor = () => {
   const router = useRouter();
-  const {user,token} = useAuth();
+  const { user, token } = useAuth();
   const [open, setOpen] = useState(true);
   const [userMenuOpen, setUserMenuOpen] = useState(false); //submenu
   const [logoutModalOpen, setLogoutModalOpen] = useState(false); // State for modal
+  const [activeMenuItem, setActiveMenuItem] = useState<string>(""); // Active menu item
 
   const handleLogoutClick = () => {
     setLogoutModalOpen(true);
@@ -33,8 +34,9 @@ const SideMenuBarEditor = () => {
     // Add your logout logic here
     setLogoutModalOpen(false);
   };
-  const handleNavigation = (path: any) => {
-    router.push(path);
+  const handleNavigation = (path?: string, label?: string) => {
+    setActiveMenuItem(label || "Default Label");
+    router.push(path || "/default-path");
   };
 
   const menuItems = [
@@ -96,14 +98,17 @@ const SideMenuBarEditor = () => {
         {menuItems.map((item, index) => (
           <li key={index}>
             <div
-              className={`flex items-center p-2 text-gray-300 mb-2 hover:bg-gray-700 rounded-md cursor-pointer ${
-                !open ? "justify-center" : "pl-6"
-              } duration-300`}
+              className={`flex items-center p-2 text-gray-300 mb-2 rounded-md cursor-pointer  ${
+                activeMenuItem === item.label
+                  ? "bg-gray-700"
+                  : "hover:bg-gray-700"
+              } ${!open ? "justify-center" : "pl-6"} duration-300`}
               onClick={() => {
-                if (item.label === "User") {
+                if (item.submenu) {
+                  setActiveMenuItem(item.label); // Set active state for User menu
                   setUserMenuOpen(!userMenuOpen);
                 } else {
-                  handleNavigation(item.path);
+                  handleNavigation(item.path, item.label);
                 }
               }}
             >
@@ -126,8 +131,14 @@ const SideMenuBarEditor = () => {
                 {item.submenu.map((subItem, subIndex) => (
                   <li
                     key={subIndex}
-                    className="flex items-center p-2 ml-8 text-[#D9D9D9] hover:bg-gray-700 rounded-md gap-x-4 cursor-pointer text-sm"
-                    onClick={() => handleNavigation(subItem.path)}
+                    className={`flex items-center p-1 ml-8 text-[#D9D9D9] rounded-md gap-x-4 cursor-pointer text-sm ${
+                      activeMenuItem === subItem.label
+                        ? "bg-gray-700"
+                        : "hover:bg-gray-700"
+                    }`}
+                    onClick={() =>
+                      handleNavigation(subItem.path, subItem.label)
+                    }
                   >
                     {subItem.label}
                   </li>
@@ -139,9 +150,12 @@ const SideMenuBarEditor = () => {
       </ul>
       <div
         className={`flex items-center text-gray-300 space-x-3 mb-4 hover:bg-gray-700 rounded-md cursor-pointer ${
-          !open ? "justify-center" : "pl-5"
-        } duration-300`}
-        onClick={() => router.push("/editor/profile")}
+          activeMenuItem === "Profile" ? "bg-gray-700" : "hover:bg-gray-700"
+        } ${!open ? "justify-center" : "pl-5"} duration-300`}
+        onClick={() => {
+          setActiveMenuItem("Profile");
+          router.push("/editor/profile");
+        }}
       >
         <Image
           src="/logo.png"
@@ -151,7 +165,7 @@ const SideMenuBarEditor = () => {
           alt="Logo"
         />
         <p className={` text-[#D9D9D9] mt-2 ${!open && "hidden"} duration-300`}>
-        {user?.name || 'User'}
+          {user?.name || "User"}
         </p>
       </div>
       <div

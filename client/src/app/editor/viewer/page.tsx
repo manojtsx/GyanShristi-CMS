@@ -1,11 +1,13 @@
-import UserTable from "@/components/common-component/UserTable";
+import ViewerTable from "@/components/admin-component/ViewerTable";
+import TopMenuViewer from "@/components/topmenu-component/TopMenuViewer";
 import React from "react";
 
 function page() {
   return (
-    <div>
-      <div className=" ml-24">
-        <UserTable />
+    <div className="flex flex-col h-full">
+      <TopMenuViewer />
+      <div className=" ml-14 mt-10">
+        <ViewerTable />
       </div>
     </div>
   );

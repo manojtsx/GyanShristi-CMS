@@ -7,30 +7,33 @@ import { useAuth } from "@/context/AuthContext";
 
 // Call the backend api
 const API = process.env.NEXT_PUBLIC_BACKEND_API;
-const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2YjYxMDA4NDk5Njk5MmIzZDVkYjMwYyIsImlhdCI6MTcyNDI0ODQzNiwiZXhwIjoxNzI1MTEyNDM2fQ.Xe6jCTRp-thit70iTNjMyMVtokkayHveD9gbcJdT_UM';
+const token =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2YjYxMDA4NDk5Njk5MmIzZDVkYjMwYyIsImlhdCI6MTcyNDI0ODQzNiwiZXhwIjoxNzI1MTEyNDM2fQ.Xe6jCTRp-thit70iTNjMyMVtokkayHveD9gbcJdT_UM";
 
 function CommentTable() {
   const { addNotification } = useNotifications();
-  const {token} = useAuth();
-  const [comments, setComments] = useState([{
-    _id : "",
-    description : "",
-    content : {
-      title : ""
+  const { token } = useAuth();
+  const [comments, setComments] = useState([
+    {
+      _id: "",
+      description: "",
+      content: {
+        title: "",
+      },
+      user: {
+        name: "",
+      },
     },
-    user : {
-      name : ""
-    }
-  }]);
+  ]);
 
   const getCommentList = async () => {
     try {
       const res = await fetch(`${API}api/comment/`, {
         method: "GET",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        }
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
       });
 
       if (!res.ok) {
@@ -40,8 +43,8 @@ function CommentTable() {
       const data = await res.json();
       console.log(data);
       setComments(data.comments); // Assuming data.comments is the array of comments
-    } catch (err : any) {
-      addNotification(err.message, 'error');
+    } catch (err: any) {
+      addNotification(err.message, "error");
     }
   };
 
@@ -55,7 +58,7 @@ function CommentTable() {
         <thead className="text-xs text-gray-200 uppercase bg-[#011936]">
           <tr>
             <th scope="col" className="px-6 py-3">
-             SN
+              SN
             </th>
             <th scope="col" className="px-6 py-3">
               Comment
@@ -83,10 +86,8 @@ function CommentTable() {
               <td className="px-6 py-4">{row.content?.title || "unknown"}</td>
 
               <td className="flex space-x-5 px-6 py-4">
-                <ImReply className="text-[#011936] text-xl" />
-                <RiDeleteBin6Line
-                  className="text-[#011936] text-xl cursor-pointer"
-                />
+                <ImReply className="text-[#011936] text-xl cursor-pointer" />
+                <RiDeleteBin6Line className="text-[#011936] text-xl cursor-pointer" />
               </td>
             </tr>
           ))}
