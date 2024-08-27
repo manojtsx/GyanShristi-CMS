@@ -31,11 +31,12 @@ const ShowContent: React.FC = () => {
     const [showReplyForm, setShowReplyForm] = useState<boolean>(false);
     const [showReplies, setShowReplies] = useState<boolean>(false);
 
-    const { id } = useParams(); // Extracting the content ID from the URL params
-
+       const { id } = useParams<{ id: string | string[] }>(); // Extracting the content ID from the URL params
+    
     useEffect(() => {
         if (id) {
-            fetchContentById(id);
+            const contentId = Array.isArray(id) ? id[0] : id; // Ensure id is a string
+            fetchContentById(contentId);
         }
     }, [id]);
 

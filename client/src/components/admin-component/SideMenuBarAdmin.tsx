@@ -16,7 +16,7 @@ import { useAuth } from "@/context/AuthContext";
 
 const SideMenuBarAdmin = () => {
   const router = useRouter();
-  const {user} = useAuth();
+  const { user } = useAuth();
   const [open, setOpen] = useState(true);
   const [userMenuOpen, setUserMenuOpen] = useState(false); //submenu
   const [logoutModalOpen, setLogoutModalOpen] = useState(false); // State for modal
@@ -39,7 +39,6 @@ const SideMenuBarAdmin = () => {
     router.push(path || "/default-path");
   };
 
-
   const menuItems = [
     { icon: <GoHome />, label: "Home", path: "/admin/dashboard" },
     { icon: <BiSolidBookContent />, label: "Content", path: "/admin/content" },
@@ -53,6 +52,7 @@ const SideMenuBarAdmin = () => {
     {
       icon: <FiUser />,
       label: "User",
+      path: "/admin/user",
       submenu: [
         { label: "Viewer", path: "/admin/viewer" },
         { label: "Author", path: "/admin/author" },
@@ -92,17 +92,8 @@ const SideMenuBarAdmin = () => {
                 activeMenuItem === item.label
                   ? "bg-gray-700"
                   : "hover:bg-gray-700"
-              } ${
-                !open ? "justify-center" : "pl-6"
-              } duration-300`}
-              onClick={() => {
-                if (item.label === "User") { 
-                  setActiveMenuItem(item.label); // Set active state for User menu
-                  setUserMenuOpen(!userMenuOpen);
-                } else {
-                  handleNavigation(item.path, item.label);
-                }
-              }}
+              } ${!open ? "justify-center" : "pl-6"} duration-300`}
+              onClick={() => handleNavigation(item.path, item.label)}
             >
               <div className="text-2xl">{item.icon}</div>
               <span
@@ -112,9 +103,10 @@ const SideMenuBarAdmin = () => {
               >
                 {item.label}
               </span>
-              {item.submenu && open && (
+              {item.submenu && open && item.label === "User" && (
                 <BsChevronDown
                   className={`${!userMenuOpen && "rotate-180"} ml-16 text-sm`}
+                  onClick={() => setUserMenuOpen(!userMenuOpen)} // Toggle submenu on chevron click
                 />
               )}
             </div>
@@ -143,9 +135,7 @@ const SideMenuBarAdmin = () => {
       <div
         className={`flex items-center text-gray-300 space-x-3 mb-4 hover:bg-gray-700 rounded-md cursor-pointer ${
           activeMenuItem === "Profile" ? "bg-gray-700" : "hover:bg-gray-700"
-        } ${
-          !open ? "justify-center" : "pl-5"
-        } duration-300`}
+        } ${!open ? "justify-center" : "pl-5"} duration-300`}
         onClick={() => {
           setActiveMenuItem("Profile");
           router.push("/editor/profile");

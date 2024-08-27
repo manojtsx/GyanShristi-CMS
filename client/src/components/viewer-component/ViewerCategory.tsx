@@ -14,7 +14,7 @@ function ViewerCategory() {
             ))
         }
         </div>
-    </div>
+    </div> 
   )
 }
 
