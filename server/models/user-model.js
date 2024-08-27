@@ -12,6 +12,7 @@ class UserClass {
     this.name = user.name;
     this.username = user.username;
     this.password = user.password;
+    this.address = user.address;
     this.email = user.email;
     this.profile_pic = user.profile_pic;
     this.phone_number = user.phone_number;
@@ -33,7 +34,9 @@ class UserClass {
   assignToken() {
     try {
       const token = jwt.sign(
-        { id: this._id, name: this.name, role: this.role },
+        { id: this._id,
+          role : this.role
+        },
         key,
         { expiresIn: "10d" }
       );
@@ -61,6 +64,10 @@ const UserSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
+  },
+  address: {
+    type : String,
+    required : true,
   },
   profile_pic: {
     type: String,

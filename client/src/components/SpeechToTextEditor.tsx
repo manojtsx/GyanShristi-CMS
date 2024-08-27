@@ -1,8 +1,10 @@
 "use client";
 import React, { useState, useEffect, useCallback } from "react";
 import dynamic from "next/dynamic";
-import 'regenerator-runtime/runtime'
-import SpeechRecognition, { useSpeechRecognition } from "react-speech-recognition";
+import "regenerator-runtime/runtime";
+import SpeechRecognition, {
+  useSpeechRecognition,
+} from "react-speech-recognition";
 import "froala-editor/css/froala_editor.pkgd.min.css";
 import "froala-editor/css/froala_style.min.css";
 import "froala-editor/js/plugins/image.min.js";
@@ -14,48 +16,61 @@ import "froala-editor/js/plugins/emoticons.min.js";
 import "froala-editor/js/plugins/special_characters.min.js";
 import "froala-editor/js/plugins/table.min.js";
 import "froala-editor/js/plugins/link.min.js";
-import {debounce} from "lodash";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMicrophone, faMicrophoneSlash } from '@fortawesome/free-solid-svg-icons';
-
-
+import { debounce } from "lodash";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faMicrophone,
+  faMicrophoneSlash,
+} from "@fortawesome/free-solid-svg-icons";
 
 // Dynamically import FroalaEditorComponent to prevent SSR issues
 const FroalaEditorComponent = dynamic(() => import("react-froala-wysiwyg"), {
   ssr: false,
 });
 
-const SpeechToTextEditor: React.FC = () => {
+const SpeechToTextEditor: React.FC<{ value: string; onChange: (content: string) => void; }> = ({value, onChange}) => {
   const [editorInstance, setEditorInstance] = useState<any>(null);
   const { transcript, resetTranscript } = useSpeechRecognition();
 
   const updateEditorContent = useCallback(
     debounce((transcript: string) => {
       if (editorInstance) {
-        editorInstance.html.insert(" " + transcript);
-        resetTranscript();
+        const currentContent = editorInstance.html.get();
+        const updatedContent = currentContent + " " + transcript;
+        editorInstance.html.set(updatedContent);
+        resetTranscript();  
+
+        onChange(updatedContent);
       }
     }, 100), // Adjust the debounce delay as needed
-    [editorInstance, resetTranscript]
+    [editorInstance, resetTranscript, onChange]
   );
+
+  useEffect(() => {
+    if (transcript) {
+      updateEditorContent(transcript);
+    }
+  }, [transcript, updateEditorContent]);
+
 
   useEffect(() => {
     if (editorInstance) {
       const handleContentChanged = () => {
         const currentContent = editorInstance.html.get();
+        onChange(currentContent); 
       };
 
       // Attach the contentChanged event handler
-      editorInstance.events.on('contentChanged', handleContentChanged);
+      editorInstance.events.on("contentChanged", handleContentChanged);
 
       // Cleanup event listener on component unmount
       return () => {
         if (editorInstance.events.off) {
-          editorInstance.events.off('contentChanged', handleContentChanged);
+          editorInstance.events.off("contentChanged", handleContentChanged);
         }
       };
     }
-  }, [editorInstance]);
+  }, [editorInstance, onChange]);
 
   useEffect(() => {
     if (transcript) {
@@ -68,29 +83,33 @@ const SpeechToTextEditor: React.FC = () => {
       SpeechRecognition.startListening({ continuous: true });
     } else {
       alert("You are offline. Please check your internet connection.");
-    };
-  }
+    }
+  };
   const stopListening = () => SpeechRecognition.stopListening();
-
 
   return (
     <div>
-      <h1>TextEditor</h1>
-      <button
-        onClick={startListening}
-        className="bg-blue-500 text-white px-4 py-2 rounded flex items-center hover:bg-blue-700"
-      >
-        <FontAwesomeIcon icon={faMicrophone} className="mr-2" /> Start Listening
-      </button>
-      <button
-        onClick={stopListening}
-        className="bg-blue-500 text-white px-4 py-2 rounded flex items-center hover:bg-blue-700"
-      >
-        <FontAwesomeIcon icon={faMicrophoneSlash} className="mr-2" /> Stop Listening
-      </button>
-      <div>
+      <div className=" flex gap-x-3 mb-3">
+        <button
+          onClick={startListening}
+          className="bg-blue-500 text-white px-4 py-2 rounded-lg flex items-center hover:bg-blue-700"
+        >
+          <FontAwesomeIcon icon={faMicrophone} className="mr-2" /> Start
+          Listening
+        </button>
+        <button
+          onClick={stopListening}
+          className="bg-blue-500 text-white px-4 py-2 rounded-lg flex items-center hover:bg-blue-700"
+        >
+          <FontAwesomeIcon icon={faMicrophoneSlash} className="mr-2" /> Stop
+          Listening
+        </button>
+      </div>
+      <div className="w-[650px] h-92 ">
         <FroalaEditorComponent
           tag="textarea"
+          model={value}
+          onModelChange={(content : any) => onChange(content)}
           config={{
             placeholderText: "Start writing the content...",
             events: {

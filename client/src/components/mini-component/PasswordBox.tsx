@@ -8,7 +8,7 @@ type PasswordBoxProps={
 function PasswordBox({name,value,placeholder, onChange} : PasswordBoxProps) {
   return (
     <>
-    <input type="password" name={name} value={value} placeholder={placeholder} onChange={onChange} className="bg-white border-none shadow-md w-[300px]"/>
+    <input type="password" name={name} value={value} placeholder={placeholder} onChange={onChange} className="bg-white border-none rounded-md shadow-md w-[300px] dark:bg-[#2C2C2C] dark:border-[#303030] dark:text-white"/>
   </>
   )
 }

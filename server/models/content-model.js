@@ -12,6 +12,7 @@ const ContentSchema = new mongoose.Schema({
   content_type: {
     type: String,
     enum: ["pdf", "video", "post"],
+    required: true,
   },
   location: {
     type: String,
@@ -25,7 +26,8 @@ const ContentSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ["Pending", "Uploaded"],
+    enum: ["Pending", "Uploaded", "Rejected"],
+    default: "Pending",
   },
   user_id: {
     type: mongoose.Schema.Types.ObjectId,
@@ -44,7 +46,7 @@ const ContentSchema = new mongoose.Schema({
   },
   updated_at: {
     type: Date,
-    default: Date.now(),
+    default: ()=> Date.now(),
   },
 });
 

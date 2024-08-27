@@ -18,7 +18,6 @@ const register = async (req, res) => {
 
     let isOTPValid = false;
     for (const user of users) {
-        console.log(user.otp, otp);
       if (await verifyOTP(otp, user.otp)) {
         
         isOTPValid = true;
@@ -76,6 +75,8 @@ const login = async (req, res) => {
     const token = isUserPresent.assignToken();
     const login = new Login({
       user_id: isUserPresent._id,
+      role : isUserPresent.role,
+      name : isUserPresent.name
     });
     await login.save();
     if (!isVerifiedUser) {

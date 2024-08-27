@@ -44,25 +44,8 @@ type ChartOptions = {
   scales: {
     y: {
       beginAtZero: boolean;
-      title: {
-        display: boolean;
-        text: string;
-        font: {
-          size: number;
-          color: string;
-      };
     };
-    };
-    x: {
-      title: {
-        display: boolean;
-        text: string;
-        font: {
-          size: number;
-          color: string;
-      };
-    };
-  };
+   
 };
 };
 
@@ -121,39 +104,20 @@ function LineChart() {
         display: true,
         text: "Monthly Metrics of GyanShristi",
         font: {
-          size: 25,
+          size: 20,
         },
       },
     },
     scales: {
       y: {
         beginAtZero: true,
-        title: {
-          display: true,
-          text: "No. of Content Published and User Registered",
-          font: {
-            size: 20,
-            color: "black",
-          },
-        },
-      },
-      x: {
-        title: {
-          display: true,
-          text: "Months of the Year",
-          font: {
-            size: 20,
-            color: "black",
-          }
-        },
-        
       },
     },
   };
 
   return (
-    <div>
-      <Line data={chartData} options={options}></Line>
+    <div className="w-full h-full">
+      <Line data={chartData} options={options} />
     </div>
   );
 }

@@ -4,50 +4,59 @@ const multer = require("multer");
 const pdfUpload = require("../configs/pdf-upload");
 const videoUpload = require("../configs/video-upload");
 const thumbnailUpload = require("../configs/thumbnail-upload");
-
-// Combine both upload middlewares
-const upload = multer().fields([
-  {
-    name: "thumbnail",
-    maxCount: 1,
-    storage: thumbnailUpload,
-    limits: thumbnailUpload.limits,
-  },
-  { name: "pdf", maxCount: 1, storage: pdfUpload, limits: pdfUpload.limits },
-  {
-    name: "video",
-    maxCount: 1,
-    storage: videoUpload,
-    limits: videoUpload.limits,
-  },
-]);
-
+const validate = require("../middlewares/validation/validate-middleware");
+const contentSchema = require("../utils/validators/content-validaton");
 // Import controller functions
 const contentController = require("../controllers/content-controller");
 const verifyToken = require("../middlewares/token/tokenverify");
 
 // Define routes for adding content
-router.post("/add/post", verifyToken, upload, contentController.addPostContent);
-router.post("/add/pdf", verifyToken, upload, contentController.addPdfContent);
+router.post(
+  "/add/post",
+  verifyToken,
+  thumbnailUpload,
+  validate(contentSchema),
+  contentController.addPostContent
+);
+router.post(
+  "/add/pdf",
+  verifyToken,
+  // thumbnailUpload,
+  pdfUpload,
+  validate(contentSchema),
+  contentController.addPdfContent
+);
 router.post(
   "/add/video",
   verifyToken,
-  upload,
+  thumbnailUpload,
+  videoUpload,
+  validate(contentSchema),
   contentController.addVideoContent
 );
 
 // Define routes for editing content
-router.put("/edit/post/:id", verifyToken, contentController.editPostContent);
+router.put(
+  "/edit/post/:id",
+  verifyToken,
+  thumbnailUpload,
+  validate(contentSchema),
+  contentController.editPostContent
+);
 router.put(
   "/edit/pdf/:id",
   verifyToken,
-  upload,
+  thumbnailUpload,
+  pdfUpload,
+  validate(contentSchema),
   contentController.editPdfContent
 );
 router.put(
   "/edit/video/:id",
   verifyToken,
-  upload,
+  thumbnailUpload,
+  videoUpload,
+  validate(contentSchema),
   contentController.editVideoContent
 );
 
@@ -56,6 +65,9 @@ router.delete("/delete/:id", verifyToken, contentController.deleteContent);
 
 // Define routes for approving content
 router.put("/approve/:id", verifyToken, contentController.approveContent);
+
+// Define routes for rejecting content
+router.put("/reject/:id", verifyToken, contentController.rejectContent);
 
 // Define routes for getting content by ID
 router.get("/post/:id", contentController.getPostContentById);
@@ -66,6 +78,6 @@ router.get("/video/:id", contentController.getVideoContentById);
 router.get("/", contentController.getAllContent);
 
 // Define routes for getting all content count
-router.get("/count", contentController.countContent);
+router.get("/count-content", contentController.countContent);
 
 module.exports = router;
