@@ -61,7 +61,7 @@ function EditProfile() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className='flex flex-col h-screen justify-center items-center'>
+    <form onSubmit={handleSubmit} className='flex flex-col h-screen p-14 items-center'>
         
         <div className='flex flex-col justify-center items-center w-96 gap-5 px-10 py-3 shadow-lg bg-[#F9F7F7]'>
         <div className="w-24 relative">

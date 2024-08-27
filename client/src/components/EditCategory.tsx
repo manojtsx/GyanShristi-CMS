@@ -143,7 +143,7 @@ function EditCategory() {
     
   return (
     <div>
-         <form onSubmit={handleEditSubmit} className='flex flex-col h-screen justify-center items-center'>
+         <form onSubmit={handleEditSubmit} className='flex flex-col h-screen mt-14 items-center'>
       <div className="w-24 relative">
               <Image
                 src="/GirlProfile.jpg"
