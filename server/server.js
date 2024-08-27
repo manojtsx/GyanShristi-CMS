@@ -33,7 +33,7 @@ app.use("/api/category", categoryRouter);
 app.use("/api/comment", commentRouter);
 
 // Serve static files from the "uploads" directory
-app.use('/files', express.static(path.join(__dirname, 'uploads')));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.get("/", async (req, res) => {
   res.status(200).send("hello world");

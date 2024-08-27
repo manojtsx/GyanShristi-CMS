@@ -15,7 +15,7 @@ const Logout: React.FC<LogoutModalProps> = ({ isOpen, onClose}) => {
   const {logout} = useAuth();
   const router = useRouter();
   const onConfirm = async() => {
-    await logout();
+    logout();
     router.push('/login')
   }
 

@@ -23,7 +23,14 @@ function Navbar() {
     { id: "home", name: "Home", link: "/" },
     {
       id: "notification",
-      name: <FontAwesomeIcon icon={faBell} className="h-5 w-5" />,
+      name:(
+        <>
+          <span className="hidden sm:inline">
+            <FontAwesomeIcon icon={faBell} className="h-5 w-5" />
+          </span>
+          <span className="inline sm:hidden">Notification</span>
+        </>
+      ),
       link: "/notification",
     },
     { id: "about", name: "About", link: "/about" },
@@ -32,7 +39,7 @@ function Navbar() {
   ];
 
   return (
-    <nav className="dark:bg-[#1A1A1A] dark:text-white w-full">
+    <>
       <Image
         src="/GyanShristiAdBanner.png"
         width={500}
@@ -40,7 +47,8 @@ function Navbar() {
         alt="Advertisement"
         className="w-screen h-28 object-cover"
       />
-      <div className="h-12 flex justify-between items-center pl-1 pr-3 bg-white dark:bg-[#1A1A1A] shadow-md">
+    <nav className="dark:bg-[#1A1A1A] dark:text-white w-full sticky z-50 top-0">
+      <div className="h-12 flex justify-between items-center pl-1 pr-3 bg-white dark:bg-[#1A1A1A] shadow-md ">
         <Image
           src="/logo.png"
           alt="CMS Logo"
@@ -70,17 +78,17 @@ function Navbar() {
         <FontAwesomeIcon
           icon={isClick ? faXmark : faBars}
           onClick={toggleMenu}
-          className="h-[60%] sm:hidden"
+          className="h-[60%] sm:hidden cursor-pointer"
         />
       </div>
 
       {/* Mobile Menu */}
       {isClick && (
-        <ul className="w-full flex flex-col items-start font-semibold bg-white dark:bg-[#1A1A1A] sm:hidden">
+        <ul className="w-screen flex flex-col items-start font-semibold bg-white dark:bg-[#1A1A1A] sm:hidden">
           {navItems.map((item, index) => (
             <Link href={item.link} key={index}>
               <li
-                className="w-full flex justify-center hover:bg-[rgb(162,204,243)] dark:hover:bg-[#1E58C8] p-2"
+                className="w-screen flex justify-center hover:bg-[rgb(162,204,243)] dark:hover:bg-[#1E58C8] p-2"
                 onClick={() => handleActiveLink(item.id)}
               >
                 {item.name}
@@ -90,6 +98,7 @@ function Navbar() {
         </ul>
       )}
     </nav>
+    </>
   );
 }
 export default Navbar;

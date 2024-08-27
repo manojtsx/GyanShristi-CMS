@@ -3,12 +3,15 @@ import React, { useEffect, useState, useRef } from "react";
 import SpeechToTextEditor from "./SpeechToTextEditor";
 import { useAuth } from "@/context/AuthContext";
 import { useNotifications } from "@/context/NotificationContext";
+import { useRouter, useParams } from "next/navigation";
 
 // Call the backend API
 const API = process.env.NEXT_PUBLIC_BACKEND_API;
 
-function Post() {
+function EditPost() {
   const { token } = useAuth();
+  const router = useRouter();
+  const { id } = useParams();
   const { addNotification } = useNotifications();
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const [isAuthorOpen, setIsAuthorOpen] = useState(false);
@@ -34,6 +37,40 @@ function Post() {
     category_id: "",
     content_type: "post",
   });
+  const [thumbnail, setThumbnail] = useState<string | null>(null); // State to hold the thumbnail URL
+
+  // Fetch post data according to id
+  const fetchPost = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const response = await fetch(`${API}api/content/post/${id}`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+      if (!response.ok) throw new Error("Failed to fetch post");
+      const postData = await response.json();
+
+      console.log("Post data:", postData); // Debugging
+
+      // Ensure postData is an object
+      if (typeof postData === "object") {
+        setPost(postData);
+        setThumbnail(postData.thumbnail); // Set the thumbnail URL
+      } else {
+        throw new Error("Post data is not an object");
+      }
+    } catch (error: any) {
+      addNotification(error.message, "error");
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const fetchCategoriesAndUsers = async () => {
     try {
@@ -79,6 +116,7 @@ function Post() {
   };
 
   useEffect(() => {
+    fetchPost();
     fetchCategoriesAndUsers();
   }, []);
 
@@ -128,12 +166,11 @@ function Post() {
       }
 
       // Make the POST request with the FormData
-      const response = await fetch(`${API}api/content/add/post`, {
+      const response = await fetch(`${API}api/content/edit/post/${id}`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
-          // No need for "Content-Type": "multipart/form-data"
-          // as the browser sets it automatically with the correct boundary.
+          'Content-Type': 'multipart/form-data'
         },
         body: formData,
       });
@@ -164,7 +201,7 @@ function Post() {
   };
 
   return (
-       <div className="flex flex-col md:flex-row gap-y-10 gap-x-14 p-8 bg-white rounded-xl shadow-lg overflow-auto">
+    <div className="flex flex-col md:flex-row gap-y-10 gap-x-14 p-8 bg-white rounded-xl shadow-lg overflow-auto">
       <div className="flex flex-col items-start justify-center md:w-2/3 max-h-full overflow-y-auto">
         <div className="w-full mb-8">
           <label htmlFor="title" className="block text-lg font-medium text-gray-800 mb-2">
@@ -255,6 +292,12 @@ function Post() {
                 alt="Uploaded Photo"
                 className="w-full h-full object-cover rounded-lg"
               />
+            ) : thumbnail ? (
+              <img
+                src={`${API}${thumbnail}`}
+                alt="Current Thumbnail"
+                className="w-full h-full object-cover rounded-lg"
+              />
             ) : (
               <span className="text-gray-500">Upload</span>
             )}
@@ -280,4 +323,4 @@ function Post() {
   );
 }
 
-export default Post;
+export default EditPost;

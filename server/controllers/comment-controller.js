@@ -154,11 +154,12 @@ const viewAllComments = async (req, res) => {
 // Controller to view comments by content
 const viewCommentByContent = async (req, res) => {
   try {
-    // Extract content from the request query
+    // Extract contentId from the request query
     const { contentId } = req.query;
 
-    // Find comments that match the content
-    const comments = await Comment.find({ content_id: contentId });
+    // Find comments that match the content and populate the user details
+    const comments = await Comment.find({ content_id: contentId })
+      .populate('user_id', 'name email profile_pic') // Populate the user details (only selected fields)
 
     if (!comments || comments.length === 0) {
       return res
@@ -166,12 +167,13 @@ const viewCommentByContent = async (req, res) => {
         .json({ msg: "No comments found matching the content" });
     }
 
-    // Return a success response with the matching comments
+    // Return a success response with the matching comments and user details
     res.status(200).json({ msg: "Comments retrieved", comments });
   } catch (err) {
     res.status(500).json({ msg: err.message });
   }
 };
+
 
 // Controller to delete comment
 const deleteComment = async (req, res) => {

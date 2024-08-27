@@ -47,6 +47,24 @@ function CategoryTable() {
     getCategoryList();
     1;
   }, []);
+
+  const handleDelete = async (id: string) => {
+    try {
+      const res = await fetch(`${API}api/category/delete/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const data = await res.json();
+      addNotification(data.msg, "success");
+      getCategoryList();
+    } catch (err: any) {
+      addNotification(err.message, "error");
+    }
+  }
+
   // State for pagination
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10; // Number of items per page
@@ -131,7 +149,7 @@ function CategoryTable() {
                       router.push(`/${user.role}/category/edit/${row._id}`);
                     }}
                   />
-                  <RiDeleteBin6Line className="text-[#011936] text-xl cursor-pointer" />
+                  <RiDeleteBin6Line className="text-[#011936] text-xl cursor-pointer" onClick={()=>handleDelete(row._id)}/>
                 </td>
               </tr>
             ))}

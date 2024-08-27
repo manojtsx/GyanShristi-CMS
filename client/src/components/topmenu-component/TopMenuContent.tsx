@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { ImSearch } from "react-icons/im";
 import ContentTable from "../common-component/ContentTable";
@@ -10,6 +10,8 @@ import { useAuth } from "@/context/AuthContext";
 
 function TopMenuContent() {
   const [activeLink, setActiveLink] = useState("all");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
   const { user } = useAuth();
 
@@ -20,7 +22,32 @@ function TopMenuContent() {
     { id: "pdf", name: "PDFs" },
   ];
 
+  useEffect(() => {
+    // Simulate fetching data
+    const fetchData = async () => {
+      try {
+        // Simulate a delay
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        // Simulate a successful fetch
+        setLoading(false);
+      } catch (err) {
+        setError("Failed to load content data");
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [activeLink]);
+
   const renderContent = () => {
+    if (loading) {
+      return <p>Loading...</p>;
+    }
+
+    if (error) {
+      return <p>{error}</p>;
+    }
+
     switch (activeLink) {
       case "post":
         return <PostTable />;
@@ -76,6 +103,8 @@ function TopMenuContent() {
               }`}
               onClick={() => {
                 setActiveLink(item.id);
+                setLoading(true);
+                setError(null);
               }}
             >
               <button>{item.name}</button>

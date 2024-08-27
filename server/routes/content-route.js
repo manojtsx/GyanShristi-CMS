@@ -1,6 +1,5 @@
 const express = require("express");
 const router = express.Router();
-const multer = require("multer");
 const pdfUpload = require("../configs/pdf-upload");
 const videoUpload = require("../configs/video-upload");
 const thumbnailUpload = require("../configs/thumbnail-upload");

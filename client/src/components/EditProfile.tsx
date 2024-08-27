@@ -21,7 +21,7 @@ function EditProfile() {
     name: user?.name || '',
     username: user?.username || '',
     address: user?.address || '',
-    phone_number: user?.phone_number || ''
+    phone_number: user?.phone_number.toString() || ''
   })
   const handleEditUserChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -52,6 +52,9 @@ function EditProfile() {
       console.log('User updated successfully:', result);
       addNotification(result.msg, 'success')
       router.push(`/${user?.role}/profile`)
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
       
       // Optionally update localStorage and context here
     } catch (error : any) {
@@ -87,8 +90,8 @@ function EditProfile() {
             <Textbox name='address' value={updatedUser.address} placeholder='Address' onChange={handleEditUserChange}/>
             </div>
             <div className='w-full flex justify-between items-center'>
-            <label htmlFor="contact" className='text-left w-32'>Contact: </label>
-            <Textbox name='contact' value={updatedUser.phone_number} placeholder='Contact' onChange={handleEditUserChange}/>
+            <label htmlFor="phone_number" className='text-left w-32'>Contact: </label>
+            <Textbox name='phone_number' value={updatedUser.phone_number} placeholder='Contact' onChange={handleEditUserChange}/>
             </div>
             <SubmitButton text="Save"/>
             <Link href={`/${user.role}/change-password`} className='text-[#1E43C8]'>Change Password</Link>

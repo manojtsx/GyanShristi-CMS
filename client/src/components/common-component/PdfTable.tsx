@@ -31,7 +31,7 @@ interface Content {
 }
 
 function PdfTable() {
-  const { token } = useAuth();
+  const { token, user } = useAuth();
   const { addNotification } = useNotifications();
   const router = useRouter();
   const [data, setData] = useState<Content[]>([]);
@@ -49,21 +49,21 @@ function PdfTable() {
             Authorization: `Bearer ${token}`,
           },
         });
+        const result = await response.json();
 
         if (!response.ok) {
-          throw new Error("Failed to fetch content data");
+          throw new Error(result.msg);
         }
 
-        const result = await response.json();
         setData(result.content);
-      } catch (error) {
+      } catch (error : any) {
         console.error("Error fetching data:", error);
-        addNotification("Failed to load content data", "error");
+        addNotification(error.message, "error");
       }
     };
 
     fetchData();
-  }, [token, addNotification]);
+  }, [token]);
 
   const handleDelete = async (id: string) => {
     try {
@@ -192,7 +192,7 @@ function PdfTable() {
             currentPage={currentPage}
             totalPages={totalPages}
             onPageChange={handlePageChange}
-          />
+          />  
         </div>
     </div>
   );

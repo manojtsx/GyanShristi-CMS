@@ -86,7 +86,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     } else if (userData.role === 'author') {
       router.push('/author/dashboard');
     } else {
-      router.push('/login');
+      router.push('/');
     }
     setUser(userData);
     // Store in localStorage

@@ -12,8 +12,9 @@ const addCategory = async (req, res) => {
     }
 
     if (userRole === "admin" || userRole === "editor") {
-      const { title } = req.body;
-      const newCategory = new Category({ title, user_id: userId });
+      const { title, user_id } = req.body;
+      const categoryUserId = user_id || userId; // Use user_id from request body if provided, otherwise use authenticated userId
+      const newCategory = new Category({ title, user_id: categoryUserId });
 
       // Check if category already exists or not
       const existingCategory = await Category.findOne({ title });

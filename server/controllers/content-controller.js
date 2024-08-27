@@ -175,6 +175,7 @@ const editPostContent = async (req, res) => {
     if (!post) {
       return res.status(404).json({ msg: "Post does not exist." }); // If post not found, respond with error
     }
+
     // Check if user is authorized to edit the post
     if (user.role === "viewer" || (user.role === "author" && post.user_id.toString() !== userIdToUse)) {
       return res.status(401).json({ msg: "Not authorized to edit this post" });
@@ -188,6 +189,7 @@ const editPostContent = async (req, res) => {
         }
       });
     }
+
     // Save blog content to a file
     const blogFileName = `post-${Date.now()}.txt`; // Generate a unique filename
     const writeFilePath = path.join(__dirname, "../uploads/post", blogFileName); // Create file path
@@ -426,7 +428,6 @@ const rejectContent = async (req, res) => {
   }
 };
 
-// Get post content detail by ID
 const getPostContentById = async (req, res) => {
   try {
     const contentId = req.params.id;
@@ -443,27 +444,36 @@ const getPostContentById = async (req, res) => {
       .status(403)
       .json({ msg: "You are trying to open post but this is a video/pdf." });
     }
+
+    // Find the user who owns the content
+    const userOwner = await User.findById(content.user_id).select('-password'); // Exclude password field
+
+    if (!userOwner) {
+      return res.status(404).json({ msg: "User who owns this content does not exist" });
+    }
     
     // Fetch and return the post content
     const contentToShow = await Content.findById(contentId);
     
     // Read file content
-    const filePath = path.join(__dirname, '../' ,contentToShow.location);
-    console.log(filePath)
-if (!fs.existsSync(filePath)) {
-  return res.status(404).json({ msg: "File not found" });
-}
+    const filePath = path.join(__dirname, '../', contentToShow.location);
+    console.log(filePath);
+    
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).json({ msg: "File not found" });
+    }
 
     fs.readFile(filePath, 'utf8', (err, data) => {
       if (err) {
         return res.status(500).json({ msg: "Error reading file" });
       }
       
-      console.log(data)
-      // Send back both the content details and file content
+      console.log(data);
+      // Send back both the content details, user owner info, and file content
       res.status(200).json({
         ...contentToShow._doc, // Spread operator to include all content fields
-        fileContent: data // Add file content to the response
+        blog: data, // Add file content to the response
+        userOwner // Add user owner info to the response
       });
     });
   } catch (err) {

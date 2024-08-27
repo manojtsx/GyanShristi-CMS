@@ -31,7 +31,7 @@ interface Content {
 }
 
 function VideoTable() {
-  const { token } = useAuth();
+  const { token,user } = useAuth();
   const { addNotification } = useNotifications();
   const router = useRouter();
   const [data, setData] = useState<Content[]>([]);
@@ -49,21 +49,21 @@ function VideoTable() {
             Authorization: `Bearer ${token}`,
           },
         });
-
+        
+        const result = await response.json();
         if (!response.ok) {
-          throw new Error("Failed to fetch content data");
+          throw new Error(result.msg);
         }
 
-        const result = await response.json();
         setData(result.content);
-      } catch (error) {
+      } catch (error : any) {
         console.error("Error fetching data:", error);
-        addNotification("Failed to load content data", "error");
+        addNotification(error.message, "error");
       }
     };
 
     fetchData();
-  }, [token, addNotification]);
+  }, [token]);
 
   const handleDelete = async (id: string) => {
     try {
@@ -73,17 +73,17 @@ function VideoTable() {
           Authorization: `Bearer ${token}`,
         },
       });
+      const result = await response.json();
 
       if (!response.ok) {
-        throw new Error("Failed to delete content");
+        throw new Error(result.msg);
       }
 
-      const result = await response.json();
       setData(data.filter((row) => row._id !== id));
       addNotification(result.msg, "success");
-    } catch (error) {
+    } catch (error : any) {
       console.error("Error deleting content:", error);
-      addNotification("Failed to delete content", "error");
+      addNotification(error.message, "error");
     }
   };
 

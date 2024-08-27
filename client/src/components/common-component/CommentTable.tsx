@@ -1,34 +1,97 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ImReply } from "react-icons/im";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import Pagination from "../mini-component/Pagination";
+import { useAuth } from "@/context/AuthContext";
+
+const API = process.env.NEXT_PUBLIC_BACKEND_API;
+
+interface Comment {
+  _id: string;
+  user: {
+    email: string;
+    name: string;
+    username: string;
+  };
+  content: {
+    title: string;
+    description: string;
+  };
+  description: string;
+  created_at: string;
+}
 
 function CommentTable() {
-  const [data, setData] = useState([
-    {
-      id: 1,
-      user: "seezon",
-      post: "post1",
-      comment: "very helpful content",
-      date: "June 2",
-    },
-    // Add more rows here if needed
-  ]);
+  const [data, setData] = useState<Comment[]>([]);
+  const { token } = useAuth();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5; // Number of items per page
-  const totalPages = Math.ceil(data.length / itemsPerPage);
+
+  useEffect(() => {
+    fetchComments();
+  }, []);
+
+  const fetchComments = async () => {
+    try {
+      const response = await fetch(`${API}api/comment/comments`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+      });
+      const result = await response.json();
+      if (!response.ok) {
+        throw new Error(result.msg || 'Failed to fetch comments');
+      }
+      console.log(result);
+      setData(result.comments);
+    } catch (error: any) {
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
+
   const startIndex = (currentPage - 1) * itemsPerPage;
   const paginatedData = data.slice(startIndex, startIndex + itemsPerPage);
+  const totalPages = Math.ceil(data.length / itemsPerPage);
 
-  const handleDelete = (id: any) => {
-    setData(data.filter((row) => row.id !== id));
+  const handleDelete = async (id: string) => {
+    try {
+      const response = await fetch(`${API}api/comment/delete/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization' :  `Bearer ${token}`
+        },
+      });
+      const result = await response.json();
+      if (!response.ok) {
+        throw new Error();
+      }
+      setData(data.filter((row) => row._id !== id));
+    } catch (error: any) {
+      setError(error.message);
+    }
   };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
   return (
     <div>
@@ -90,19 +153,19 @@ function CommentTable() {
           <tbody>
             {paginatedData.map((row) => (
               <tr
-                key={row.id}
+                key={row._id}
                 className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600"
               >
-                <td className="px-6 py-4">{row.user}</td>
-                <td className="px-6 py-4">{row.post}</td>
-                <td className="px-1 py-4">{row.comment}</td>
-                <td className="px-6 py-4">{row.date}</td>
+                <td className="px-6 py-4">{row.user.name}</td>
+                <td className="px-6 py-4">{row.content.title}</td>
+                <td className="px-1 py-4">{row.description}</td>
+                <td className="px-6 py-4">{new Date(row.created_at).toLocaleDateString()}</td>
                 <td className="flex space-x-5 px-6 py-4">
                   <ImReply className="text-[#011936] text-xl cursor-pointer" />
-                  <RiDeleteBin6Line
+                  {/* <RiDeleteBin6Line
                     className="text-[#011936] text-xl cursor-pointer"
-                    onClick={() => handleDelete(row.id)}
-                  />
+                    onClick={() => handleDelete(row._id)}
+                  /> */}
                 </td>
               </tr>
             ))}
