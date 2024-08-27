@@ -57,7 +57,7 @@ function Footer() {
         <form action="" className='hidden sm:flex flex-col gap-2'>
         <label htmlFor="newsletter" className='font-semibold text-lg'>Newsletter Signup</label>
             <input type='text' name='newsletter' placeholder='Username' className='max-w-56 rounded-[10px] border-none dark:bg-[#2C2C2C] dark:border-[#303030]'/>
-            <button className='h-[35px] max-w-56 bg-[#3570E2] rounded-[10px] dark:bg-[#3742FA]'>Submit</button>
+            <button className='h-[35px] max-w-56 bg-[#3570E2] rounded-[10px] dark:bg-[#3742FA] hover:bg-[#2B2E4A] hover:opacity-70 dark:hover:bg-[#202af8]'>Submit</button>
         </form>
         </div>
     </footer>

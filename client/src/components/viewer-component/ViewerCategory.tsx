@@ -3,8 +3,8 @@ import React from 'react'
 function ViewerCategory() {
     const category =["Category1", "Category2", "Category3", "Category4", "Category5"];
   return (
-    <div className='bg-white flex flex-col justify-center md:items-start items-center py-12 px-5 md:px-20 gap-8'>
-        <p className='text-2xl font-bold'>Category</p>
+    <div className='bg-white flex flex-col justify-center md:items-start items-center py-12 px-5 md:px-20 gap-8 dark:bg-[#121212] dark:text-white'>
+        <p className='text-2xl font-semibold '>Category</p>
         <div className='flex flex-col md:flex-row gap-5 items-center'>
         {
             category.map((item, index) => (
