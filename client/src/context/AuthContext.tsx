@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Loading from '@/components/Loading';
@@ -50,15 +50,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             localStorage.setItem('user', JSON.stringify(updatedUser));
           } else {
             logout();
-            router.push('/login')
+            router.push('/login');
             return;
           }
         } catch (error) {
           console.error("Failed to fetch user data:", error);
           logout();
-          router.push('/login')
+          router.push('/login');
           return; 
         }
+      } else {
+        setLoading(false);  // Set loading to false if no token or user is found
       }
 
       setLoading(false);  // Set loading to false after initialization

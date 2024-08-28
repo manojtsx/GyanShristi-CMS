@@ -435,6 +435,31 @@ const addUser = async (req, res) => {
   }
 };
 
+// apply as author
+const applyAsAuthor = async(req,res) =>{
+    try {
+      const {userId} = req.body;
+      const user = await User.findById(userId);
+      if (!user) {
+        return res.status(404).json({ msg: "User not found" });
+      }
+
+      // Check if the user is already an author or admin
+      if (user.role === "author" || user.role === "admin" || user.role === "editor") {
+        return res.status(409).json({ msg: "You are already above viewer post." });
+      }
+
+      // Update the user's role to "author" and status to "pending"
+      user.role = "author";
+      user.status = "pending";
+      await user.save();
+
+      res.status(200).json({ msg: "Application submitted successfully" });
+    } catch (err) {
+      res.status(500).json({ msg: err.message });
+    }
+  };
+
 
 module.exports = {
   getUser,
@@ -449,5 +474,6 @@ module.exports = {
   promoteToAdmin,
   uploadProfilePicture,
   countUser,
-  addUser
+  addUser,
+  applyAsAuthor
 };

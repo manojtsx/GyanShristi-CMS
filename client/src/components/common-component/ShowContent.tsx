@@ -50,13 +50,7 @@ const ShowContent: React.FC = () => {
 
     const { id } = useParams<{ id: string | string[] }>(); // Extracting the content ID from the URL params
 
-    useEffect(() => {
-        if (id) {
-            const contentId = Array.isArray(id) ? id[0] : id; // Ensure id is a string
-            fetchContentById(contentId);
-        }
-    }, [id]);
-
+    
     const fetchContentById = async (contentId: string) => {
         try {
             setLoading(true);
@@ -68,16 +62,22 @@ const ShowContent: React.FC = () => {
             });
             const data = await response.json();
             if (!response.ok) {
-                throw new Error('Error fetching content');
+                throw new Error(data.msg);
             }
             console.log(data)
             setContentData(data);
-        } catch (error) {
-            setError((error as Error).message);
+        } catch (error : any) {
+            setError(error.message);
         } finally {
             setLoading(false);
         }
     };
+    useEffect(() => {
+        if (id) {
+            const contentId = Array.isArray(id) ? id[0] : id; // Ensure id is a string
+            fetchContentById(contentId);
+        }
+    }, [id]);
 
     useEffect(() => {
         fetchComments();
@@ -94,7 +94,7 @@ const ShowContent: React.FC = () => {
           });
           const result = await response.json();
           if (!response.ok) {
-            throw new Error(result.msg || 'Failed to fetch comments');
+            throw new Error(result.msg);
           }
           console.log(result);
           setComments(result.comments);
@@ -160,7 +160,7 @@ const ShowContent: React.FC = () => {
     }
 
     if (!contentData) {
-        return <div>No content available</div>;
+        return <div>{error}</div>;
     }
 
     const {
@@ -173,7 +173,7 @@ const ShowContent: React.FC = () => {
     } = contentData;
 
     return (
-        <div className="flex flex-col lg:flex-row mx-auto p-4 lg:py-8 lg:px-12">
+                <div className="flex flex-col lg:flex-row mx-auto p-4 lg:py-8 lg:px-12">
             <div className="flex-1 lg:mr-8 mb-8 lg:mb-0">
                 <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-left text-gray-900 uppercase tracking-tight mb-6 relative">
                     {title}
@@ -186,14 +186,14 @@ const ShowContent: React.FC = () => {
                         <div className='flex items-center gap-1'>
                             <div className="w-10 h-10">
                                 <Image
-                                    src={`${API}${contentData.userOwner.profile_pic}`}
-                                    alt={contentData.userOwner.name || "Unknown"}
+                                    src={contentData.userOwner ? `${API}${contentData.userOwner.profile_pic}` : ""}
+                                    alt={contentData.userOwner ? contentData.userOwner.name : "Unknown"}
                                     height={500}
                                     width={500}
                                     className="h-10 w-10 rounded-full"
                                 />
                             </div>
-                            <p className='font-semibold text-black'>{contentData.userOwner.name || "Unknown"}</p>
+                            <p className='font-semibold text-black'>{contentData.userOwner ? contentData.userOwner.name : "Unknown"}</p>
                         </div>
                         <p className='text-xs text-gray-700 text-right'>Information and communication technology</p>
                     </div>

@@ -3,7 +3,7 @@ import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRobot, faVolumeUp, faMicrophone, faFolderOpen, faGlobe } from '@fortawesome/free-solid-svg-icons';
 import Image from 'next/image';
-import ApplyAsAuthorButton from '@/components/mini-component/ApplyAsAuthorButton';
+import ApplyAsAuthorButton from '@/components/viewer-component/ApplyAsAuthorButton';
 
 const About = () => {
   return (

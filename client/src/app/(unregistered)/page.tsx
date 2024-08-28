@@ -1,6 +1,6 @@
 import AddUser from "@/components/common-component/AddUser";
 import Login from "@/components/Login";
-import ApplyAsAuthorButton from "@/components/mini-component/ApplyAsAuthorButton";
+import ApplyAsAuthorButton from "@/components/viewer-component/ApplyAsAuthorButton";
 import Register from "@/components/Register";
 import ViewerCategory from "@/components/viewer-component/ViewerCategory";
 import ViewerLatestContent from "@/components/viewer-component/ViewerLatestContent";

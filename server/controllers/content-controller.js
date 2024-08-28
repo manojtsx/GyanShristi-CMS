@@ -448,9 +448,9 @@ const getPostContentById = async (req, res) => {
     // Find the user who owns the content
     const userOwner = await User.findById(content.user_id).select('-password'); // Exclude password field
 
-    if (!userOwner) {
-      return res.status(404).json({ msg: "User who owns this content does not exist" });
-    }
+    // if (!userOwner) {
+    //   return res.status(404).json({ msg: "User who owns this content does not exist" });
+    // }
     
     // Fetch and return the post content
     const contentToShow = await Content.findById(contentId);
