@@ -27,13 +27,13 @@ useEffect(() => {
      
       <FontAwesomeIcon
         icon={faMoon}
-        className={`h-4 w-4  bg-white  text-black rounded-full p-1 relative translate-x-8 ${isDarkMode ? ' bg-white  text-black' : '' }`}
+        className={`h-4 w-4  bg-white cursor-pointer text-black rounded-full p-1 relative translate-x-8 ${isDarkMode ? ' bg-white  text-black' : '' }`}
         onClick={toggleIcon}
       />
     ) : (
       <FontAwesomeIcon
       icon={faSun}
-      className={`h-4 w-4 rounded-full bg-black  text-white p-1 relative ${!isDarkMode ? ' bg-black  text-white' : '' }`}
+      className={`h-4 w-4 rounded-full bg-black cursor-pointer  text-white p-1 relative ${!isDarkMode ? ' bg-black  text-white' : '' }`}
       onClick={toggleIcon}
     />
     )}

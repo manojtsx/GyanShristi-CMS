@@ -38,7 +38,7 @@ function CommentTable() {
 
   const fetchComments = async () => {
     try {
-      const response = await fetch(`${API}api/comment/comments`, {
+      const response = await fetch(`${API}api/comment/`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

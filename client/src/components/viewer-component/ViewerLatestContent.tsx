@@ -39,6 +39,7 @@ function ViewerLatestContent() {
           throw new Error('Failed to fetch content');
         }
         const data = await res.json();
+        console.log(data.content)
         if (Array.isArray(data.content)) {
           setContents(data.content);
         } else {
@@ -90,15 +91,15 @@ function ViewerLatestContent() {
             </div>
             <div className='flex justify-between items-center bg-[#E8E4E4] rounded-br-2xl rounded-bl-2xl p-4'>
               <div className='flex items-center gap-1'>
-                {content.user_id.profile_pic && (
+                {/* {content.user_id.profile_pic && (
                   <Image src={typeof content.user_id.profile_pic === 'string' ? content.user_id.profile_pic :""} alt='Author Picture' width={40} height={40} className="h-10 w-10 rounded-full" />
-                )}
-                <p
+                )}  */}
+                {/* <p
                   className='overflow-hidden text-ellipsis whitespace-nowrap font-semibold text-sm'
                   title={content.user_id.name}
                 >
                   {typeof content.user_id.name === 'string' ? content.user_id.name : "Unknown Author"}
-                </p>
+                </p> */}
               </div>
               <div className='text-right'>
                 {content.category_id.length > 0 && (

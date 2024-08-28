@@ -159,10 +159,6 @@ const ShowContent: React.FC = () => {
         );
     }
 
-    if (error) {
-        return <div>Error: {error}</div>;
-    }
-
     if (!contentData) {
         return <div>No content available</div>;
     }

@@ -117,7 +117,6 @@ const SideMenuBarAuthor = () => {
         } duration-300`}
         onClick={() => {
           setActiveMenuItem("Profile");
-          router.push("/editor/profile");
         }}
       >
         <Image

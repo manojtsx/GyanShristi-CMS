@@ -154,7 +154,6 @@ const SideMenuBarEditor = () => {
         } ${!open ? "justify-center" : "pl-5"} duration-300`}
         onClick={() => {
           setActiveMenuItem("Profile");
-          router.push("/editor/profile");
         }}
       >
         <Image
