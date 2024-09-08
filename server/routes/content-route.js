@@ -20,7 +20,6 @@ router.post(
 router.post(
   "/add/pdf",
   verifyToken,
-  // thumbnailUpload,
   pdfUpload,
   validate(contentSchema),
   contentController.addPdfContent
@@ -28,7 +27,6 @@ router.post(
 router.post(
   "/add/video",
   verifyToken,
-  thumbnailUpload,
   videoUpload,
   validate(contentSchema),
   contentController.addVideoContent

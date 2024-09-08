@@ -29,15 +29,6 @@ const contentSchema = z
   })
   .refine(
     (data) => {
-      if (data.content_type === "pdf" || data.content_type === "video") {
-        return !!data.location;
-      }
-      return true;
-    },
-    { message: "Location is required for pdf and video content type", path: ["location"] }
-  )
-  .refine(
-    (data) => {
       if (data.content_type === "post") {
         return !!data.blog;
       }
