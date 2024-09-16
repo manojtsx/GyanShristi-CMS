@@ -31,7 +31,7 @@ interface Content {
 }
 
 function ContentTable() {
-  const { token , user} = useAuth();
+  const { token, user } = useAuth();
   const { addNotification } = useNotifications();
   const router = useRouter();
   const [data, setData] = useState<Content[]>([]);
@@ -56,7 +56,7 @@ function ContentTable() {
         }
 
         setData(result.content);
-      } catch (error : any) {
+      } catch (error: any) {
         console.error("Error fetching data:", error);
         addNotification(error.message, "error");
       }
@@ -96,7 +96,11 @@ function ContentTable() {
   const paginatedData = data.slice(startIndex, startIndex + itemsPerPage);
 
   return (
-    <div className="w-[1000px] overflow-x-auto shadow-md sm:rounded-lg mt-9">
+    <div>
+      <h1 className=" text-2xl font-serif font-bold text-[#011936] drop-shadow-lg mb-4">
+        All Contents
+      </h1>
+
       <div className="flex justify-between items-center mb-3">
         <div className="flex gap-x-3">
           <select
@@ -131,69 +135,73 @@ function ContentTable() {
           />
         </div>
       </div>
-      <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-        <thead className="text-xs text-gray-200 uppercase bg-[#011936]">
-          <tr>
-            <th scope="col" className="px-6 py-3">
-              Title
-            </th>
-            <th scope="col" className="px-6 py-3">
-              Created by
-            </th>
-            <th scope="col" className="px-6 py-3">
-              Category
-            </th>
-            <th scope="col" className="px-6 py-3">
-              Created on
-            </th>
-            <th scope="col" className="px-6 py-3">
-              Action
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {paginatedData.length > 0 ? (
-            paginatedData.map((row) => (
-              <tr
-                key={row._id}
-                className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600"
-              >
-                <td className="px-6 py-4">{row.title}</td>
-                <td className="px-6 py-4">{row.user_id.name}</td>
-                <td className="px-6 py-4">
-                  {row.category_id && row.category_id[0] && row.category_id[0].title}
-                </td>
-                <td className="px-6 py-4">
-                  {new Date(row.created_at).toLocaleDateString()}
-                </td>
-                <td className="flex space-x-5 px-6 py-4">
-                  <MdOutlineEdit
-                    className="text-[#011936] text-xl cursor-pointer"
-                    onClick={() => router.push(`/edit/${row._id}`)}
-                  />
-                  <RiDeleteBin6Line
-                    className="text-[#011936] text-xl cursor-pointer"
-                    onClick={() => handleDelete(row._id)}
-                  />
+      <div className="relative overflow-x-auto shadow-md sm:rounded-lg mr-6">
+        <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+          <thead className="text-xs text-gray-200 uppercase bg-[#011936]">
+            <tr>
+              <th scope="col" className="px-6 py-3">
+                Title
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Created by
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Category
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Created on
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Action
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {paginatedData.length > 0 ? (
+              paginatedData.map((row) => (
+                <tr
+                  key={row._id}
+                  className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600"
+                >
+                  <td className="px-6 py-4">{row.title}</td>
+                  <td className="px-6 py-4">{row.user_id.name}</td>
+                  <td className="px-6 py-4">
+                    {row.category_id &&
+                      row.category_id[0] &&
+                      row.category_id[0].title}
+                  </td>
+                  <td className="px-6 py-4">
+                    {new Date(row.created_at).toLocaleDateString()}
+                  </td>
+                  <td className="flex space-x-5 px-6 py-4">
+                    <MdOutlineEdit
+                      className="text-[#011936] text-xl cursor-pointer"
+                      onClick={() => router.push(`/edit/${row._id}`)}
+                    />
+                    <RiDeleteBin6Line
+                      className="text-[#011936] text-xl cursor-pointer"
+                      onClick={() => handleDelete(row._id)}
+                    />
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={5} className="text-center px-6 py-4">
+                  No Content found
                 </td>
               </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan={5} className="text-center px-6 py-4">
-                No Content found
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
+            )}
+          </tbody>
+        </table>
+      </div>
       <div className="mr-6">
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={handlePageChange}
-          />
-        </div> 
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+        />
+      </div>
     </div>
   );
 }

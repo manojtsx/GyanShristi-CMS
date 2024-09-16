@@ -16,13 +16,15 @@ function ViewerTable() {
   const { token, user } = useAuth();
   const router = useRouter();
   const { handleDelete } = useHandleDelete();
-  const [users, setUsers] = useState([{
-    _id : 1,
-    username : "",
-    name : "",
-    phone_number : "",
-    email : ""
-  }])
+  const [users, setUsers] = useState([
+    {
+      _id: 1,
+      username: "",
+      name: "",
+      phone_number: "",
+      email: "",
+    },
+  ]);
 
   const getUserList = async () => {
     try {
@@ -67,8 +69,10 @@ function ViewerTable() {
     getUserList();
   }, []);
   return (
-    <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-       <div>
+    <div>
+      <h1 className=" text-2xl font-serif font-bold text-[#011936] drop-shadow-lg mb-4">
+        All Viewers
+      </h1>
       <div className="flex justify-between items-center mb-3">
         <div className="flex gap-x-3">
           <select
@@ -103,62 +107,68 @@ function ViewerTable() {
           />
         </div>
       </div>
-     
-    </div>
-      <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-        <thead className="text-xs text-gray-200 uppercase bg-[#011936]">
-          <tr>
-            <th scope="col" className="px-6 py-3">
-              SN
-            </th>
-            <th scope="col" className="px-6 py-3">
-              Username
-            </th>
-            <th scope="col" className="px-6 py-3">
-             Name
-            </th>
-            <th scope="col" className="px-6 py-3">
-              Email
-            </th>
-            <th scope="col" className="px-6 py-3">
-              Contact
-            </th>
-            <th scope="col" className="px-6 py-3">
-              Action
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-        {paginatedUsers.length > 0 ? (
-            paginatedUsers.map((row, index) => (
-              <tr
-                key={row._id}
-                className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600"
-              >
-                <td className="px-6 py-4">{index + 1}</td>
-                <td className="px-6 py-4">{row.username}</td>
-                <td className="px-6 py-4">{row.name}</td>
-                <td className="px-6 py-4">{row.email}</td>
-                <td className="px-6 py-4">{row.phone_number}</td>
-                <td className="flex space-x-5 px-6 py-4">
-                  <MdOutlineEdit className="text-[#011936] text-xl" onClick={()=>router.push(`/${user.role}/user/edit/${row._id}`)} />
-                  <RiDeleteBin6Line
-                    className="text-[#011936] text-xl cursor-pointer"
-                    onClick={() => { handleDelete(row._id.toString(), token) }}
-                  />
+      <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+        <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+          <thead className="text-xs text-gray-200 uppercase bg-[#011936]">
+            <tr>
+              <th scope="col" className="px-6 py-3">
+                SN
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Username
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Name
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Email
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Contact
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Action
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {paginatedUsers.length > 0 ? (
+              paginatedUsers.map((row, index) => (
+                <tr
+                  key={row._id}
+                  className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600"
+                >
+                  <td className="px-6 py-4">{index + 1}</td>
+                  <td className="px-6 py-4">{row.username}</td>
+                  <td className="px-6 py-4">{row.name}</td>
+                  <td className="px-6 py-4">{row.email}</td>
+                  <td className="px-6 py-4">{row.phone_number}</td>
+                  <td className="flex space-x-5 px-6 py-4">
+                    <MdOutlineEdit
+                      className="text-[#011936] text-xl"
+                      onClick={() =>
+                        router.push(`/${user.role}/user/edit/${row._id}`)
+                      }
+                    />
+                    <RiDeleteBin6Line
+                      className="text-[#011936] text-xl cursor-pointer"
+                      onClick={() => {
+                        handleDelete(row._id.toString(), token);
+                      }}
+                    />
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={7} className="text-center px-6 py-4">
+                  No viewer found
                 </td>
               </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan={7} className="text-center px-6 py-4">
-                No viewer found
-              </td>
-            </tr>
-          )
-          }
-        </tbody>
-      </table>
+            )}
+          </tbody>
+        </table>
+      </div>
       <div className="mb-3 flex justify-end mr-6">
         <Pagination
           currentPage={currentPage}

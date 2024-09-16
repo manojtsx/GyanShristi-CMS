@@ -67,7 +67,7 @@ function EditorTable() {
     getUserList();
   }, []);
   return (
-    <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+  
        <div>
       <div className="flex justify-between items-center mb-3">
         <div className="flex gap-x-3">
@@ -104,7 +104,8 @@ function EditorTable() {
         </div>
       </div>
      
-    </div>
+    
+      <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
       <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
         <thead className="text-xs text-gray-200 uppercase bg-[#011936]">
           <tr>
@@ -159,6 +160,7 @@ function EditorTable() {
           }
         </tbody>
       </table>
+      </div>
       <div className="mb-3 flex justify-end mr-6">
         <Pagination
           currentPage={currentPage}
