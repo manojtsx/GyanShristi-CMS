@@ -5,13 +5,14 @@ const fs = require("fs");
 // controller to get all the user data
 const getUser = async (req, res) => {
   try {
-    const users = await User.find({}).select("-password");
-    console.log(req.user.role);
-    if (req.user.role === "viewer" || req.user.role === "author") {
+    const userId = req.user.id;
+    const userRole = req.user.role;
+    if (userRole === "viewer" || userRole === "author") {
       return res
-        .status(403)
-        .json({ msg: "You are not authorized to view this data." });
+      .status(403)
+      .json({ msg: "You are not authorized to view this data." });
     }
+    const users = await User.find({_id : {$ne : userId}}).select("-password");
     if (!users || users.length === 0) {
       throw new Error("No users found");
     }
@@ -26,10 +27,12 @@ const getUser = async (req, res) => {
     try {
       // localhost:3001/api/user/role=<role>  
       const { role } = req.query;
+      const userRole = req.user.role;
+      const userId = req.user.id;
       if (!role || !["admin", "editor", "author", "viewer", "non-viewer"].includes(role)) {
         return res.status(400).json({ msg: "Role parameter is required" });
       }
-      if (req.user.role === "viewer" || req.user.role === "author") {
+      if (userRole === "viewer" || userRole === "author") {
         return res
         .status(403)
         .json({ msg: "You are not authorized to view this data." });
@@ -40,10 +43,10 @@ const getUser = async (req, res) => {
       // Fetch users based on role or exclude 'viewer' role
       if (role === "non-viewer") {
         // Exclude 'viewer' role
-        users = await User.find({ role: { $ne: "viewer" } }).select("-password");
+        users = await User.find({ role: { $ne: "viewer" },_id : {$ne : userId} }).select("-password");
       } else {
         // Fetch users with the specified role  
-        users = await User.find({ role }).select("-password");
+        users = await User.find({ role, _id : {$ne : userId} }).select("-password");
       }
       if (!users || users.length === 0) {
         return res
@@ -210,7 +213,7 @@ const changeEmail = async (req, res) => {
       (["author", "viewer"].includes(userRole) && userId === id)
     ) {
       if (user.email === new_email) {
-        res.status(409).json({ msg: "Your new email is your old email" });
+        res.status(409).json({ msg: "Your new email cannot be your old email." });
       }
       user.email = new_email;
       await user.save();

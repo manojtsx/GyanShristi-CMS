@@ -6,33 +6,23 @@ const verifyOTP = require("../utils/otp/verifyOTP");
 // Controller to register
 const register = async (req, res) => {
   try {
-    const { name, username, password, email, address, phone_number, otp } =
-      req.body;
-    const status = "unrequested";
+    const { name, username, password, email, address, phone_number, otp } = req.body;
 
     // Verify OTP
-    const users = await User.find({ email: email });
-    if (users.length === 0) {
-      return res.status(400).json({ msg: "Please request OTP first." });
+    const user = await User.findOne({ email });
+    if (!user || !await verifyOTP(otp, user.otp)) {
+      return res.status(400).json({ msg: "Invalid OTP or OTP not requested." });
     }
 
-    let isOTPValid = false;
-    for (const user of users) {
-      if (await verifyOTP(otp, user.otp)) {
-        
-        isOTPValid = true;
-        break;
-      }
-    }
+    // Remove the OTP user after successful registration
+    await User.deleteOne({ _id: user._id });
 
-    if (!isOTPValid) {
-      return res.status(400).json({ msg: "Invalid OTP." });
-    }
-
-    const isUserPresent = await User.findOne({ username: username });
+    const isUserPresent = await User.findOne({ username });
     if (isUserPresent) {
       return res.status(400).json({ msg: "Username already exists." });
     }
+
+    // Create a new user
     const newUser = new User({
       name,
       username,
@@ -40,7 +30,7 @@ const register = async (req, res) => {
       email,
       address,
       phone_number,
-      status,
+      status: "unrequested",
     });
 
     await newUser.save();
@@ -49,6 +39,7 @@ const register = async (req, res) => {
     res.status(500).json({ msg: err.message });
   }
 };
+
 
 // Controller to send OTP
 const sendOTPController = async (req, res) => {
@@ -75,8 +66,8 @@ const login = async (req, res) => {
     const token = isUserPresent.assignToken();
     const login = new Login({
       user_id: isUserPresent._id,
-      role : isUserPresent.role,
-      name : isUserPresent.name
+      role: isUserPresent.role,
+      name: isUserPresent.name,
     });
     await login.save();
     if (!isVerifiedUser) {

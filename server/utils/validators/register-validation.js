@@ -32,7 +32,6 @@ const registerSchema = z.object({
     .trim()
     .min(3, { message: "Address must be at least 3 characters long" })
     .max(255, { message: "Address must be at most 255 characters long" }),
-  otp: z.string({ required_error: "Please enter six digit OTP" }),
 });
 
 module.exports = registerSchema;
