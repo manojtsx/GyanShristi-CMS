@@ -6,7 +6,7 @@ import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
 import "froala-editor/css/froala_editor.pkgd.min.css";
-import "froala-editor/css/froala_style.min.css";
+import "froala-editor/css/froala_style.min.css";  
 import "froala-editor/js/plugins/image.min.js";
 import "froala-editor/js/plugins/colors.min.js";
 import "froala-editor/js/plugins/char_counter.min.js";
@@ -28,36 +28,24 @@ const FroalaEditorComponent = dynamic(() => import("react-froala-wysiwyg"), {
   ssr: false,
 });
 
-const SpeechToTextEditor: React.FC<{ value: string; onChange: (content: string) => void; }> = ({value, onChange}) => {
+const SpeechToTextEditor: React.FC = () => {
   const [editorInstance, setEditorInstance] = useState<any>(null);
   const { transcript, resetTranscript } = useSpeechRecognition();
 
   const updateEditorContent = useCallback(
     debounce((transcript: string) => {
       if (editorInstance) {
-        const currentContent = editorInstance.html.get();
-        const updatedContent = currentContent + " " + transcript;
-        editorInstance.html.set(updatedContent);
-        resetTranscript();  
-
-        onChange(updatedContent);
+        editorInstance.html.insert(" " + transcript);
+        resetTranscript();
       }
     }, 100), // Adjust the debounce delay as needed
-    [editorInstance, resetTranscript, onChange]
+    [editorInstance, resetTranscript]
   );
-
-  useEffect(() => {
-    if (transcript) {
-      updateEditorContent(transcript);
-    }
-  }, [transcript, updateEditorContent]);
-
 
   useEffect(() => {
     if (editorInstance) {
       const handleContentChanged = () => {
         const currentContent = editorInstance.html.get();
-        onChange(currentContent); 
       };
 
       // Attach the contentChanged event handler
@@ -70,7 +58,7 @@ const SpeechToTextEditor: React.FC<{ value: string; onChange: (content: string) 
         }
       };
     }
-  }, [editorInstance, onChange]);
+  }, [editorInstance]);
 
   useEffect(() => {
     if (transcript) {
@@ -108,8 +96,6 @@ const SpeechToTextEditor: React.FC<{ value: string; onChange: (content: string) 
       <div className="w-[650px] h-92 ">
         <FroalaEditorComponent
           tag="textarea"
-          model={value}
-          onModelChange={(content : any) => onChange(content)}
           config={{
             placeholderText: "Start writing the content...",
             events: {
