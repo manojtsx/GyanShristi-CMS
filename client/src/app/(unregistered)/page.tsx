@@ -35,7 +35,7 @@ export default function Page() {
       </div>    
     </div>
     </div>
-    {/* <ViewerLatestContent/> */}
+    <ViewerLatestContent/>
     <ViewerCategory/>
     </div>
   );
