@@ -19,7 +19,7 @@ export default function Page() {
         <ApplyAsAuthorButton/>
       </div>
       <div>
-        <Image src="/GyanShristi_playingLaptop.webp" alt="Browsing Laptop" width={500} height={500} className="rounded-md min-w-64"/>
+        <Image src="/Hero_Image.png" alt="Browsing Laptop" width={500} height={500} className="rounded-md min-w-64"/>
       </div>
     </div>
     <div className="sm:hidden p-10 flex justify-center items-center">

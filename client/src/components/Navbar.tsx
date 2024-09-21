@@ -61,19 +61,21 @@ function Navbar() {
 
   return (
     <>
+
     <Image
       src="/GyanShristiAdBanner.png"
       width={500}
       height={500}
       alt="Advertisement"
       className="w-screen h-28 object-cover"
-    />
+      />
    <nav
         className={`dark:bg-[#1A1A1A] dark:text-white w-screen z-50 shadow-md ${
           isFixed ? "fixed top-0" : "relative"
         }`}
       >
-    <div className="h-12 flex justify-between items-center pl-1 pr-3 bg-white dark:bg-[#1A1A1A] shadow-md ">
+    <div className="h-16 flex justify-between items-center pl-1 pr-3 bg-white dark:bg-[#1A1A1A] shadow-md ">
+    <Link href={"/"}>
       <Image
         src="/logo.png"
         alt="CMS Logo"
@@ -81,6 +83,7 @@ function Navbar() {
         height={45}
         className="rounded-full"
       />
+      </Link>
       <ul className="hidden sm:flex justify-between gap-8 font-semibold">
         {navItems.map((item, index) => (
           <Link href={item.link} key={index}>
