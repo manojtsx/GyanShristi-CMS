@@ -6,18 +6,19 @@ import { useNotifications } from '@/context/NotificationContext';
 const API = process.env.NEXT_PUBLIC_BACKEND_API;
 
 function ApplyAsAuthorButton() {
-  const { user, token } = useAuth;
-  const { addNotification } = useNotifications;
+  const { user, token } = useAuth();
+  const { addNotification } = useNotifications();
 
   const handleApplyAsAuthor = async () => {
     try {
-      if (!user) {
+      if (!user || !token) {
         throw Error('You are not logged in');
       }
-      const res = await fetch(`${API}api/content/apply-as-author`, {
+      const res = await fetch(`${API}api/user/apply-as-author`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify({ userId: user._id }),
       });

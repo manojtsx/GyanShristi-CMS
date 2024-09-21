@@ -2,6 +2,8 @@
 import React, { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Image from 'next/image';
+import { useNotifications } from '@/context/NotificationContext';
+import { add } from 'lodash';
 
 const API = process.env.NEXT_PUBLIC_BACKEND_API;
 
@@ -19,6 +21,7 @@ interface Content {
 const ContentByCategory = () => {
     const { id } = useParams<{ id: string | string[] }>();
     const router = useRouter();
+    const {addNotification} = useNotifications();
     const [content, setContent] = useState<Content[]>([]);
     const [category, setCategory] = useState<string | null>(null);
     useEffect(() => {
@@ -35,9 +38,8 @@ const ContentByCategory = () => {
                     throw new Error(data.msg);
                 }
                 setContent(data.content);
-                console.log(new Date(data.content[0].created_at).toLocaleString());
             } catch (err: any) {
-                console.log(err.message);
+                addNotification(err.message, 'error');
             }
         };
 
@@ -55,7 +57,7 @@ const ContentByCategory = () => {
                 }
                 setCategory(data.title);
             } catch (err: any) {
-                console.log(err.message);
+                addNotification(err.message, 'error');
             }
         }
         getCategoryById();

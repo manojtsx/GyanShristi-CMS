@@ -449,11 +449,10 @@ const applyAsAuthor = async(req,res) =>{
 
       // Check if the user is already an author or admin
       if (user.role === "author" || user.role === "admin" || user.role === "editor") {
-        return res.status(409).json({ msg: "You are already above viewer post." });
+        return res.status(409).json({ msg: "You must be a registered viewer to apply as author" });
       }
 
-      // Update the user's role to "author" and status to "pending"
-      user.role = "author";
+      // Update the user's status to "pending"
       user.status = "pending";
       await user.save();
 
