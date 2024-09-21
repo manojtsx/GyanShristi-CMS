@@ -26,7 +26,7 @@ interface Content {
   title: string;
   _id: string;
   user_id: User;
-  category_id: Category[];
+  category_id: Category;
   created_at: string;
 }
 
@@ -164,11 +164,10 @@ function VideoTable() {
                   className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600"
                 >
                   <td className="px-6 py-4">{row.title}</td>
-                  <td className="px-6 py-4">{row.user_id.name}</td>
+                  <td className="px-6 py-4">{!row.user_id ? "Unknown" : row.user_id.name}</td>
                   <td className="px-6 py-4">
                     {row.category_id &&
-                      row.category_id[0] &&
-                      row.category_id[0].title}
+                      row.category_id.title ? row.category_id.title : "NA"}
                   </td>
                   <td className="px-6 py-4">
                     {new Date(row.created_at).toLocaleDateString()}

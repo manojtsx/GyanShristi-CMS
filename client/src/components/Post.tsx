@@ -3,13 +3,15 @@ import React, { useEffect, useState, useRef } from "react";
 import SpeechToTextEditor from "./SpeechToTextEditor";
 import { useAuth } from "@/context/AuthContext";
 import { useNotifications } from "@/context/NotificationContext";
+import { useRouter } from "next/navigation";
 
 // Call the backend API
 const API = process.env.NEXT_PUBLIC_BACKEND_API;
 
 function Post() {
-  const { token } = useAuth();
+  const { token, user } = useAuth();
   const { addNotification } = useNotifications();
+  const router = useRouter();
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const [isAuthorOpen, setIsAuthorOpen] = useState(false);
   const [categories, setCategories] = useState([
@@ -59,8 +61,8 @@ function Post() {
           "Content-Type": "application/json",
         },
       });
-      if (!usersResponse.ok) throw new Error("Failed to fetch users");
       const usersData = await usersResponse.json();
+      if (!usersResponse.ok) throw new Error(usersData.msg);
 
       console.log("Users data:", usersData); // Debugging
 
@@ -158,6 +160,7 @@ function Post() {
       if (fileInputRef.current) {
         fileInputRef.current.value = "";
       }
+      router.push(`/${user.role}/content`)
     } catch (error: any) {
       addNotification(error.message, "error");
     }
