@@ -69,12 +69,12 @@ function LineChart() {
       {
         label: "Articles Published",
         data: [5, 25, 50, 15, 10, 40, 20, 25, 20, 15, 10, 5],
-        borderColor: "blue",
+        borderColor: "rgb(26, 188, 156)",
         borderWidth: 3,
         tension: 0.3,
-        backgroundColor: "blue",
-        pointBackgroundColor: "blue",
-        pointBorderColor: "rgba(0,0,255,0.2)",
+        backgroundColor: "rgb(26, 188, 156)",
+        pointBackgroundColor: "rgb(26, 188, 156)",
+        pointBorderColor: "rgba(26, 188, 156,0.2)",
       },
       {
         label: "User Registered",

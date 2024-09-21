@@ -28,6 +28,7 @@ interface Content {
 }
 
 function ViewerLatestContent() {
+  console.log(API)
   const [contents, setContents] = useState<Content[]>([]);
   const router = useRouter();
 
@@ -70,22 +71,28 @@ function ViewerLatestContent() {
               <div className='flex justify-between gap-2'>
                 <div className='w-44'>
                   <p
-                    className='font-bold text-lg overflow-hidden text-ellipsis h-24'
+                    className='font-bold text-lg overflow-hidden text-ellipsis'
                     title={content.title}
                   >
                     {content.title}
                   </p>
+                  <p
+                    className='text-gray-500 text-sm overflow-hidden text-ellipsis'
+                    title={content.description}
+                  >
+                    {content.description}
+                  </p>
                   <p className='text-base text-[#CCC6C6]'>Get updated with GyanShristi</p>
                 </div>
                 <Image 
-                  src={`${API}${content.thumbnail.replace(/\\/g, '/')}`} 
+                  src={`${API}${content.thumbnail}`} 
                   alt='Content Thumbnail' 
                   width={80} 
                   height={96} 
                   className="h-24 w-20 object-cover" 
                 />
               </div>
-              <button className='text-white text-sm font-semibold bg-[#2B2E4A] rounded-full py-2 px-4 hover:bg-[#2B2E4A] hover:opacity-70' onClick={()=>router.push(`/post/${content._id}`)}>
+              <button className='text-white text-sm font-semibold bg-[#2B2E4A] rounded-full py-2 px-4 hover:bg-[#2B2E4A] hover:opacity-70' onClick={()=>router.push(`/post/${content._id}`)} title='Click to see more'>
                 Read More
               </button>
             </div>
@@ -95,7 +102,7 @@ function ViewerLatestContent() {
                   <>
                     {content.user_id.profile_pic && (
                       <Image 
-                        src={typeof content.user_id.profile_pic === 'string' ? content.user_id.profile_pic : ""} 
+                        src={typeof content.user_id.profile_pic === 'string' ? `${API}${content.user_id.profile_pic}` : ""} 
                         alt='Author Picture' 
                         width={40} 
                         height={40} 
@@ -140,7 +147,7 @@ function ViewerLatestContent() {
                   className='overflow-hidden text-ellipsis whitespace-nowrap text-xs text-[#524C4C]'
                   title={content.updated_at}
                 >
-                  {new Date(content.updated_at).toLocaleDateString()}
+                  {new Date(content.updated_at).toLocaleString()}
                 </p>
               </div>
             </div>

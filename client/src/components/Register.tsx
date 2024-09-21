@@ -110,14 +110,15 @@ function Register() {
   return (
     <main className=" flex min-h-screen dark:bg-[#121212] dark:text-white">
       <div className="flex flex-col items-start justify-center w-1/2 pl-40 ">
-        <h1 className=" font-bold text-4xl">GyanShristi</h1>
+        <h1 className=" font-bold text-4xl">GyanShristi CMS</h1>
         <p className=" text-gray-400 mt-4">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna.
+          A CMS based on Voice Recognition and Text to Speech Technology for the better management of the contents.
         </p>
+        <Link href="/about">
         <button className="w-[200px] h-12 bg-[#3742FA] rounded-md text-white font-semibold mt-6 ">
           Know About Us
         </button>
+        </Link>
       </div>
       <div className="flex justify-center items-center min-h-[90vh] w-1/2 pl-24">
         {!showOtpContainer ? (

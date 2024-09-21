@@ -11,7 +11,6 @@ export default function RootLayout({
    <div>
           <Navbar />
           {children}
-          {/* <LineChart /> */}
           <Footer/>
           <Copyright />
        </div>

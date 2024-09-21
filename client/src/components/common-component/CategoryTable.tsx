@@ -81,6 +81,9 @@ function CategoryTable() {
 
   return (
     <div>
+       <h1 className=" text-2xl font-serif font-bold text-[#011936] drop-shadow-lg mb-4">
+        All Category
+      </h1>
       <div className="flex justify-between items-center mb-3">
         <div className="flex gap-x-3">
           <select

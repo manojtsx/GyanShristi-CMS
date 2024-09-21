@@ -601,6 +601,22 @@ const countContent = async (req, res) => {
   }
 };
 
+// Get content by category
+const getContentByCategory = async (req,res)=>{
+  try{
+    const {id} = req.params;
+    // Fetch all content from the database
+    let content = await Content.find({category_id : id});
+    if(!content){
+      res.status(404).json({msg:"No content found"});
+    }
+    // Return the filtered or unfiltered content
+    res.status(200).json({content});
+  }catch(err){
+    res.status(500).json({msg:err.message});
+  }
+}
+
 module.exports = {
   addPostContent,
   addPdfContent,
@@ -616,4 +632,5 @@ module.exports = {
   getVideoContentById,
   getAllContent,
   countContent,
+  getContentByCategory
 };

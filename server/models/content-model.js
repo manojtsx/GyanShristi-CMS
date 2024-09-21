@@ -22,7 +22,8 @@ const ContentSchema = new mongoose.Schema({
   },
   thumbnail: {
     type: String,
-    default: "https://images.pexels.com/photos/1323550/pexels-photo-1323550.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+    default:
+      "https://images.pexels.com/photos/1323550/pexels-photo-1323550.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
   },
   status: {
     type: String,
@@ -33,20 +34,18 @@ const ContentSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   },
-  category_id : [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref : "Category",
-      default : []
-    }
-  ],
+  category_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Category",
+    default: null,
+  },
   created_at: {
     type: Date,
     default: Date.now,
   },
   updated_at: {
     type: Date,
-    default: ()=> Date.now(),
+    default: () => Date.now(),
   },
 });
 

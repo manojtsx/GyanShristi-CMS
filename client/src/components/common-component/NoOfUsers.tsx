@@ -62,19 +62,19 @@ function NoOfUsers() {
   
   return (
             <div className="flex gap-4 w-full">
-              <div className="rounded-md w-1/4 py-5 text-xl flex flex-col justify-center items-center shadow-all">
+              <div className="rounded-md bg-[#3742FA] text-white w-1/4 py-5 flex flex-col justify-center items-center shadow-all">
                 <p className="text-sm">Number Of Editors</p>
                 <p className="text-sm font-medium">{userCounts.editor}</p>
               </div>
-              <div className="rounded-md w-1/4 py-5 text-xl flex flex-col justify-center items-center shadow-all">
+              <div className="rounded-md bg-[#3742FA] text-white w-1/4 py-5 text-xl flex flex-col justify-center items-center shadow-all">
                 <p className="text-sm">Number Of Authors</p>
                 <p className="text-sm font-medium">{userCounts.author}</p>
               </div>
-              <div className="rounded-md w-1/4 py-5 text-xl flex flex-col justify-center items-center shadow-all">
+              <div className="rounded-md bg-[#3742FA] text-white w-1/4 py-5 text-xl flex flex-col justify-center items-center shadow-all">
                 <p className="text-sm">Number Of Contents</p>
                 <p className="text-sm font-medium">{contentCount}</p>
               </div>
-              <div className="rounded-md w-1/4 py-5 text-xl flex flex-col justify-center items-center shadow-all">
+              <div className="rounded-md bg-[#3742FA] text-white w-1/4 py-5 text-xl flex flex-col justify-center items-center shadow-all">
                 <p className="text-sm">Number Of Viewers</p>
                 <p className="text-sm font-medium">{userCounts.viewer}</p>
               </div>
