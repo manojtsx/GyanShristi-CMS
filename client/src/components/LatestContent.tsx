@@ -38,15 +38,15 @@ function LatestContent() {
         <p className="text-white">See Latest Content</p>
       </div>
       {/* Contents */}
-      <div className="flex items-center justify-center p-3">
+      <div className="flex items-center justify-center py-3 px-1 shadow-md">
         <ul className="flex flex-col items-center justify-center gap-2">
           {error && <p className='text-red-500'>{error}</p>}
           {latestContent.length === 0 ? (
             <p>No latest content available</p>
           ) : (
             latestContent.map((item, index) => (
-              <li key={index} className="flex items-center gap-1 relative">
-                <div className="w-12 h-12">
+              <li key={index} className="flex items-center gap-2 relative">
+                <div className="w-12 h-12 text-left">
                   <Image
                     src={`${API}${item.thumbnail}`}
                     alt="Profile Picture"
@@ -56,13 +56,13 @@ function LatestContent() {
                   />
                 </div>
                 <p
-                  className="w-40 text-sm overflow-hidden text-ellipsis whitespace-nowrap text-left hover:opacity-50 cursor-default"
+                  className="w-44 text-sm overflow-hidden text-ellipsis whitespace-nowrap text-left hover:opacity-50 cursor-default"
                   onMouseEnter={() => setHoveredTitle(index)}
                   onMouseLeave={() => setHoveredTitle(null)}
                 >
                   {item.title}
                 </p>
-                <div className="w-24">
+                <div className="w-24 text-right">
                   <p className="text-xs text-right overflow-hidden text-ellipsis whitespace-nowrap hover:opacity-50 cursor-default" onMouseEnter={() => setHoveredAuthorName(index)} onMouseLeave={() => setHoveredAuthorName(null)}>{item.author}</p>
                   <p className="text-xs text-[rgba(0,0,0,0.52)] text-right">{item.date}</p>
                 </div>

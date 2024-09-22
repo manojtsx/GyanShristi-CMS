@@ -8,7 +8,7 @@ export default function RootLayout({
   return (
     <div className="flex h-screen">
       <SideMenuBarAdmin />
-      <div className="flex-1 overflow-hidden">{children}</div>
+      <div className="w-screen h-full overflow-hidden">{children}</div>
     </div>
   );
 }
