@@ -137,7 +137,7 @@ const SideMenuBarAdmin = () => {
         }}
       >
         <Image
-          src={user.profile_pic ? `${API}${user.profile_pic}` : '/logo.png'}
+          src={user ? `${API}${user.profile_pic}` : '/logo.png'}
           width={45}
           height={45}
           className="rounded-full border-[#011936]"
