@@ -26,7 +26,6 @@ function LatestContent() {
           throw new Error(data.msg);
         }
         setLatestContent(data.content);
-        console.log(data.content)
       } catch (err: any) {
         setError(err.message);
       }

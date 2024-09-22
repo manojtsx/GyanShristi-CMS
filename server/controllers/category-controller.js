@@ -6,7 +6,6 @@ const addCategory = async (req, res) => {
   try {
     const userId = req.user.id;
     const userRole = req.user.role;
-    console.log(userRole);
     if (!userId) {
       return res.status(401).json({ msg: "Unauthorized" });
     }

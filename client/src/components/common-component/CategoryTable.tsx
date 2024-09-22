@@ -34,7 +34,6 @@ function CategoryTable() {
         },
       });
       const data = await res.json();
-      console.log(data);
       setCategory(data);
       // Calculate total pages based on the number of items
       setTotalPages(Math.ceil(data.length / itemsPerPage));

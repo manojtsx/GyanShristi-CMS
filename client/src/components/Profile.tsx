@@ -19,7 +19,6 @@ function Profile() {
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null || `${API}${user?.profile_pic}`);
-  console.log(`${API}${user?.profile_pic}`)
 
   const handleProfileClick = () => {
     setIsPopupVisible(true);

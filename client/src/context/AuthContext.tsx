@@ -80,7 +80,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       },
     });
     const userData = await response.json();
-    console.log(userData, "hello");
     if (userData.role === 'admin') {
       router.push('/admin/dashboard');
     } else if (userData.role === 'editor') {

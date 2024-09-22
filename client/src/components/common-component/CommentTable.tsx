@@ -49,7 +49,6 @@ function CommentTable() {
       if (!response.ok) {
         throw new Error(result.msg || 'Failed to fetch comments');
       }
-      console.log(result);
       setData(result.comments);
     } catch (error: any) {
       setError(error.message);

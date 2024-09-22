@@ -67,7 +67,6 @@ const ShowContent: React.FC = () => {
       if (!response.ok) {
         throw new Error(data.msg);
       }
-      console.log(data);
       setContentData(data);
     } catch (error: any) {
       setError(error.message);
@@ -102,7 +101,6 @@ const ShowContent: React.FC = () => {
       if (!response.ok) {
         throw new Error(result.msg);
       }
-      console.log(result);
       setComments(result.comments);
     } catch (error: any) {
       setError(error.message);
@@ -113,7 +111,6 @@ const ShowContent: React.FC = () => {
 
   const submitComment = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(token);
 
     if (!comment.trim()) {
       alert("Comment cannot be empty");

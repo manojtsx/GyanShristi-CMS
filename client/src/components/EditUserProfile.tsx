@@ -35,7 +35,6 @@ function EditUserProfile() {
           }
         });
         const data = await res.json();
-        console.log(data);
         setUpdatedUser(data);
       }catch(err : any){
         addNotification(err.message, 'error')
@@ -50,7 +49,6 @@ function EditUserProfile() {
       ...prevState,
       [name]: value.toString()
     }));
-    console.log(updatedUser)
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -69,8 +67,6 @@ function EditUserProfile() {
       if (!response.ok) {
         throw new Error(result.msg);
       }
-
-      console.log('User updated successfully:', result);
       addNotification(result.msg, 'success')
       router.push(`/${user?.role}/dashboard`)
       

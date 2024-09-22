@@ -34,7 +34,6 @@ function EditUserPassword() {
     e.preventDefault();
     
     try{  
-      console.log(password)
         if(password.new_password !== password.confirmNewPassword){
           throw new Error('Your new password doesnot match')
   }

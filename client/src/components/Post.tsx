@@ -64,8 +64,6 @@ function Post() {
       const usersData = await usersResponse.json();
       if (!usersResponse.ok) throw new Error(usersData.msg);
 
-      console.log("Users data:", usersData); // Debugging
-
       // Ensure usersData is an array
       if (Array.isArray(usersData)) {
         setUsers(usersData);
@@ -99,7 +97,6 @@ function Post() {
       // Create a preview URL for the selected file
       const previewUrl = URL.createObjectURL(file);
       setPhotoPreview(previewUrl);
-      console.log("File selected:", file.name);
       // Handle file upload logic here if necessary
     }
   };

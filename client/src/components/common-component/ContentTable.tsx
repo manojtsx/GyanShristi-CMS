@@ -56,7 +56,6 @@ function ContentTable() {
         }
 
         setData(result.content);
-        console.log(result.content)
       } catch (error: any) {
         console.error("Error fetching data:", error);
         addNotification(error.message, "error");

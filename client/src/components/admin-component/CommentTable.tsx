@@ -41,7 +41,6 @@ function CommentTable() {
       }
 
       const data = await res.json();
-      console.log(data);
       setComments(data.comments); // Assuming data.comments is the array of comments
     } catch (err: any) {
       addNotification(err.message, "error");

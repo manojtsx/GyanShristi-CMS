@@ -26,7 +26,6 @@ function AuthorTable() {
 
   const getUserList = async () => {
     try {
-      console.log(token, "hello");
       const res = await fetch(`${API}api/user/role?role=author`, {
         method: "GET",
         headers: {
@@ -42,7 +41,6 @@ function AuthorTable() {
         addNotification(data.msg, "error");
         return;
       }
-      console.log(data);
       setUsers(data);
     } catch (err: any) {
       setUsers([]);

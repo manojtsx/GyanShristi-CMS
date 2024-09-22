@@ -48,7 +48,6 @@ function NoOfUsers() {
       }
 
       const data = await res.json();
-      console.log(data)
       setContentCount(data.totalContent);
     } catch (err: any) {
       addNotification(err.message, "error");

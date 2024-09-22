@@ -53,7 +53,6 @@ function Login() {
       if(!res.ok){
         throw new Error(data.msg);
       }
-      console.log(data);
       await login(data.token, data.login.user_id);
       addNotification(data.msg, 'success');
     }catch(err : any){

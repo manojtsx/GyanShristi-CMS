@@ -7,8 +7,6 @@ const path = require("path"); // Import path module
 const addPostContent = async (req, res) => {
   try {
     const { title, description, blog, user_id, category_id } = req.body; // Extract data from request body
-    console.log(title, description, blog, user_id, category_id)
-    console.log(req.file)
     const thumbnail = req.file.path; // Get thumbnail from request
     // Get userId if sent from the client side
     let userIdToUse = user_id || req.user.id; // Use provided userId or authenticated user's ID
@@ -27,7 +25,6 @@ const addPostContent = async (req, res) => {
     const blogFileName = `post-${Date.now()}.txt`; // Generate a unique filename
     const blogFilePath = path.join("uploads/post", blogFileName); // Create file path
     fs.writeFileSync(blogFilePath, blog); // Write blog content to file
-    console.log(thumbnail)
     
     // Set the status of the content based on the user's role
     const status = user.role === "author" ? "Pending" : "Uploaded";
@@ -466,7 +463,6 @@ const getPostContentById = async (req, res) => {
     
     // Read file content
     const filePath = path.join(__dirname, '../', contentToShow.location);
-    console.log(filePath);
     
     if (!fs.existsSync(filePath)) {
       return res.status(404).json({ msg: "File not found" });
@@ -477,7 +473,6 @@ const getPostContentById = async (req, res) => {
         return res.status(500).json({ msg: "Error reading file" });
       }
       
-      console.log(data);
       // Send back both the content details, user owner info, and file content
       res.status(200).json({
         ...contentToShow._doc, // Spread operator to include all content fields

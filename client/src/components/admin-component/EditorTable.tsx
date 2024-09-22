@@ -26,7 +26,6 @@ function EditorTable() {
 
   const getUserList = async () => {
     try {
-      console.log(token, "hello");
       const res = await fetch(`${API}api/user/role?role=editor`, {
         method: "GET",
         headers: {
@@ -42,7 +41,6 @@ function EditorTable() {
         addNotification(data.msg, "error");
         return;
       }
-      console.log(data);
       setUsers(data);
     } catch (err: any) {
       setUsers([]);

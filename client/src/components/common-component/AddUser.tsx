@@ -30,8 +30,7 @@ function AddUser() {
 
   const handleAddUserChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setUsers({ ...users, [name]: value });
-    console.log(users);
+    setUsers({ ...users, [name]: value });;
   };
 
   const handleAddUser = async (e: React.FormEvent<HTMLFormElement>) => {

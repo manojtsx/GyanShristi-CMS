@@ -66,8 +66,6 @@ function Pdf() {
       const usersData = await usersResponse.json();
       if (!usersResponse.ok) throw new Error(usersData.msg);
 
-      console.log("Users data:", usersData); // Debugging
-
       // Ensure usersData is an array
       if (Array.isArray(usersData)) {
         setUsers(usersData);
@@ -89,7 +87,6 @@ function Pdf() {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setPdf({ ...pdf, [name]: value });
-    console.log(pdf)
   };
 
   const handlePhotoClick = () => {
