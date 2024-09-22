@@ -14,6 +14,8 @@ import Logout from "../Logout";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 
+const API = process.env.NEXT_PUBLIC_BACKEND_API;
+
 const SideMenuBarAdmin = () => {
   const router = useRouter();
   const { user } = useAuth();
@@ -135,7 +137,7 @@ const SideMenuBarAdmin = () => {
         }}
       >
         <Image
-          src="/logo.png"
+          src={user.profile_pic ? `${API}${user.profile_pic}` : '/logo.png'}
           width={45}
           height={45}
           className="rounded-full border-[#011936]"

@@ -11,11 +11,11 @@ const addUserSchema = require('../utils/validators/add-user-validation')
 // Define routes
 router.route("/role").get(verifyToken,userController.getUserByRole);
 router.route("/count-user").get(userController.countUser);
+router.route("/upload-profile-picture/:id").put(verifyToken,upload, userController.uploadProfilePicture);
 router.route("/:id").get(userController.getUserById);
 router.route("/apply-as-author").put(verifyToken, userController.applyAsAuthor)
 router.route("/").get(verifyToken,userController.getUser);
 router.route('/add').post(verifyToken,validate(addUserSchema), userController.addUser);
-router.route("/upload-profile-picture/:id").put(verifyToken,upload, userController.uploadProfilePicture);
 router.route("/change-password/:id").put(verifyToken, userController.changePassword);
 router.route("/:id").put(verifyToken, validate(editUserSchema), userController.editUserById);
 router.route("/:id").delete(verifyToken,userController.deleteUserById);
