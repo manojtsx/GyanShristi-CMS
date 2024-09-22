@@ -28,7 +28,12 @@ const FroalaEditorComponent = dynamic(() => import("react-froala-wysiwyg"), {
   ssr: false,
 });
 
-const SpeechToTextEditor: React.FC = () => {
+interface SpeechToTextEditorProps {
+  value: string;
+  onChange: (newContent: string) => void;
+}
+
+const SpeechToTextEditor: React.FC<SpeechToTextEditorProps> = ({value, onChange}) => {
   const [editorInstance, setEditorInstance] = useState<any>(null);
   const { transcript, resetTranscript } = useSpeechRecognition();
 
@@ -96,6 +101,8 @@ const SpeechToTextEditor: React.FC = () => {
       <div className="w-[650px] h-92 ">
         <FroalaEditorComponent
           tag="textarea"
+          model={value}
+          onModelChange={onChange}
           config={{
             placeholderText: "Start writing the content...",
             events: {

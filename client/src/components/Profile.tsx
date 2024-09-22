@@ -7,23 +7,68 @@ import { faPen, faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import React, { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
+import { useNotifications } from "@/context/NotificationContext";
+
+const API = process.env.NEXT_PUBLIC_BACKEND_API;
 
 function Profile() {
-  const { user } = useAuth();
+  const { user, token } = useAuth();
+  const { addNotification } = useNotifications();
+  const [isPopupVisible, setIsPopupVisible] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null || `${API}${user?.profile_pic}`);
+  console.log(`${API}${user?.profile_pic}`)
 
-  const handleEditUserChange = (e: React.ChangeEvent<HTMLInputElement>) => {};
+  const handleProfileClick = () => {
+    setIsPopupVisible(true);
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const file = e.target.files[0];
+      setSelectedFile(file);
+      setPreviewUrl(URL.createObjectURL(file));
+    }
+  };
+
+  const handleUpload = async () => {
+    try {
+      if (selectedFile) {
+        // Implement the file upload logic here
+        const formData = new FormData();
+        formData.append("profile-pic", selectedFile);
+        const response = await fetch(`${API}api/user/upload-profile-picture/${user._id}`, {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: formData,
+        });
+        const result = await response.json();
+        if (!response.ok) {
+          throw new Error(result.msg);
+        }
+        addNotification(result.msg, "success");
+        // Close the popup after upload
+        setIsPopupVisible(false);
+      }
+    } catch (err: any) {
+      addNotification(err.message, "error");
+    }
+  };
+
+  const handleEditUserChange = (e: React.ChangeEvent<HTMLInputElement>) => { };
   return (
-    <form
-      action=""
+    <div
       className="flex flex-col h-screen justify-center items-center" // Light background
     >
       <div className="flex flex-col items-center gap-5 bg-[#F0F4FF] p-8 shadow-md rounded-lg">
         <div className="flex flex-col gap-2 items-center justify-center">
-          <div className="w-24 relative">
+          <div className="w-24 relative cursor-pointer" onClick={handleProfileClick}>
             <Image
-              src="/GirlProfile.jpg"
+              src={previewUrl || "/GirlProfile.jpg"}
               alt="Profile Picture"
               height={500}
               width={500}
@@ -34,11 +79,37 @@ function Profile() {
               className="w-7 h-7 absolute bottom-0 right-0 bg-[#3742FA] text-white p-1 rounded-full cursor-pointer" // Pen icon style
             />
           </div>
+
+          {isPopupVisible && (
+            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+              <div className="bg-white p-4 rounded shadow-lg">
+                <h2 className="text-lg font-bold mb-4">Upload Profile Picture</h2>
+                <input type="file" onChange={handleFileChange} />
+                {previewUrl && (
+                  <div className="mt-4">
+                    <img src={previewUrl} alt="Preview" className="w-32 h-32 object-cover rounded-full" />
+                  </div>
+                )}
+                <button
+                  onClick={handleUpload}
+                  className="mt-4 bg-blue-500 text-white px-4 py-2 rounded"
+                >
+                  Submit
+                </button>
+                <button
+                  onClick={() => setIsPopupVisible(false)}
+                  className="mt-4 bg-gray-500 text-white px-4 py-2 rounded ml-2"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
           <label
             htmlFor="name"
             className="text-xl text-[#3742FA] font-semibold"
           >
-            ABCD XYZ
+            {user?.name || "Name"}
           </label>
         </div>
         <div>
@@ -98,7 +169,7 @@ function Profile() {
           Change Password
         </Link>
       </div>
-    </form>
+    </div>
   );
 }
 

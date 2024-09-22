@@ -26,7 +26,7 @@ interface Content {
   title: string;
   _id: string;
   user_id: User;
-  category_id: Category[];
+  category_id: Category;
   created_at: string;
 }
 
@@ -135,7 +135,7 @@ function PostTable() {
           />
         </div>
       </div>
-    <div className="relative overflow-x-auto shadow-md sm:rounded-lg mr-6">
+      <div className="relative overflow-x-auto shadow-md sm:rounded-lg mr-6">
         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
           <thead className="text-xs text-gray-200 uppercase bg-[#011936]">
             <tr>
@@ -164,11 +164,10 @@ function PostTable() {
                   className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600"
                 >
                   <td className="px-6 py-4">{row.title}</td>
-                  <td className="px-6 py-4">{row.user_id.name}</td>
+                  <td className="px-6 py-4">{!row.user_id ? "Unknown" : row.user_id.name}</td>
                   <td className="px-6 py-4">
                     {row.category_id &&
-                      row.category_id[0] &&
-                      row.category_id[0].title}
+                      row.category_id.title ? row.category_id.title : "NA"}
                   </td>
                   <td className="px-6 py-4">
                     {new Date(row.created_at).toLocaleDateString()}

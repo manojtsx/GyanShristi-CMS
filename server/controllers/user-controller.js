@@ -43,10 +43,10 @@ const getUser = async (req, res) => {
       // Fetch users based on role or exclude 'viewer' role
       if (role === "non-viewer") {
         // Exclude 'viewer' role
-        users = await User.find({ role: { $ne: "viewer" },_id : {$ne : userId} }).select("-password");
+        users = await User.find({ role: { $ne: "viewer" } }).select("-password");
       } else {
         // Fetch users with the specified role  
-        users = await User.find({ role, _id : {$ne : userId} }).select("-password");
+        users = await User.find({ role }).select("-password");
       }
       if (!users || users.length === 0) {
         return res

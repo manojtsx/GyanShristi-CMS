@@ -7,7 +7,8 @@ import Image from "next/image";
 import { useAuth } from "@/context/AuthContext";
 import { useNotifications } from "@/context/NotificationContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPause, faPlay, faStop } from "@fortawesome/free-solid-svg-icons";
+import { faDownload, faPause, faPlay, faStop } from "@fortawesome/free-solid-svg-icons";
+import {jsPDF} from 'jspdf';
 
 interface ContentData {
   title: string;
@@ -235,6 +236,77 @@ const ShowContent: React.FC = () => {
     speechSynthesis.cancel(); // Cancel and reset the speech
   };
 
+
+  const handleDownload = async () => {
+    const doc = new jsPDF();
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
+    const margin = 10;
+    const maxLineWidth = pageWidth - margin * 2;
+    const lineHeight = 10;
+    let cursorY = 20;
+
+    // Create a temporary DOM element to strip HTML tags
+    const tempElement = document.createElement('div');
+    tempElement.innerHTML = blog;
+    const plainText = tempElement.textContent || tempElement.innerText || '';
+
+    // Split the plain text into lines that fit within the specified width
+    const lines = doc.splitTextToSize(plainText, maxLineWidth);
+
+    // Add title
+    doc.setFontSize(24);
+    doc.text(title, margin, cursorY);
+    cursorY += lineHeight;
+
+    // Add description
+        doc.setFontSize(12);
+    const descriptionLines = doc.splitTextToSize(description, maxLineWidth);
+    descriptionLines.forEach((line: string | string[]) => {
+      if (cursorY + lineHeight > pageHeight - margin) {
+        doc.addPage();
+        cursorY = margin;
+      }
+      doc.text(line, margin, cursorY);
+      cursorY += lineHeight;
+    });
+    cursorY += lineHeight; // Add extra space after the description
+
+    // Add author name and profile picture
+    if (contentData.userOwner) {
+      const img = document.createElement('img');
+      img.src = `${API}${contentData.userOwner.profile_pic}`;
+      img.onload = () => {
+        doc.addImage(img, 'JPEG', margin, cursorY, 20, 20);
+        doc.text(`Author: ${contentData.userOwner.name}`, margin + 25, cursorY + 10);
+        cursorY += 30;
+      };
+    } else {
+      doc.text(`Author: Unknown`, margin, cursorY);
+      cursorY += lineHeight;
+    }
+
+    // Add created at and updated at
+    doc.text(`Created at: ${created_at}`, margin, cursorY);
+    cursorY += lineHeight;
+    doc.text(`Updated at: ${updated_at}`, margin, cursorY);
+    cursorY += lineHeight * 2;
+
+    // Add the blog content
+    doc.setFontSize(12);
+    lines.forEach((line: string | string[]) => {
+      if (cursorY + lineHeight > pageHeight - margin) {
+        doc.addPage();
+        cursorY = margin;
+      }
+      doc.text(line, margin, cursorY);
+      cursorY += lineHeight;
+    });
+
+    // Save the PDF with the title as the filename
+    doc.save(`${title}.pdf`);
+  };
+
   return (
     <div className="flex flex-col lg:flex-row mx-auto p-4 lg:py-8 lg:px-12">
       <div className="flex-1 lg:mr-8 mb-8 lg:mb-0">
@@ -322,6 +394,12 @@ const ShowContent: React.FC = () => {
                 !isSpeaking ? "text-[#3742FA] cursor-pointer" : "text-gray-500"
               }`} // Show Resume when speech is paused or reset
             />
+              <FontAwesomeIcon
+               icon={faDownload}
+               onClick={handleDownload}
+               title="Download"
+               className="border-2 p-2 text-[#3742FA] cursor-pointer"
+               />
           </div>
         </div>
         <div className="content-body text-gray-800">
