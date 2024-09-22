@@ -434,6 +434,19 @@ const rejectContent = async (req, res) => {
   }
 };
 
+const getContentById = async (req,res) =>{
+  try{
+    const {id} = req.params;
+    const content = await Content.findById(id);
+    if(!content){
+      return res.status(404).json({msg:"No content found"});
+    }
+    res.status(200).json({content});
+  }catch(err){
+    res.status(500).json({msg:err.message});
+  }
+}
+
 const getPostContentById = async (req, res) => {
   try {
     const contentId = req.params.id;
@@ -622,6 +635,7 @@ module.exports = {
   deleteContent,
   approveContent,
   rejectContent,
+  getContentById,
   getPostContentById,
   getPdfContentById,
   getVideoContentById,

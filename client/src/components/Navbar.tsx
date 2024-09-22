@@ -173,14 +173,17 @@ function Navbar() {
           </Link>
           <ul className="hidden sm:flex justify-between gap-8 font-semibold">
             {navItems.map((item, index) => (
+              <Link href={item.link} key={index}>
+              {" "}
               <li
-                key={index}
-                className={`dark:text-[#E0E0E0] hover:bg-[rgb(162,204,243)] dark:hover:bg-[#1E58C8] p-2 ${activeLink === item.id ? "border-b-2 border-[#1E58C8]" : ""
-                  }`}
+                className={`dark:text-[#E0E0E0] hover:bg-[rgb(162,204,243)] dark:hover:bg-[#1E58C8] p-2 ${
+                  activeLink === item.id ? "border-b-2 border-[#1E58C8]" : ""
+                }`}
                 onClick={() => handleActiveLink(item.id)}
               >
                 {item.name}
               </li>
+            </Link>
             ))}
 
             <ViewMode />

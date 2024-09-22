@@ -166,8 +166,8 @@ GYANSHRISTI-CMS
  ┃  ┃  ┃  ┃  ┣ NoOfUsers.tsx
  ┃  ┃  ┃  ┃  ┣ PdfTable.tsx
  ┃  ┃  ┃  ┃  ┣ PostTable.tsx
- ┃  ┃  ┃  ┃  ┣ ShowContent.css
- ┃  ┃  ┃  ┃  ┣ ShowContent.tsx
+ ┃  ┃  ┃  ┃  ┣ ShowPost.css
+ ┃  ┃  ┃  ┃  ┣ ShowPost.tsx
  ┃  ┃  ┃  ┃  ┣ UserTable.tsx
  ┃  ┃  ┃  ┃  ┗ VideoTable.tsx
  ┃  ┃  ┃  ┣ editor-component

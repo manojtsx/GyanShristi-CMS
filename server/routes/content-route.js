@@ -71,6 +71,9 @@ router.get("/post/:id", contentController.getPostContentById);
 router.get("/pdf/:id", contentController.getPdfContentById);
 router.get("/video/:id", contentController.getVideoContentById);
 
+// Define route for getting content by id
+router.get("/:id", contentController.getContentById);
+
 // Define routes for getting content by category
 router.get("/category/:id", contentController.getContentByCategory)
 
