@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import Image from "next/image";
+import Link from 'next/link';
 
 // Call the backend API
 const API = process.env.NEXT_PUBLIC_BACKEND_API;
@@ -25,6 +26,7 @@ function LatestContent() {
           throw new Error(data.msg);
         }
         setLatestContent(data.content);
+        console.log(data.content)
       } catch (err: any) {
         setError(err.message);
       }
@@ -45,7 +47,7 @@ function LatestContent() {
             <p>No latest content available</p>
           ) : (
             latestContent.map((item, index) => (
-              <li key={index} className="flex items-center gap-1 relative">
+                <Link href={`/post/${item._id}`} key={index} className="flex items-center gap-1 relative">
                 <div className="w-12 h-12">
                   <Image
                     src={`${API}${item.thumbnail}`}
@@ -63,8 +65,8 @@ function LatestContent() {
                   {item.title}
                 </p>
                 <div className="w-24">
-                  <p className="text-xs text-right overflow-hidden text-ellipsis whitespace-nowrap hover:opacity-50 cursor-default" onMouseEnter={() => setHoveredAuthorName(index)} onMouseLeave={() => setHoveredAuthorName(null)}>{item.author}</p>
-                  <p className="text-xs text-[rgba(0,0,0,0.52)] text-right">{item.date}</p>
+                  <p className="text-xs text-right overflow-hidden text-ellipsis whitespace-nowrap hover:opacity-50 cursor-default" onMouseEnter={() => setHoveredAuthorName(index)} onMouseLeave={() => setHoveredAuthorName(null)}>{item.user_id ? item.user_id.name : "Unknown"}</p>
+                  <p className="text-xs text-[rgba(0,0,0,0.52)] text-right">{new Date(item.created_at).toLocaleDateString()}</p>
                 </div>
                 {hoveredTitle === index && (
                   <div className="absolute top-8 left-0 text-sm bg-white border border-gray-300 shadow-lg rounded-md p-2 mt-1 z-10">
@@ -73,10 +75,10 @@ function LatestContent() {
                 )}
                 {hoveredAuthorName === index && (
                   <div className="absolute bottom-10 text-sm right-0 bg-white border border-gray-300 shadow-lg rounded-md p-2 mt-1 z-10">
-                    {item.author}
+                    {item.user_id ? item.user_id.name : "Unknown"}
                   </div>
                 )}
-              </li>
+                </Link>
             ))
           )}
         </ul>
