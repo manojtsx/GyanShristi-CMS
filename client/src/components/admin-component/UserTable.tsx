@@ -28,7 +28,6 @@ function UserTable() {
 
   const getUserList = async () => {
     try {
-      console.log(token, "hello");
       const res = await fetch(`${API}api/user/`, {
         method: "GET",
         headers: {
@@ -44,7 +43,6 @@ function UserTable() {
         addNotification(data.msg, "error");
         return;
       }
-      console.log(data);
       setUsers(data);
     } catch (err: any) {
       setUsers([]);

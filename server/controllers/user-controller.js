@@ -39,7 +39,6 @@ const getUser = async (req, res) => {
       }
       let users;
       
-      console.log(role)
       // Fetch users based on role or exclude 'viewer' role
       if (role === "non-viewer") {
         // Exclude 'viewer' role
@@ -235,7 +234,6 @@ const approveAsAuthor = async (req, res) => {
     const approve = req.query.approve === "true";
     const userRole = req.user.role;
 
-    console.log(viewerId);
     const user = await User.findById(viewerId);
     if (!user) {
       return res.status(404).json({ msg: "User doesnot exists." });
@@ -398,7 +396,6 @@ const countUser = async (req, res) => {
 const addUser = async (req, res) => {
   try {
     const { name, username, address, password, email, role, phone_number } = req.body;
-    console.log(req.body)
 
     // Check if the user has the correct role to perform this action
     if (req.user.role !== 'admin' && req.user.role !== 'editor') {

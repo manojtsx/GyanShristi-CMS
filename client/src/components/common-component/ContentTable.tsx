@@ -6,6 +6,7 @@ import { useNotifications } from "@/context/NotificationContext";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import Pagination from "../mini-component/Pagination";
+import Link from "next/link";
 
 // Call the backend API
 const API = process.env.NEXT_PUBLIC_BACKEND_API;
@@ -56,7 +57,6 @@ function ContentTable() {
         }
 
         setData(result.content);
-        console.log(result.content)
       } catch (error: any) {
         console.error("Error fetching data:", error);
         addNotification(error.message, "error");
@@ -164,7 +164,7 @@ function ContentTable() {
                   key={row._id}
                   className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600"
                 >
-                  <td className="px-6 py-4">{row.title}</td>
+                 <Link href={`/post/${row._id}`}><td className="px-6 py-4 cursor-pointer">{row.title}</td></Link>
                   <td className="px-6 py-4">{!row.user_id ? "Unknown" : row.user_id.name}</td>
                   <td className="px-6 py-4">
                     {row.category_id &&

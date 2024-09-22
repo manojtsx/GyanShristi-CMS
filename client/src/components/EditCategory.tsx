@@ -45,11 +45,8 @@ function EditCategory() {
         },
       });
       const usersData = await usersResponse.json();
-      console.log(usersData);
       if (!usersResponse.ok) throw new Error(usersData.msg);
-      
-      console.log("Users data:", usersData); // Debugging
-
+    
       // Ensure usersData is an array
       if (Array.isArray(usersData)) {
         setUsers(usersData);
@@ -80,7 +77,6 @@ function EditCategory() {
             ...categoryData,
             ownerName: categoryData.ownerName || "Unknown"
           });
-          console.log(categoryData)
         } catch (error) {
           console.error('Error fetching category:', error);
           addNotification('Failed to fetch category', 'error');
@@ -114,8 +110,6 @@ function EditCategory() {
       e.preventDefault();
     
       try {
-        console.log(categoryId)
-        console.log(category)
         const response = await fetch(`${API}api/category/edit/${categoryId}`, {
           method: "PUT",
           headers: {
@@ -163,8 +157,6 @@ function EditCategory() {
               className="rounded-lg h-10 w-[200px] text-center"
               value={category.user_id}
               onChange={(e) =>{
-
-                console.log(category)
                 setCategory({ ...category, user_id: e.target.value })
               }
               }

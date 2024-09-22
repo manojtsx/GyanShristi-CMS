@@ -15,7 +15,6 @@ import { useAuth } from "@/context/AuthContext";
 const SideMenuBarAuthor = () => {
   const router = useRouter();
   const { user, logout } = useAuth();
-  console.log(user);
   const [open, setOpen] = useState(true);
   const [logoutModalOpen, setLogoutModalOpen] = useState(false); // State for modal
   const [activeMenuItem, setActiveMenuItem] = useState<string>(""); // Active menu item

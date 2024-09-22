@@ -49,7 +49,6 @@ function EditProfile() {
         throw new Error(result.msg);
       }
 
-      console.log('User updated successfully:', result);
       addNotification(result.msg, 'success')
       router.push(`/${user?.role}/profile`)
       setTimeout(() => {

@@ -28,7 +28,6 @@ interface Content {
 }
 
 function ViewerLatestContent() {
-  console.log(API)
   const [contents, setContents] = useState<Content[]>([]);
   const router = useRouter();
 
@@ -40,7 +39,6 @@ function ViewerLatestContent() {
           throw new Error('Failed to fetch content');
         }
         const data = await res.json();
-        console.log(data.content)
         if (Array.isArray(data.content)) {
           setContents(data.content);
         } else {

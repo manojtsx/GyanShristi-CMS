@@ -55,8 +55,6 @@ function EditPost() {
       if (!response.ok) throw new Error("Failed to fetch post");
       const postData = await response.json();
 
-      console.log("Post data:", postData); // Debugging
-
       // Ensure postData is an object
       if (typeof postData === "object") {
         setPost(postData);
@@ -99,8 +97,6 @@ function EditPost() {
       if (!usersResponse.ok) throw new Error("Failed to fetch users");
       const usersData = await usersResponse.json();
 
-      console.log("Users data:", usersData); // Debugging
-
       // Ensure usersData is an array
       if (Array.isArray(usersData)) {
         setUsers(usersData);
@@ -135,7 +131,6 @@ function EditPost() {
       // Create a preview URL for the selected file
       const previewUrl = URL.createObjectURL(file);
       setPhotoPreview(previewUrl);
-      console.log("File selected:", file.name);
       // Handle file upload logic here if necessary
     }
   };

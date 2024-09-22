@@ -31,7 +31,6 @@ function CategoryTable() {
         },
       });
       const data = await res.json();
-      console.log(data);
       setCategory(data);
     } catch (err: any) {
       addNotification(err.message, "error");

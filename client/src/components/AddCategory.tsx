@@ -45,9 +45,6 @@ function AddCategory() {
       const usersData = await usersResponse.json();
       if (!usersResponse.ok) throw new Error(usersData.msg);
 
-
-      console.log("Users data:", usersData); // Debugging
-
       // Ensure usersData is an array
       if (Array.isArray(usersData)) {
         setUsers(usersData);
@@ -82,7 +79,6 @@ function AddCategory() {
       const data = await response.json();
       if (!response.ok) throw new Error(data.msg);
 
-      console.log("Category added:", data); // Debugging
       window.location.reload(); 
       addNotification(data.msg, "success");
     } catch (error: any) {
