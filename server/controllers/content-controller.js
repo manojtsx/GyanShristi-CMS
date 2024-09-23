@@ -441,7 +441,9 @@ const getContentById = async (req,res) =>{
     if(!content){
       return res.status(404).json({msg:"No content found"});
     }
-    res.status(200).json({content});
+     // Find the user who owns the content
+     const userOwner = await User.findById(content.user_id).select('-password'); // Exclude password field
+    res.status(200).json({content, userOwner});
   }catch(err){
     res.status(500).json({msg:err.message});
   }
@@ -516,12 +518,15 @@ const getPdfContentById = async (req, res) => {
         .json({ msg: "You are trying to open pdf but this is a video/post." });
     }
 
+     // Find the user who owns the content
+     const userOwner = await User.findById(content.user_id).select('-password'); // Exclude password field
+
     // Fetch and return the PDF content
     const contentToShow = await Content.find({
       content_type: "pdf",
       _id: contentId,
     });
-    res.status(200).json({ content: contentToShow });
+    res.status(200).json({ content: contentToShow, userOwner });
   } catch (err) {
     res.status(500).json({ msg: err.message });
   }
@@ -545,12 +550,15 @@ const getVideoContentById = async (req, res) => {
         .json({ msg: "You are trying to open video but this is a pdf/post." });
     }
 
+     // Find the user who owns the content
+     const userOwner = await User.findById(content.user_id).select('-password'); // Exclude password field
+
     // Fetch and return the video content
     const contentToShow = await Content.find({
       content_type: "video",
       _id: contentId,
     });
-    res.status(200).json({ content: contentToShow });
+    res.status(200).json({ content: contentToShow, userOwner });
   } catch (err) {
     res.status(500).json({ msg: err.message });
   }
