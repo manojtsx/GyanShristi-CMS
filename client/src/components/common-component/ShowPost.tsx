@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter, usePathname } from "next/navigation";
 import Loading from "../Loading";
 import "./ShowPost.css";
 import Image from "next/image";
@@ -8,7 +8,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useNotifications } from "@/context/NotificationContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDownload, faPause, faPlay, faStop } from "@fortawesome/free-solid-svg-icons";
-import {jsPDF} from 'jspdf';
+import { jsPDF } from 'jspdf';
 
 interface ContentData {
   title: string;
@@ -43,6 +43,8 @@ const API = process.env.NEXT_PUBLIC_BACKEND_API;
 const ShowPost: React.FC = () => {
   const { token, user } = useAuth();
   const { addNotification } = useNotifications();
+  const router = useRouter();
+  const pathname = usePathname();
   const [contentData, setContentData] = useState<ContentData | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -84,6 +86,13 @@ const ShowPost: React.FC = () => {
   useEffect(() => {
     fetchComments();
   }, []);
+
+  useEffect(() => {
+    return () => {
+      //directly calling this reduces time to stop speech
+      speechSynthesis.cancel();
+    };
+  }, [pathname])
 
   const fetchComments = async () => {
     try {
@@ -257,7 +266,7 @@ const ShowPost: React.FC = () => {
     cursorY += lineHeight;
 
     // Add description
-        doc.setFontSize(12);
+    doc.setFontSize(12);
     const descriptionLines = doc.splitTextToSize(description, maxLineWidth);
     descriptionLines.forEach((line: string | string[]) => {
       if (cursorY + lineHeight > pageHeight - margin) {
@@ -378,25 +387,23 @@ const ShowPost: React.FC = () => {
               icon={faPause}
               onClick={handlePause}
               title="Pause"
-              className={`border-2 p-2 ${
-                isSpeaking ? "text-[#3742FA] cursor-pointer" : "text-gray-500"
-              }`}
-              // Show Pause when speech is playing
+              className={`border-2 p-2 ${isSpeaking ? "text-[#3742FA] cursor-pointer" : "text-gray-500"
+                }`}
+            // Show Pause when speech is playing
             />
             <FontAwesomeIcon
               icon={faPlay}
               onClick={handleResume}
               title="Resume"
-              className={`border-2 p-2 ${
-                !isSpeaking ? "text-[#3742FA] cursor-pointer" : "text-gray-500"
-              }`} // Show Resume when speech is paused or reset
+              className={`border-2 p-2 ${!isSpeaking ? "text-[#3742FA] cursor-pointer" : "text-gray-500"
+                }`} // Show Resume when speech is paused or reset
             />
-              <FontAwesomeIcon
-               icon={faDownload}
-               onClick={handleDownload}
-               title="Download"
-               className="border-2 p-2 text-[#3742FA] cursor-pointer"
-               />
+            <FontAwesomeIcon
+              icon={faDownload}
+              onClick={handleDownload}
+              title="Download"
+              className="border-2 p-2 text-[#3742FA] cursor-pointer"
+            />
           </div>
         </div>
         <div className="content-body text-gray-800">

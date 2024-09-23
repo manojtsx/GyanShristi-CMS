@@ -42,7 +42,6 @@ const ShowContent: React.FC = () => {
         throw Error(result.msg);
       }
       setContent(result.content);
-      console.log(result.content)
     } catch (err: any) {
       addNotification(err.message, "error");
     }

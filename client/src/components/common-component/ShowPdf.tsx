@@ -23,7 +23,6 @@ const ShowPdf: React.FC<ShowPdfProps> = ({
   updatedAt,
     location
 }) => {
-    console.log("ShowPdfProps", title, description, thumbnail, profilePic, name, createdAt, updatedAt);
   return (
     <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden my-4">
       <div className="relative">
