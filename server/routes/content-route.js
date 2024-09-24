@@ -71,6 +71,9 @@ router.get("/post/:id", contentController.getPostContentById);
 router.get("/pdf/:id", contentController.getPdfContentById);
 router.get("/video/:id", contentController.getVideoContentById);
 
+// Define routes for getting all content count
+router.get("/count-content", contentController.countContent);
+
 // Define route for getting content by id
 router.get("/:id", contentController.getContentById);
 
@@ -80,7 +83,5 @@ router.get("/category/:id", contentController.getContentByCategory)
 // Define routes for getting all content
 router.get("/", contentController.getAllContent);
 
-// Define routes for getting all content count
-router.get("/count-content", contentController.countContent);
 
 module.exports = router;

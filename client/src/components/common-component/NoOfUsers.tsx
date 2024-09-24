@@ -43,11 +43,11 @@ function NoOfUsers() {
           "Content-Type": "application/json",
         },
       });
+      const data = await res.json();
       if (!res.ok) {
-        throw new Error("Failed to fetch content count");
+        throw new Error(data.msg);
       }
 
-      const data = await res.json();
       setContentCount(data.totalContent);
     } catch (err: any) {
       addNotification(err.message, "error");
