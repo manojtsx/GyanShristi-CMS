@@ -83,7 +83,7 @@ const UserSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ["unrequested", "pending", "approved"],
+    enum: ["unrequested", "pending", "approved","rejected"],
   },
   otp:{
     type: String
