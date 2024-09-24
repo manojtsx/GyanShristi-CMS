@@ -13,9 +13,9 @@ const addComment = async (req, res) => {
     if (!user) {
       res.status(404).json({ msg: "You may not be logged in for comment." });
     }
-
+    
     if (parentCommentId) {
-      const hasParentComment = await Comment.findOne({ parentCommentId });
+      const hasParentComment = await Comment.findById(parentCommentId);
       if (!hasParentComment) {
         return res.status(401).json({ msg: "Parent comment not found" });
       }

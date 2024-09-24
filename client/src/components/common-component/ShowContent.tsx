@@ -58,7 +58,6 @@ const ShowContent: React.FC = () => {
 
   useEffect(() => {
     getContent();
-    console.log(userOwner)
   }, []);
 
   if (!content) {
