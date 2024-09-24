@@ -10,7 +10,7 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import ViewMode from "./mini-component/ViewMode";
 import { useNotifications } from "@/context/NotificationContext";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 
 const API = process.env.NEXT_PUBLIC_BACKEND_API;
 
@@ -18,8 +18,9 @@ const API = process.env.NEXT_PUBLIC_BACKEND_API;
 function Navbar() {
   const { addNotification } = useNotifications();
   const router = useRouter();
+  const pathname = usePathname();
   const [isClick, setIsClick] = useState(false);
-  const [activeLink, setActiveLink] = useState("home");
+  const [activeLink, setActiveLink] = useState("/");
   const [isFixed, setIsFixed] = useState(false); // State to manage if the navbar is fixed
   const [isSearchPopupVisible, setIsSearchPopupVisible] = useState(false); // State to manage search popup visibility
   const [contents, setContents] = useState([{
@@ -174,16 +175,15 @@ function Navbar() {
           <ul className="hidden sm:flex justify-between gap-8 font-semibold">
             {navItems.map((item, index) => (
               <Link href={item.link} key={index}>
-              {" "}
-              <li
-                className={`dark:text-[#E0E0E0] hover:bg-[rgb(162,204,243)] dark:hover:bg-[#1E58C8] p-2 ${
-                  activeLink === item.id ? "border-b-2 border-[#1E58C8]" : ""
-                }`}
-                onClick={() => handleActiveLink(item.id)}
-              >
-                {item.name}
-              </li>
-            </Link>
+                {" "}
+                <li
+                  className={`dark:text-[#E0E0E0] hover:bg-[rgb(162,204,243)] dark:hover:bg-[#1E58C8] p-2 ${pathname === item.link ? "border-b-2 border-[#1E58C8]" : ""
+                    }`}
+                  onClick={() => handleActiveLink(item.id)}
+                >
+                  {item.name}
+                </li>
+              </Link>
             ))}
 
             <ViewMode />
@@ -247,7 +247,7 @@ function Navbar() {
             {filteredContents.length > 0 ? (
               <ul className="mt-4 flex flex-col">
                 {filteredContents.map((content) => (
-                  <li onClick={()=>handleContentClick(content._id)} key={content._id} className="border-b border-gray-300 py-2">
+                  <li onClick={() => handleContentClick(content._id)} key={content._id} className="border-b border-gray-300 py-2">
                     {content.title}
                   </li>
                 ))}
