@@ -177,7 +177,7 @@ function PostTable() {
                     <MdOutlineEdit
                       className="text-[#011936] text-xl cursor-pointer"
                       onClick={() =>
-                        router.push(`/${user.role}/content/edit/${row._id}`)
+                        router.push(`/${user.role}/content/edit-post/${row._id}`)
                       }
                     />
                     <RiDeleteBin6Line

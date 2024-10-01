@@ -5,6 +5,7 @@ import Register from "@/components/Register";
 import ViewerCategory from "@/components/viewer-component/ViewerCategory";
 import ViewerLatestContent from "@/components/viewer-component/ViewerLatestContent";
 import Image from "next/image";
+import GoToDashboard from "@/components/common-component/GoToDashboard";
 
 export default function Page() {
   return (
@@ -37,6 +38,7 @@ export default function Page() {
     </div>
     <ViewerLatestContent/>
     <ViewerCategory/>
+    <GoToDashboard />
     </div>
   );
 }

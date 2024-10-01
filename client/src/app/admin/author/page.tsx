@@ -7,7 +7,6 @@ function Page() {
     <div className="flex flex-col h-full">
       <TopMenuAuthor />
       <div className=" ml-14 mt-10">
-        Author
         <AuthorTable />
       </div>
     </div>

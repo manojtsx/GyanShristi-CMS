@@ -13,6 +13,7 @@ const verifyToken = async (req, res, next) => {
     const decoded = jwt.verify(token, key);
     const user = await User.findById(decoded.id).select('-password');
     req.user = user;
+    console.log(req.user)
     next();
   } catch (err) {
     res.status(500).json({ msg: err.message });

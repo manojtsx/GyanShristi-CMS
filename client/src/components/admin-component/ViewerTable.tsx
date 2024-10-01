@@ -11,20 +11,61 @@ import Pagination from "../mini-component/Pagination";
 // Call the backend api
 const API = process.env.NEXT_PUBLIC_BACKEND_API;
 
+interface User{
+  _id : string;
+  username : string;
+  name : string;
+  phone_number : string;
+  email : string;
+}
+
 function ViewerTable() {
   const { addNotification } = useNotifications();
   const { token, user } = useAuth();
   const router = useRouter();
   const { handleDelete } = useHandleDelete();
-  const [users, setUsers] = useState([
+  const [users, setUsers] = useState<User[]>([
     {
-      _id: 1,
+      _id: "",
       username: "",
       name: "",
       phone_number: "",
       email: "",
     },
   ]);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [isPopupVisible, setIsPopupVisible] = useState(false);
+
+  const handleUsernameClick = (user: any) => {
+    setSelectedUser(user);
+    setIsPopupVisible(true);
+  };
+
+  const handleRoleChange = async (role: string) => {
+    try {
+      const res = await fetch(`${API}api/user/${role === 'editor' ? 'change-to-editor' : 'promote-admin'}/${selectedUser}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ role }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw Error(data.msg);
+      }
+      addNotification(data.msg, "success");
+      getUserList();
+      handleClosePopup();
+    } catch (err: any) {
+      addNotification(err.message, "error");
+    }
+  };
+
+  const handleClosePopup = () => {
+    setIsPopupVisible(false);
+  };
 
   const getUserList = async () => {
     try {
@@ -137,13 +178,13 @@ function ViewerTable() {
                   className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600"
                 >
                   <td className="px-6 py-4">{index + 1}</td>
-                  <td className="px-6 py-4">{row.username}</td>
+                  <td className="px-6 py-4" onClick={() => handleUsernameClick(row._id)}>{row.username}</td>
                   <td className="px-6 py-4">{row.name}</td>
                   <td className="px-6 py-4">{row.email}</td>
                   <td className="px-6 py-4">{row.phone_number}</td>
                   <td className="flex space-x-5 px-6 py-4">
                     <MdOutlineEdit
-                      className="text-[#011936] text-xl"
+                      className="text-[#011936] text-xl cursor-pointer"
                       onClick={() =>
                         router.push(`/${user.role}/user/edit/${row._id}`)
                       }
@@ -165,6 +206,31 @@ function ViewerTable() {
               </tr>
             )}
           </tbody>
+          {isPopupVisible && (
+            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+              <div className="bg-white p-4 rounded shadow-lg">
+                <h2 className="text-lg font-bold mb-4">Change Role for {selectedUser? selectedUser.username : ""}</h2>
+                <button
+                  onClick={() => handleRoleChange('editor')}
+                  className="w-full bg-blue-500 text-white px-4 py-2 rounded mb-2"
+                >
+                  Change to Editor
+                </button>
+                <button
+                  onClick={() => handleRoleChange('admin')}
+                  className="w-full bg-green-500 text-white px-4 py-2 rounded"
+                >
+                  Change to Admin
+                </button>
+                <button
+                  onClick={handleClosePopup}
+                  className="w-full bg-gray-500 text-white px-4 py-2 rounded mt-2"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          )}
         </table>
       </div>
       <div className="mb-3 flex justify-end mr-6">

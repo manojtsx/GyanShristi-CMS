@@ -170,8 +170,9 @@ const addVideoContent = async (req, res) => {
 // Edit the post content from the server
 const editPostContent = async (req, res) => {
   try {
-    const { title, description, blog, userId, categoryId } = req.body; // Extract data from request body
-    const userIdToUse = userId || req.user.id; // Use provided userId or authenticated user's ID
+    const { title, description, blog, user_id, category_id } = req.body; // Extract data from request body
+    console.log(req.body)
+    const userIdToUse = user_id || req.user.id; // Use provided userId or authenticated user's ID
     const postId = req.params.id; // Get post ID from request parameters
 
     const user = await User.findById(userIdToUse); // Find user by ID
@@ -208,10 +209,12 @@ const editPostContent = async (req, res) => {
     fs.writeFileSync(writeFilePath, blog); // Write blog content to file
 
     // Save the new file
+    console.log(blogFilePath);
     post.location = blogFilePath; // Update post location
     post.title = title || post.title; // Update post title
     post.description = description || post.description; // Update post description
-    post.category_id = Array.isArray(categoryId) ? categoryId : [categoryId]; // Update post category
+    post.user_id = userIdToUse; // Update post user
+    post.category_id = category_id || post.category_id; // Update post category
 
     await post.save(); // Save updated post to database
     res.status(200).json({ msg: "Post updated successfully", post }); // Respond with success message
@@ -223,8 +226,8 @@ const editPostContent = async (req, res) => {
 // Edit the PDF content from the server
 const editPdfContent = async (req, res) => {
   try {
-    const { title, description, userId, categoryId } = req.body; // Extract data from request body
-    const userIdToUse = userId || req.user.id; // Use provided userId or authenticated user's ID
+    const { title, description, user_id, category_id } = req.body; // Extract data from request body
+    const userIdToUse = user_id || req.user.id; // Use provided userId or authenticated user's ID
     const contentId = req.params.id; // Get content ID from request parameters
     const newFile = req.file; // Assuming the new file is uploaded and available in req.file
 
@@ -259,7 +262,8 @@ const editPdfContent = async (req, res) => {
     content.location = newFile.path; // Update content location
     content.title = title || content.title; // Update content title
     content.description = description || content.description; // Update content description
-    post.category_id = Array.isArray(categoryId) ? categoryId : [categoryId]; // Update post category
+    content.user_id = userIdToUse; // Update post user
+    content.category_id = category_id || post.category_id; // Update post category
 
     await content.save(); // Save updated content to database
 
@@ -273,8 +277,8 @@ const editPdfContent = async (req, res) => {
 // Edit the video content from the server
 const editVideoContent = async (req, res) => {
   try {
-    const { title, description, userId, categoryId } = req.body;
-    const userIdToUse = userId || req.user.id;
+    const { title, description, user_id, category_id } = req.body;
+    const userIdToUse = user_id || req.user.id;
     const contentId = req.params.id;
     const newFile = req.file; // Assuming the new file is uploaded and available in req.file
 
@@ -310,7 +314,8 @@ const editVideoContent = async (req, res) => {
     content.location = newFile.path;
     content.title = title || content.title;
     content.description = description || content.description;
-    post.category_id = Array.isArray(categoryId) ? categoryId : [categoryId]; // Update post category
+    content.user_id = userIdToUse; // Update post user
+    content.category_id = category_id || post.category_id; // Update post category
 
     await content.save();
 

@@ -1,10 +1,10 @@
-import TopMenuContent from "@/components/topmenu-component/TopMenuContent";
+import Video from "@/components/Video";
 import React from "react";
 
 function Page() {
   return (
     <div className="flex flex-col h-full">
-      <TopMenuContent />
+     <Video />
     </div>
   );
 }

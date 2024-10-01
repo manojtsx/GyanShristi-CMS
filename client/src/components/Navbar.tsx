@@ -11,12 +11,15 @@ import Link from "next/link";
 import ViewMode from "./mini-component/ViewMode";
 import { useNotifications } from "@/context/NotificationContext";
 import { useRouter, usePathname } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
+import Logout from "./Logout";
 
 const API = process.env.NEXT_PUBLIC_BACKEND_API;
 
 
 function Navbar() {
   const { addNotification } = useNotifications();
+  const { user, logout } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
   const [isClick, setIsClick] = useState(false);
@@ -29,6 +32,7 @@ function Navbar() {
   }]);
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredContents, setFilteredContents] = useState([{ _id: "", title: "" }]);
+  const [logoutModalOpen, setLogoutModalOpen] = useState(false);
   const {
     transcript,
     listening,
@@ -123,6 +127,20 @@ function Navbar() {
     return null;
   }
 
+  const handleLogoutClick = () => {
+    setLogoutModalOpen(true);
+  }
+
+  const handleCloseModal = () => {
+    setLogoutModalOpen(false);
+  }
+
+  const handleConfirmLogout = async () => {
+    await logout();
+    setLogoutModalOpen(false);
+    router.push("/");
+  }
+
   const navItems = [
     { id: "home", name: "Home", link: "/" },
     {
@@ -138,8 +156,8 @@ function Navbar() {
       link: "/notification",
     },
     { id: "about", name: "About", link: "/about" },
-    { id: "signup", name: "Sign Up", link: "/register" },
-    { id: "login", name: "Login", link: "/login" },
+    { id: "signup", name: (user ? <Image alt="Profile Logo" src={`${API}${user.profile_pic}`} width={30} height={30} className='rounded-full' /> : "Sign Up"), link: (user ? `${user.role}/profile` : "/register") },
+    { id: "login", name: (user ? "Logout" : "Login"), link: (user ? "#" : "/login"), onClick: (user ? handleLogoutClick : undefined) },
     {
       id: "search",
       name: (
@@ -179,7 +197,10 @@ function Navbar() {
                 <li
                   className={`dark:text-[#E0E0E0] hover:bg-[rgb(162,204,243)] dark:hover:bg-[#1E58C8] p-2 ${pathname === item.link ? "border-b-2 border-[#1E58C8]" : ""
                     }`}
-                  onClick={() => handleActiveLink(item.id)}
+                  onClick={() => {
+                    handleActiveLink(item.id);
+                    if (item.onClick) item.onClick();
+                  }}
                 >
                   {item.name}
                 </li>
@@ -204,7 +225,10 @@ function Navbar() {
               <li
                 key={index}
                 className="w-screen flex justify-center hover:bg-[rgb(162,204,243)] dark:hover:bg-[#1E58C8] p-2"
-                onClick={() => handleActiveLink(item.id)}
+                onClick={() => {
+                  handleActiveLink(item.id);
+                  if (item.onClick) item.onClick();
+                }}
               >
                 {item.name}
               </li>
@@ -258,6 +282,7 @@ function Navbar() {
           </div>
         </div>
       )}
+      <Logout isOpen={logoutModalOpen} onClose={handleCloseModal} onConfirm={handleConfirmLogout} />
     </>
   );
 }

@@ -176,7 +176,7 @@ function PdfTable() {
                   <td className="flex space-x-5 px-6 py-4">
                     <MdOutlineEdit
                       className="text-[#011936] text-xl cursor-pointer"
-                      onClick={() => router.push(`/edit/${row._id}`)}
+                      onClick={() => router.push(`/${user.role}/content/edit-pdf/${row._id}`)}
                     />
                     <RiDeleteBin6Line
                       className="text-[#011936] text-xl cursor-pointer"
