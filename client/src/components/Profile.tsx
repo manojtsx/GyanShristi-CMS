@@ -18,7 +18,7 @@ function Profile() {
   const { addNotification } = useNotifications();
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null || `${API}${user?.profile_pic}`);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(`${API}${user?.profile_pic}`);
 
   const handleProfileClick = () => {
     setIsPopupVisible(true);
