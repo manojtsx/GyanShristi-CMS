@@ -37,6 +37,7 @@ interface Comment {
   user_id: User;
   content_id: string;
   created_at: string;
+  parent_comment_id: string;
 }
 
 const API = process.env.NEXT_PUBLIC_BACKEND_API;
@@ -294,9 +295,9 @@ const ShowPost: React.FC = () => {
               <div className="w-10 h-10">
                 <Image
                   src={
-                    contentData.userOwner
+                    contentData.userOwner.profile_pic
                       ? `${API}${contentData.userOwner.profile_pic}`
-                      : ""
+                      : "/default.jpg"
                   }
                   alt={
                     contentData.userOwner

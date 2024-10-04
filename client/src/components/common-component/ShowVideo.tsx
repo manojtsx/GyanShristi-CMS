@@ -28,6 +28,7 @@ interface Comment {
   user_id: User;
   content_id: string;
   created_at: string;
+  parent_comment_id: string;
 }
 
 const ShowVideo: React.FC<ShowVideoProps> = ({
@@ -96,7 +97,7 @@ const ShowVideo: React.FC<ShowVideoProps> = ({
           <div className="flex items-center mb-4">
             <img
               className="w-12 h-12 rounded-full mr-4"
-              src={`${API}${profilePic}` || "/user.png"}
+              src={profilePic ? `${API}${profilePic}` : "/default.jpg"}
               alt="User Profile"
             />
             <div>

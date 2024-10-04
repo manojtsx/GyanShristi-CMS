@@ -156,7 +156,7 @@ function Navbar() {
       link: "/notification",
     },
     { id: "about", name: "About", link: "/about" },
-    { id: "signup", name: (user ? <Image alt="Profile Logo" src={`${API}${user.profile_pic}`} width={30} height={30} className='rounded-full' /> : "Sign Up"), link: (user ? `${user.role}/profile` : "/register") },
+    { id: "signup", name: (user ? <Image alt="Profile Logo" src={user.profile_pic ? `${API}${user.profile_pic}` : '/default.jpg'} width={30} height={30} className='rounded-full' /> : "Sign Up"), link: (user ? `${user.role}/profile` : "/register") },
     { id: "login", name: (user ? "Logout" : "Login"), link: (user ? "#" : "/login"), onClick: (user ? handleLogoutClick : undefined) },
     {
       id: "search",
