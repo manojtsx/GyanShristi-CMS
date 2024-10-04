@@ -28,10 +28,11 @@ function EditPdf() {
   const [pdf, setPdf] = useState({
     title: "",
     description: "",
-    location: null as File | null,
+    location: null as string | null,
     user_id: "",
     category_id: "",
     thumbnail: null as File | null,
+    content_type: "pdf"
   });
   const [pdfPreview, setPdfPreview] = useState<string | null>(null);
   const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null);
@@ -48,9 +49,9 @@ function EditPdf() {
       });
       const pdfData = await response.json();
       if (!response.ok) throw new Error(pdfData.msg);
-      setPdf(pdfData.content[0]);
-      setPdfPreview(`${API}${pdfData.content[0].location}`);
-      setThumbnailPreview(`${API}${pdfData.content[0].thumbnail}`);
+      setPdf({ ...pdfData.content[0], location: pdfData.content[0].location, thumbnail: pdfData.content[0].thumbnail });
+      setPdfPreview(pdfData.content[0].location);
+      setThumbnailPreview(pdfData.content[0].thumbnail);
     } catch (error) {
       if (error instanceof Error) {
         addNotification(error.message, "error");
@@ -69,8 +70,8 @@ function EditPdf() {
           "Content-Type": "application/json",
         },
       });
-      const categoriesData = await categoriesResponse.json();
       if (!categoriesResponse.ok) throw new Error("Failed to fetch categories");
+      const categoriesData = await categoriesResponse.json();
       setCategories(categoriesData);
 
       const usersResponse = await fetch(`${API}api/user/role?role=non-viewer`, {
@@ -97,17 +98,6 @@ function EditPdf() {
     fetchCategoriesAndUsers();
   }, []);
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0] || null;
-    setPdf((prevPdf) => ({
-      ...prevPdf,
-      location: file,
-    }));
-    if (file) {
-      setPdfPreview(URL.createObjectURL(file));
-    }
-  };
-
   const handleThumbnailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0] || null;
     setPdf((prevPdf) => ({
@@ -126,12 +116,9 @@ function EditPdf() {
     formData.append("description", pdf.description);
     formData.append("user_id", pdf.user_id);
     formData.append("category_id", pdf.category_id);
-        
-    if (pdf.location) {
-      formData.append("pdf", pdf.location);
-    }
-    
-    if (pdf.thumbnail) {
+    formData.append("content_type", pdf.content_type);
+
+    if (pdf.thumbnail && typeof pdf.thumbnail !== 'string') {
       formData.append("thumbnail", pdf.thumbnail);
     }
 
@@ -150,7 +137,7 @@ function EditPdf() {
       }
 
       addNotification(data.msg, "success");
-      router.push(`/${user.role}/content`); 
+      router.push(`/${user.role}/content`);
     } catch (error) {
       if (error instanceof Error) {
         addNotification(error.message, "error");
@@ -175,7 +162,7 @@ function EditPdf() {
               required
             />
           </div>
-          
+
           <div>
             <label className="block text-lg font-medium text-gray-800 mb-1">Description:</label>
             <textarea
@@ -185,18 +172,11 @@ function EditPdf() {
               required
             />
           </div>
-          
+
           <div>
-            <label className="block text-lg font-medium text-gray-800 mb-1">Upload PDF:</label>
-            <input
-              type="file"
-              accept="application/pdf"
-              onChange={handleFileChange}
-              required
-              className="border border-gray-300 rounded-lg p-2 w-full"
-            />
+            <label className="block text-lg font-medium text-gray-800 mb-1">PDF:</label>
             {pdfPreview && (
-              <iframe src={pdfPreview} className="mt-4 w-full max-h-72" />
+              <iframe src={`${API}${pdfPreview}`} className="mt-4 w-full max-h-72" />
             )}
           </div>
         </div>
@@ -218,7 +198,7 @@ function EditPdf() {
               ))}
             </select>
           </div>
-          
+
           <div>
             <label className="block text-lg font-medium text-gray-800 mb-1">Category:</label>
             <select
@@ -235,7 +215,7 @@ function EditPdf() {
               ))}
             </select>
           </div>
-          
+
           <div>
             <label className="block text-lg font-medium text-gray-800 mb-1">Thumbnail:</label>
             <div
@@ -243,7 +223,11 @@ function EditPdf() {
               onClick={() => fileInputRef.current?.click()}
             >
               {thumbnailPreview ? (
-                <img src={thumbnailPreview} alt="Thumbnail Preview" className="object-cover w-full h-full rounded-lg" />
+                <img
+                  src={typeof thumbnailPreview === 'string' && !thumbnailPreview.startsWith('blob:') ? `${API}${thumbnailPreview}` : thumbnailPreview}
+                  alt="Thumbnail Preview"
+                  className="object-cover w-full h-full rounded-lg"
+                />
               ) : (
                 <span className="text-gray-500">Upload Thumbnail</span>
               )}

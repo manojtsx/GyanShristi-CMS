@@ -28,10 +28,11 @@ function EditVideo() {
   const [video, setVideo] = useState({
     title: "",
     description: "",
-    location: null as File | null,
+    location: null as string | null,
     user_id: "",
     category_id: "",
     thumbnail: null as File | null,
+    content_type : "video"
   });
   const [videoPreview, setVideoPreview] = useState<string | null>(null);
   const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null);
@@ -48,9 +49,9 @@ function EditVideo() {
       });
       const videoData = await response.json();
       if (!response.ok) throw new Error(videoData.msg);
-      setVideo(videoData.content[0]);
-      setVideoPreview(`${API}${videoData.content[0].location}`);
-      setThumbnailPreview(`${API}${videoData.content[0].thumbnail}`);
+      setVideo({ ...videoData.content[0], location: videoData.content[0].location, thumbnail: videoData.content[0].thumbnail });
+      setVideoPreview(videoData.content[0].location);
+      setThumbnailPreview(videoData.content[0].thumbnail);
     } catch (error) {
       if (error instanceof Error) {
         addNotification(error.message, "error");
@@ -97,17 +98,6 @@ function EditVideo() {
     fetchCategoriesAndUsers();
   }, []);
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0] || null;
-    setVideo((prevVideo) => ({
-      ...prevVideo,
-      location: file,
-    }));
-    if (file) {
-      setVideoPreview(URL.createObjectURL(file));
-    }
-  };
-
   const handleThumbnailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0] || null;
     setVideo((prevVideo) => ({
@@ -126,12 +116,10 @@ function EditVideo() {
     formData.append("description", video.description);
     formData.append("user_id", video.user_id);
     formData.append("category_id", video.category_id);
-    
-    if (video.location) {
-      formData.append("video", video.location);
-    }
-    
-    if (video.thumbnail) {
+    formData.append("content_type", video.content_type);
+    console.log(video.content_type)
+
+    if (video.thumbnail && typeof video.thumbnail !== 'string') {
       formData.append("thumbnail", video.thumbnail);
     }
 
@@ -150,7 +138,7 @@ function EditVideo() {
       }
 
       addNotification(data.msg, "success");
-      router.push(`/${user.role}/content`); 
+      router.push(`/${user.role}/content`);
     } catch (error) {
       if (error instanceof Error) {
         addNotification(error.message, "error");
@@ -175,7 +163,7 @@ function EditVideo() {
               required
             />
           </div>
-          
+
           <div>
             <label className="block text-lg font-medium text-gray-800 mb-1">Description:</label>
             <textarea
@@ -185,19 +173,12 @@ function EditVideo() {
               required
             />
           </div>
-          
+
           <div>
-            <label className="block text-lg font-medium text-gray-800 mb-1">Upload Video:</label>
-            <input
-              type="file"
-              accept="video/*"
-              onChange={handleFileChange}
-              required
-              className="border border-gray-300 rounded-lg p-2 w-full"
-            />
+            <label className="block text-lg font-medium text-gray-800 mb-1">Video:</label>
             {videoPreview && (
               <video controls className="mt-4 w-full max-h-64">
-                <source src={videoPreview} type="video/mp4" />
+                <source src={`${API}${videoPreview}`} type="video/mp4" />
                 Your browser does not support the video tag.
               </video>
             )}
@@ -221,7 +202,7 @@ function EditVideo() {
               ))}
             </select>
           </div>
-          
+
           <div>
             <label className="block text-lg font-medium text-gray-800 mb-1">Category:</label>
             <select
@@ -238,7 +219,7 @@ function EditVideo() {
               ))}
             </select>
           </div>
-          
+
           <div>
             <label className="block text-lg font-medium text-gray-800 mb-1">Featured Photo:</label>
             <div
@@ -246,26 +227,30 @@ function EditVideo() {
               onClick={() => fileInputRef.current?.click()}
             >
               {thumbnailPreview ? (
-                <img src={thumbnailPreview} alt="Thumbnail Preview" className="object-cover w-full h-full rounded-lg" />
+                <img
+                  src={typeof thumbnailPreview === 'string' && !thumbnailPreview.startsWith('blob:') ? `${API}${thumbnailPreview}` : thumbnailPreview}
+                  alt="Thumbnail Preview"
+                  className="object-cover w-full h-full rounded-lg"
+                />
               ) : (
                 <span className="text-gray-500">Upload Thumbnail</span>
               )}
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleThumbnailChange}
+                ref={fileInputRef}
+                style={{ display: 'none' }}
+              />
             </div>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleThumbnailChange}
-              ref={fileInputRef}
-              style={{ display: 'none' }}
-            />
-          </div>
 
-          <button
-            type="submit"
-            className="mt-4 bg-blue-600 text-white rounded-lg h-10 w-full md:w-1/4 hover:bg-blue-700 transition duration-200"
-          >
-            Save Changes
-          </button>
+            <button
+              type="submit"
+              className="mt-4 bg-blue-600 text-white rounded-lg h-10 w-full md:w-1/4 hover:bg-blue-700 transition duration-200"
+            >
+              Save Changes
+            </button>
+          </div>
         </div>
       </form>
     </div>

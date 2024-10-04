@@ -249,17 +249,7 @@ const editPdfContent = async (req, res) => {
       return res.status(401).json({ msg: "Not authorized to edit this pdf" });
     }
 
-    // Unlink the previous file
-    if (content.location) {
-      fs.unlinkSync(path.join(__dirname, "..", content.location), (err) => {
-        if (err) {
-          console.error("Error unlinking file:", err);
-        }
-      });
-    }
-
     // Save the new file
-    content.location = newFile.path; // Update content location
     content.title = title || content.title; // Update content title
     content.description = description || content.description; // Update content description
     content.user_id = userIdToUse; // Update post user
@@ -278,6 +268,7 @@ const editPdfContent = async (req, res) => {
 const editVideoContent = async (req, res) => {
   try {
     const { title, description, user_id, category_id } = req.body;
+    console.log("hello") 
     const userIdToUse = user_id || req.user.id;
     const contentId = req.params.id;
     const newFile = req.file; // Assuming the new file is uploaded and available in req.file
@@ -301,17 +292,7 @@ const editVideoContent = async (req, res) => {
     ) {
       return res.status(401).json({ msg: "Not authorized to edit this video" });
     }
-    // Unlink the previous file if it exists
-    if (content.location) {
-      fs.unlinkSync(path.join(__dirname, "..", content.location), (err) => {
-        if (err) {
-          console.error("Error unlinking file:", err);
-        }
-      });
-    }
 
-    // Update content details and save
-    content.location = newFile.path;
     content.title = title || content.title;
     content.description = description || content.description;
     content.user_id = userIdToUse; // Update post user
