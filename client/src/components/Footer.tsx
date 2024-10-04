@@ -54,11 +54,23 @@ function Footer() {
                 <li><FontAwesomeIcon icon={faSquareGithub} className='size-[35px] dark:text-[#3570E2]' /></li>
             </ul>
         </div>
-        <form action="" className='hidden sm:flex flex-col gap-2'>
-        <label htmlFor="newsletter" className='font-semibold text-lg'>Newsletter Signup</label>
-            <input type='text' name='newsletter' placeholder='Username' className='max-w-56 rounded-[10px] border-none dark:bg-[#2C2C2C] dark:border-[#303030]'/>
-            <button className='h-[35px] max-w-56 bg-[#3570E2] rounded-[10px] dark:bg-[#3742FA] hover:bg-[#2B2E4A] hover:opacity-70 dark:hover:bg-[#202af8]'>Submit</button>
-        </form>
+                           <div>
+              <h3 className="text-lg font-semibold text-white mb-2">Other Links</h3>
+              <ul className="space-y-1">
+                <li>
+                  <a href="/member" className="text-white hover:underline">Member</a>
+                </li>
+                <li>
+                  <a href="/about" className="text-white hover:underline">About</a>
+                </li>
+                <li>
+                  <a href="/login" className="text-white hover:underline">Login</a>
+                </li>
+                <li>
+                  <a href="/register" className="text-white hover:underline">Register</a>
+                </li>
+              </ul>
+            </div>
         </div>
     </footer>
   );
