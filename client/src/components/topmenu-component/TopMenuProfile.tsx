@@ -14,7 +14,7 @@ function TopMenuProfile() {
       <div className="w-10 h-10">
       <Link href={`/${user.role}/profile`}>
         <Image
-          src={user.profile_pic ? `${API}${user.profile_pic}` : "/GirlProfile.jpg"}
+          src={user.profile_pic ? `${API}${user.profile_pic}` : "/default.jpg"}
           alt="Girl Profile Picture"
           height={500}
           width={500}
