@@ -18,14 +18,14 @@ export default function RootLayout({
 }) {
     return (
         <html lang="en">
-            <AuthProvider>
-                <NotificationProvider>
-                    <body>
+            <body>
+                <AuthProvider>
+                    <NotificationProvider>
                         <NotificationContainer />
                         {children}
-                    </body>
-                </NotificationProvider>
-            </AuthProvider>
+                    </NotificationProvider>
+                </AuthProvider>
+            </body>
         </html>
     );
 }

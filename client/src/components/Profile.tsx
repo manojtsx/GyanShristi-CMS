@@ -57,7 +57,6 @@ function Profile() {
       addNotification(err.message, "error");
     }
   };
-  console.log(previewUrl)
 
   const handleEditUserChange = (e: React.ChangeEvent<HTMLInputElement>) => { };
   return (

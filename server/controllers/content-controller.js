@@ -171,9 +171,9 @@ const addVideoContent = async (req, res) => {
 const editPostContent = async (req, res) => {
   try {
     const { title, description, blog, user_id, category_id } = req.body; // Extract data from request body
-    console.log(req.body)
     const userIdToUse = user_id || req.user.id; // Use provided userId or authenticated user's ID
     const postId = req.params.id; // Get post ID from request parameters
+    const newFile = req.file; // Assuming the new file is uploaded and available in req.file
 
     const user = await User.findById(userIdToUse); // Find user by ID
     if (!user) {
@@ -188,29 +188,37 @@ const editPostContent = async (req, res) => {
     // Check if user is authorized to edit the post
     if (
       user.role === "viewer" ||
-      (user.role === "author" && post.user_id.toString() !== userIdToUse)
+      (req.user.role === "author" && post.user_id.toString() !== userIdToUse)
     ) {
       return res.status(401).json({ msg: "Not authorized to edit this post" });
     }
 
     // Unlink the previous file
     if (post.location) {
-      fs.unlinkSync(path.join(__dirname, "..", post.location), (err) => {
-        if (err) {
-          throw err;
-        }
-      });
+      const oldFilePath = path.join(__dirname, "..", post.location);
+      if (fs.existsSync(oldFilePath)) {
+        fs.unlinkSync(oldFilePath);
+      }
     }
-
     // Save blog content to a file
     const blogFileName = `post-${Date.now()}.txt`; // Generate a unique filename
     const writeFilePath = path.join(__dirname, "../uploads/post", blogFileName); // Create file path
     const blogFilePath = path.join("uploads/post", blogFileName); // Create relative file path
-    fs.writeFileSync(writeFilePath, blog); // Write blog content to file
-
-    // Save the new file
-    console.log(blogFilePath);
+    fs.writeFileSync(writeFilePath, blog); // Write blog content to file asynchronously
+    console.log(writeFilePath);
+    console.log(blogFilePath)
     post.location = blogFilePath; // Update post location
+
+    if (newFile) {
+      const oldFile = path.join(__dirname, "..", post.location);
+      fs.unlinkSync(oldFile, (err) => {
+        if (err) {
+          throw err;
+        }
+      });
+      post.thumbnail = newFile.path;
+    }
+
     post.title = title || post.title; // Update post title
     post.description = description || post.description; // Update post description
     post.user_id = userIdToUse; // Update post user
@@ -249,7 +257,16 @@ const editPdfContent = async (req, res) => {
       return res.status(401).json({ msg: "Not authorized to edit this pdf" });
     }
 
-    // Save the new file
+    if (newFile) {
+      const oldFile = path.join(__dirname, "..", content.location);
+      fs.unlinkSync(oldFile, (err) => {
+        if (err) {
+          throw err;
+        }
+      });
+      content.thumbnail = newFile.path;
+    }
+
     content.title = title || content.title; // Update content title
     content.description = description || content.description; // Update content description
     content.user_id = userIdToUse; // Update content user
@@ -268,7 +285,6 @@ const editPdfContent = async (req, res) => {
 const editVideoContent = async (req, res) => {
   try {
     const { title, description, user_id, category_id } = req.body;
-    console.log("hello") 
     const userIdToUse = user_id || req.user.id;
     const contentId = req.params.id;
     const newFile = req.file; // Assuming the new file is uploaded and available in req.file
@@ -286,12 +302,22 @@ const editVideoContent = async (req, res) => {
     }
 
     // Check if user is authorized to edit the post
-    console.log(user.role === "author" && content.user_id.toString() !== userIdToUse);
+  
     if (
       user.role === "viewer" ||
       (req.user.role === "author" && content.user_id.toString() !== userIdToUse)
     ) {
       return res.status(401).json({ msg: "Not authorized to edit this video" });
+    }
+
+    if (newFile) {
+      const oldFile = path.join(__dirname, "..", content.location);
+      fs.unlinkSync(oldFile, (err) => {
+        if (err) {
+          throw err;
+        }
+      });
+      content.thumbnail = newFile.path; //
     }
 
     content.title = title || content.title;

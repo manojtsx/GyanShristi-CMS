@@ -117,7 +117,6 @@ function EditVideo() {
     formData.append("user_id", video.user_id);
     formData.append("category_id", video.category_id);
     formData.append("content_type", video.content_type);
-    console.log(video.content_type)
 
     if (video.thumbnail && typeof video.thumbnail !== 'string') {
       formData.append("thumbnail", video.thumbnail);
