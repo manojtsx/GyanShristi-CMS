@@ -6,6 +6,7 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import Pagination from "../mini-component/Pagination";
+import { ImSearch } from "react-icons/im";
 
 // Call the backend api
 const API = process.env.NEXT_PUBLIC_BACKEND_API;
@@ -66,48 +67,46 @@ function CategoryTable() {
 
   // State for pagination
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState("");
   const itemsPerPage = 10; // Number of items per page
   const [totalPages, setTotalPages] = useState(1);
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  };
+
+  // Filter data based on search query
+  const filteredData = category.filter((row) =>
+    row.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const paginatedCategory = category.slice(
+  const paginatedCategory = filteredData.slice(
     startIndex,
     startIndex + itemsPerPage
   );
 
   return (
     <div>
-       <h1 className=" text-2xl font-serif font-bold text-[#011936] drop-shadow-lg mb-4">
+      <h1 className=" text-2xl font-serif font-bold text-[#011936] drop-shadow-lg mb-4">
         All Category
       </h1>
       <div className="flex justify-between items-center mb-3">
-        <div className="flex gap-x-3">
-          <select
-            id="date"
-            name="date"
-            className="rounded-lg h-9 w-[200px] text-center cursor-pointer border-gray-500 text-gray-600"
-            value=""
-            required
-          >
-            <option value="">Select date</option>
-            <option value="">Select date</option>
-          </select>
-          <select
-            id="category"
-            name="category"
-            className="rounded-lg h-9 w-[200px] text-center cursor-pointer border-gray-500 text-gray-600"
-            value=""
-            required
-          >
-            <option value="">Select category</option>
-          </select>
-          <button className="w-[100px] h-9 bg-[#3570E2] rounded-md text-white cursor-pointer">
-            filter
-          </button>
+        <div className="relative">
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={handleSearchChange}
+            className="pr-10 h-9 border border-gray-300 rounded-lg"
+            placeholder="Search..."
+          />
+          <span className="absolute inset-y-0 right-0 flex items-center pr-3">
+            <ImSearch className="text-gray-500" />
+          </span>
         </div>
+
 
         <div className=" mr-6">
           <Pagination
@@ -151,7 +150,7 @@ function CategoryTable() {
                       router.push(`/${user.role}/category/edit/${row._id}`);
                     }}
                   />
-                  <RiDeleteBin6Line className="text-[#011936] text-xl cursor-pointer" onClick={()=>handleDelete(row._id)}/>
+                  <RiDeleteBin6Line className="text-[#011936] text-xl cursor-pointer" onClick={() => handleDelete(row._id)} />
                 </td>
               </tr>
             ))}

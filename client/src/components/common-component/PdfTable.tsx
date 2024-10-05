@@ -7,6 +7,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import Pagination from "../mini-component/Pagination";
 import Link from "next/link";
+import { ImSearch } from "react-icons/im";
 
 // Call the backend API
 const API = process.env.NEXT_PUBLIC_BACKEND_API;
@@ -37,6 +38,7 @@ function PdfTable() {
   const router = useRouter();
   const [data, setData] = useState<Content[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState("");
   const itemsPerPage = 10; // Number of items per page
 
   // Calculate total pages based on data length
@@ -92,9 +94,17 @@ function PdfTable() {
     setCurrentPage(page);
   };
 
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  };
+
+  const filteredData = data.filter((row) =>
+    row.title.toLowerCase().includes(searchQuery.toLowerCase())
+);
+
   // Get the current page's data
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const paginatedData = data.slice(startIndex, startIndex + itemsPerPage);
+  const paginatedData = filteredData.slice(startIndex, startIndex + itemsPerPage);
 
   return (
     <div>
@@ -103,30 +113,18 @@ function PdfTable() {
       </h1>
 
       <div className="flex justify-between items-center mb-3">
-        <div className="flex gap-x-3">
-          <select
-            id="date"
-            name="date"
-            className="rounded-lg h-9 w-[200px] text-center cursor-pointer border-gray-500 text-gray-600"
-            value=""
-            required
-          >
-            <option value="">Select date</option>
-            <option value="">Select date</option>
-          </select>
-          <select
-            id="category"
-            name="category"
-            className="rounded-lg h-9 w-[200px] text-center cursor-pointer border-gray-500 text-gray-600"
-            value=""
-            required
-          >
-            <option value="">Select category</option>
-          </select>
-          <button className="w-[100px] h-9 bg-[#3570E2] rounded-md text-white cursor-pointer">
-            Filter
-          </button>
-        </div>
+      <div className="relative">
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={handleSearchChange}
+              className="pr-10 h-9 border border-gray-300 rounded-lg"
+              placeholder="Search..."
+            />
+            <span className="absolute inset-y-0 right-0 flex items-center pr-3">
+              <ImSearch className="text-gray-500" />
+            </span>
+          </div>
 
         <div className="mr-6">
           <Pagination
@@ -176,7 +174,7 @@ function PdfTable() {
                   <td className="flex space-x-5 px-6 py-4">
                     <MdOutlineEdit
                       className="text-[#011936] text-xl cursor-pointer"
-                      onClick={() => router.push(`/edit/${row._id}`)}
+                      onClick={() => router.push(`/${user.role}/content/edit-pdf/${row._id}`)}
                     />
                     <RiDeleteBin6Line
                       className="text-[#011936] text-xl cursor-pointer"

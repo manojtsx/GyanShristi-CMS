@@ -98,7 +98,7 @@ const About = () => {
               <div className="flex flex-col items-center">
                 <div className='w-36 h-36 overflow-hidden rounded-full mb-1'>
                 <Image
-                  src="/GlobalReach.webp" 
+                  src="/Innovation.jpg" 
                   alt="Innovation" width={500} height={500}
                   className="w-36 h-36 mb-4 transform transition-transform duration-1000 hover:scale-150 object-cover"
                 />
@@ -137,7 +137,7 @@ const About = () => {
               <div className="flex flex-col items-center">
               <div className='w-36 h-36 overflow-hidden rounded-full mb-1'>
                 <Image
-                  src="/Innovation.webp" 
+                  src="/GlobalReach.webp" 
                   alt="Global Reach" width={500} height={500}
                   className="w-36 h-36 rounded-full mb-4 transform transition-transform duration-1000 hover:scale-150 object-cover"
                 />

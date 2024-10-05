@@ -10,6 +10,7 @@ const userRouter = require("./routes/user-route");
 const contentRouter = require("./routes/content-route");
 const categoryRouter = require("./routes/category-route");
 const commentRouter = require("./routes/comment-route");
+const notificationRouter = require("./routes/notification-route");
 
 // Call all the environment variable
 const PORT = process.env.PORT;
@@ -31,6 +32,7 @@ app.use("/api/user", userRouter);
 app.use("/api/content", contentRouter);
 app.use("/api/category", categoryRouter);
 app.use("/api/comment", commentRouter);
+app.use("/api/notification", notificationRouter);
 
 // Serve static files from the "uploads" directory
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));

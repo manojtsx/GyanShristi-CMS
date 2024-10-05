@@ -162,10 +162,9 @@ function EditPost() {
 
       // Make the POST request with the FormData
       const response = await fetch(`${API}api/content/edit/post/${id}`, {
-        method: "POST",
+        method: "PUT",
         headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data'
+          Authorization: `Bearer ${token}`
         },
         body: formData,
       });

@@ -12,9 +12,9 @@ function DashboardTopMenu() {
     <div className="flex justify-between items-center px-5 py-2 shadow-md">
       <p>Dashboard</p>
       <div className="w-10 h-10">
-        <Link href={`/${user.role}/profile`}>
+        <Link href={user ? `/${user.role}/profile` : '#'}>
         <Image
-          src={user.profile_pic ? `${API}${user.profile_pic}` : "/GirlProfile.jpg"}
+          src={user && user.profile_pic ? `${API}${user.profile_pic}` : "/default.jpg"}
           alt="Girl Profile Picture"
           height={500}
           width={500}

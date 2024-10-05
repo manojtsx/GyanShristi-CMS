@@ -18,7 +18,7 @@ function Profile() {
   const { addNotification } = useNotifications();
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null || `${API}${user?.profile_pic}`);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(user?.profile_pic);
 
   const handleProfileClick = () => {
     setIsPopupVisible(true);
@@ -67,7 +67,7 @@ function Profile() {
         <div className="flex flex-col gap-2 items-center justify-center">
           <div className="w-24 relative cursor-pointer" onClick={handleProfileClick}>
             <Image
-              src={previewUrl || "/GirlProfile.jpg"}
+              src={previewUrl ? `${API}${previewUrl}` :  "/default.jpg"}
               alt="Profile Picture"
               height={500}
               width={500}

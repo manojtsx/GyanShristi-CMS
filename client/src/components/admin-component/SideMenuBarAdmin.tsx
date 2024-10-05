@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { BsArrowLeftShort } from "react-icons/bs";
 import { GoHome } from "react-icons/go";
 import { BiSolidBookContent } from "react-icons/bi";
@@ -18,11 +18,19 @@ const API = process.env.NEXT_PUBLIC_BACKEND_API;
 
 const SideMenuBarAdmin = () => {
   const router = useRouter();
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const [open, setOpen] = useState(true);
   const [userMenuOpen, setUserMenuOpen] = useState(false); //submenu
   const [logoutModalOpen, setLogoutModalOpen] = useState(false); // State for modal
   const [activeMenuItem, setActiveMenuItem] = useState<string>(""); // Active menu item
+
+  useEffect(() => {
+    // Retrieve active menu item from local storage
+    const storedActiveMenuItem = localStorage.getItem("activeMenuItem");
+    if (storedActiveMenuItem) {
+      setActiveMenuItem(storedActiveMenuItem);
+    }
+  }, []);
 
   const handleLogoutClick = () => {
     setLogoutModalOpen(true);
@@ -32,12 +40,21 @@ const SideMenuBarAdmin = () => {
     setLogoutModalOpen(false);
   };
 
-  const handleConfirmLogout = () => {
-    // Add your logout logic here
-    setLogoutModalOpen(false);
+  const handleConfirmLogout = async () => {
+    try {
+      await logout();
+      router.push("/login");
+    } catch (error) {
+      console.error("Logout failed", error);
+    } finally {
+      setLogoutModalOpen(false);
+    }
   };
+
   const handleNavigation = (path?: string, label?: string) => {
-    setActiveMenuItem(label || "Default Label");
+    const menuItemLabel = label || "Default Label";
+    setActiveMenuItem(menuItemLabel);
+    localStorage.setItem("activeMenuItem", menuItemLabel); // Store active menu item in local storage
     router.push(path || "/default-path");
   };
 
@@ -133,11 +150,12 @@ const SideMenuBarAdmin = () => {
           } ${!open ? "justify-center" : "pl-5"} duration-300`}
         onClick={() => {
           setActiveMenuItem("Profile");
+          localStorage.setItem("activeMenuItem", "Profile"); // Store active menu item in local storage
           router.push(`/${user.role}/profile`);
         }}
       >
         <Image
-          src={user ? `${API}${user.profile_pic}` : '/logo.png'}
+          src={user ? `${API}${user.profile_pic}` : '/default.jpg'}
           width={45}
           height={45}
           className="rounded-full border-[#011936]"

@@ -9,7 +9,13 @@ import ShowPost from './ShowPost';
 
 const API = process.env.NEXT_PUBLIC_BACKEND_API;
 
+interface User {
+  name: string;
+  profile_pic: string;
+}
+
 interface Content {
+  _id: string;
   title: string;
   description: string;
   content_type: 'pdf' | 'video' | 'post';
@@ -18,6 +24,7 @@ interface Content {
   thumbnail: string;
   status: 'Pending' | 'Uploaded' | 'Rejected';
   user_id: string;
+  userOwner: User;
   category_id?: string;
   created_at: string;
   updated_at: string;
@@ -28,6 +35,7 @@ const ShowContent: React.FC = () => {
   const { id } = useParams<{ id: string | string[] }>(); 
   const { addNotification } = useNotifications();
   const [content, setContent] = useState<Content | null>(null);
+  const [userOwner, setUserOwner] = useState<User | null>(null);
 
   const getContent = async () => {
     try {
@@ -42,7 +50,7 @@ const ShowContent: React.FC = () => {
         throw Error(result.msg);
       }
       setContent(result.content);
-      console.log(result.content)
+      setUserOwner(result.userOwner);
     } catch (err: any) {
       addNotification(err.message, "error");
     }
@@ -58,11 +66,12 @@ const ShowContent: React.FC = () => {
 
   if (content.content_type === "video") {
     return <ShowVideo 
+      id ={content._id}
       title={content.title} 
       description={content.description} 
       thumbnail={content.thumbnail} 
-      profilePic={content.user_id} 
-      name={content.user_id} 
+      profilePic={userOwner?.profile_pic} 
+      name={userOwner?.name} 
       createdAt={content.created_at} 
       updatedAt={content.updated_at} 
       location={content.location} 
@@ -71,11 +80,12 @@ const ShowContent: React.FC = () => {
 
   if (content.content_type === "pdf") {
     return <ShowPdf 
+      id ={content._id}
       title={content.title} 
       description={content.description} 
       thumbnail={content.thumbnail} 
-      profilePic={content.user_id} 
-      name={content.user_id} 
+      profilePic={userOwner?.profile_pic} 
+      name={userOwner?.name} 
       createdAt={content.created_at} 
       updatedAt={content.updated_at} 
       location={content.location}

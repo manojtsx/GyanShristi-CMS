@@ -9,10 +9,10 @@ const getUser = async (req, res) => {
     const userRole = req.user.role;
     if (userRole === "viewer" || userRole === "author") {
       return res
-      .status(403)
-      .json({ msg: "You are not authorized to view this data." });
+        .status(403)
+        .json({ msg: "You are not authorized to view this data." });
     }
-    const users = await User.find({_id : {$ne : userId}}).select("-password");
+    const users = await User.find({ _id: { $ne: userId } }).select("-password");
     if (!users || users.length === 0) {
       throw new Error("No users found");
     }
@@ -22,41 +22,44 @@ const getUser = async (req, res) => {
   }
 };
 
-  // controller to get user data according to role
-  const getUserByRole = async (req, res) => {
-    try {
-      // localhost:3001/api/user/role=<role>  
-      const { role } = req.query;
-      const userRole = req.user.role;
-      const userId = req.user.id;
-      if (!role || !["admin", "editor", "author", "viewer", "non-viewer"].includes(role)) {
-        return res.status(400).json({ msg: "Role parameter is required" });
-      }
-      if (userRole === "viewer" || userRole === "author") {
-        return res
+// controller to get user data according to role
+const getUserByRole = async (req, res) => {
+  try {
+    // localhost:3001/api/user/role=<role>
+    const { role } = req.query;
+    const userRole = req.user.role;
+    const userId = req.user.id;
+    if (
+      !role ||
+      !["admin", "editor", "author", "viewer", "non-viewer"].includes(role)
+    ) {
+      return res.status(400).json({ msg: "Role parameter is required" });
+    }
+    if (userRole === "viewer" || userRole === "author") {
+      return res
         .status(403)
         .json({ msg: "You are not authorized to view this data." });
-      }
-      let users;
-      
-      // Fetch users based on role or exclude 'viewer' role
-      if (role === "non-viewer") {
-        // Exclude 'viewer' role
-        users = await User.find({ role: { $ne: "viewer" } }).select("-password");
-      } else {
-        // Fetch users with the specified role  
-        users = await User.find({ role }).select("-password");
-      }
-      if (!users || users.length === 0) {
-        return res
-          .status(404)
-          .json({ msg: "No users found for the specified role" });
-      }
-      res.status(200).json(users); 
-    } catch (err) {
-      res.status(500).json({ msg: err.message });
     }
-  };
+    let users;
+
+    // Fetch users based on role or exclude 'viewer' role
+    if (role === "non-viewer") {
+      // Exclude 'viewer' role
+      users = await User.find({ role: { $ne: "viewer" } }).select("-password");
+    } else {
+      // Fetch users with the specified role
+      users = await User.find({ role }).select("-password");
+    }
+    if (!users || users.length === 0) {
+      return res
+        .status(404)
+        .json({ msg: "No users found for the specified role" });
+    }
+    res.status(200).json(users);
+  } catch (err) {
+    res.status(500).json({ msg: err.message });
+  }
+};
 
 // get user data according to the id
 const getUserById = async (req, res) => {
@@ -181,11 +184,9 @@ const changePassword = async (req, res) => {
 
       res.status(200).json({ msg: "Password changed successfully" });
     } else {
-      return res
-        .status(403)
-        .json({
-          msg: "You are not authorized to change password for this user.",
-        });
+      return res.status(403).json({
+        msg: "You are not authorized to change password for this user.",
+      });
     }
   } catch (err) {
     res.status(500).json({ msg: err.message });
@@ -212,7 +213,9 @@ const changeEmail = async (req, res) => {
       (["author", "viewer"].includes(userRole) && userId === id)
     ) {
       if (user.email === new_email) {
-        res.status(409).json({ msg: "Your new email cannot be your old email." });
+        res
+          .status(409)
+          .json({ msg: "Your new email cannot be your old email." });
       }
       user.email = new_email;
       await user.save();
@@ -254,6 +257,7 @@ const approveAsAuthor = async (req, res) => {
         approve === false
       ) {
         user.status = "unrequested";
+        await user.save();
         return res.status(200).json({ msg: "Viewer request rejected." });
       } else {
         return res.status(409).json({ msg: "User isnot a pending viewer" });
@@ -262,11 +266,9 @@ const approveAsAuthor = async (req, res) => {
 
       res.status(200).json({ msg: "Viewer approved as Author Successfully" });
     } else {
-      return res
-        .status(403)
-        .json({
-          msg: "You are not authorized to approve this user as author.",
-        });
+      return res.status(403).json({
+        msg: "You are not authorized to approve this user as author.",
+      });
     }
   } catch (err) {
     res.status(500).json({ msg: err.message });
@@ -395,22 +397,35 @@ const countUser = async (req, res) => {
 
 const addUser = async (req, res) => {
   try {
-    const { name, username, address, password, email, role, phone_number } = req.body;
+    const { name, username, address, password, email, role, phone_number } =
+      req.body;
 
     // Check if the user has the correct role to perform this action
-    if (req.user.role !== 'admin' && req.user.role !== 'editor') {
-      return res.status(403).json({ msg: 'Access denied. You do not have permission to add users.' });
+    if (req.user.role !== "admin" && req.user.role !== "editor") {
+      return res
+        .status(403)
+        .json({
+          msg: "Access denied. You do not have permission to add users.",
+        });
     }
 
     // Check if all fields are provided
-    if (!name || !username || !address || !password || !email || !role || !phone_number) {
-      return res.status(400).json({ msg: 'All fields are required' });
+    if (
+      !name ||
+      !username ||
+      !address ||
+      !password ||
+      !email ||
+      !role ||
+      !phone_number
+    ) {
+      return res.status(400).json({ msg: "All fields are required" });
     }
 
     // Check if the user already exists by username or email
     const existingUser = await User.findOne({ $or: [{ username }, { email }] });
     if (existingUser) {
-      return res.status(400).json({ msg: 'Username or Email already exists' });
+      return res.status(400).json({ msg: "Username or Email already exists" });
     }
 
     // Create a new user object
@@ -418,47 +433,53 @@ const addUser = async (req, res) => {
       name,
       username,
       address,
-      password,  // Password will be hashed automatically by Mongoose pre-save middleware
+      password, // Password will be hashed automatically by Mongoose pre-save middleware
       email,
       role,
-      phone_number  
+      phone_number,
     });
 
     // Save the new user to the database
     await newUser.save();
 
     // Return success response with the newly created user's details
-    return res.status(201).json({ msg: 'User added successfully', user: newUser });
-
+    return res
+      .status(201)
+      .json({ msg: "User added successfully", user: newUser });
   } catch (error) {
     return res.status(500).json({ msg: error.message });
   }
 };
 
 // apply as author
-const applyAsAuthor = async(req,res) =>{
-    try {
-      const {userId} = req.body;
-      const user = await User.findById(userId);
-      if (!user) {
-        return res.status(404).json({ msg: "User not found" });
-      }
-
-      // Check if the user is already an author or admin
-      if (user.role === "author" || user.role === "admin" || user.role === "editor") {
-        return res.status(409).json({ msg: "You must be a registered viewer to apply as author" });
-      }
-
-      // Update the user's status to "pending"
-      user.status = "pending";
-      await user.save();
-
-      res.status(200).json({ msg: "Application submitted successfully" });
-    } catch (err) {
-      res.status(500).json({ msg: err.message });
+const applyAsAuthor = async (req, res) => {
+  try {
+    const { userId } = req.body;
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ msg: "User not found" });
     }
-  };
 
+    // Check if the user is already an author or admin
+    if (
+      user.role === "author" ||
+      user.role === "admin" ||
+      user.role === "editor"
+    ) {
+      return res
+        .status(409)
+        .json({ msg: "You must be a registered viewer to apply as author" });
+    }
+
+    // Update the user's status to "pending"
+    user.status = "pending";
+    await user.save();
+
+    res.status(200).json({ msg: "Application submitted successfully" });
+  } catch (err) {
+    res.status(500).json({ msg: err.message });
+  }
+};
 
 module.exports = {
   getUser,
@@ -474,5 +495,5 @@ module.exports = {
   uploadProfilePicture,
   countUser,
   addUser,
-  applyAsAuthor
+  applyAsAuthor,
 };
