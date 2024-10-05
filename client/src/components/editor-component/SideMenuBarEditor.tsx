@@ -14,6 +14,8 @@ import Logout from "../Logout";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 
+const API = process.env.NEXT_PUBLIC_BACKEND_API;
+
 const SideMenuBarEditor = () => {
   const router = useRouter();
   const { user, logout } = useAuth();

@@ -9,6 +9,7 @@ import React, { useEffect, useState } from 'react'
 import { useAuth } from '@/context/AuthContext'
 import { useNotifications } from '@/context/NotificationContext'
 import { useRouter, useParams } from 'next/navigation'
+import { profile } from 'console'
 
 // Call the backend api
 const API = process.env.NEXT_PUBLIC_BACKEND_API;
@@ -22,7 +23,8 @@ function EditUserProfile() {
     name: '',
     username: '',
     address: '',
-    phone_number: ''
+    phone_number: '',
+    profile_pic: ''
   })
 
   useEffect(()=>{
@@ -35,7 +37,13 @@ function EditUserProfile() {
           }
         });
         const data = await res.json();
-        setUpdatedUser(data);
+          
+        const updatedData = {
+          ...data,
+          phone_number: data.phone_number.toString(), 
+        };
+        
+        setUpdatedUser(updatedData);
       }catch(err : any){
         addNotification(err.message, 'error')
       }
@@ -84,13 +92,13 @@ function EditUserProfile() {
         <div className='flex flex-col justify-center items-center w-96 gap-5 px-10 py-3 shadow-lg bg-[#F9F7F7]'>
         <div className="w-24 relative">
               <Image
-                src="/GirlProfile.jpg"
+                src={updatedUser.profile_pic? `${API}${updatedUser.profile_pic}` : '/default.jpg'}
                 alt="Profile Picture"
                 height={500}
                 width={500}
                 className="h-24 w-24 rounded-full object-cover"
               />
-              <FontAwesomeIcon icon={faPenToSquare} className='w-7 h-7 absolute bottom-0 right-0 cursor-pointer'/>
+              
             </div>
             <div className='w-full flex justify-between items-center'>
             <label htmlFor="name" className='text-left w-32'>Name: </label> 
