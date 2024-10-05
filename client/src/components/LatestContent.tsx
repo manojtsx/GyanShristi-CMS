@@ -57,14 +57,14 @@ function LatestContent() {
                   />
                 </div>
                 <p
-                  className="w-40 text-sm overflow-hidden text-ellipsis whitespace-nowrap text-left hover:opacity-50 cursor-default"
+                  className="w-40 text-sm overflow-hidden text-ellipsis whitespace-nowrap text-left hover:opacity-50"
                   onMouseEnter={() => setHoveredTitle(index)}
                   onMouseLeave={() => setHoveredTitle(null)}
                 >
                   {item.title}
                 </p>
                 <div className="w-24">
-                  <p className="text-xs text-right overflow-hidden text-ellipsis whitespace-nowrap hover:opacity-50 cursor-default" onMouseEnter={() => setHoveredAuthorName(index)} onMouseLeave={() => setHoveredAuthorName(null)}>{item.user_id ? item.user_id.name : "Unknown"}</p>
+                  <p className="text-xs text-right overflow-hidden text-ellipsis whitespace-nowrap hover:opacity-50" onMouseEnter={() => setHoveredAuthorName(index)} onMouseLeave={() => setHoveredAuthorName(null)}>{item.user_id ? item.user_id.name : "Unknown"}</p>
                   <p className="text-xs text-[rgba(0,0,0,0.52)] text-right">{new Date(item.created_at).toLocaleDateString()}</p>
                 </div>
                 {hoveredTitle === index && (
