@@ -10,14 +10,10 @@ interface LogoutModalProps {
   onConfirm: () => void;
 }
 
-const Logout: React.FC<LogoutModalProps> = ({ isOpen, onClose}) => {
+const Logout: React.FC<LogoutModalProps> = ({ isOpen, onClose, onConfirm}) => {
   if (!isOpen) return null;
   const {logout} = useAuth();
   const router = useRouter();
-  const onConfirm = async() => {
-    logout();
-    router.push('/login')
-  }
 
 
   return (

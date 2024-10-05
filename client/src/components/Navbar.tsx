@@ -136,9 +136,14 @@ function Navbar() {
   }
 
   const handleConfirmLogout = async () => {
-    await logout();
-    setLogoutModalOpen(false);
-    router.push("/");
+    try {
+      await logout();
+      router.push("/login");
+    } catch (error) {
+      console.error("Logout failed", error);
+    } finally {
+      setLogoutModalOpen(false);
+    }
   }
 
   const navItems = [
