@@ -271,7 +271,7 @@ function Navbar() {
             {filteredContents.length > 0 ? (
               <ul className="mt-4 flex flex-col">
                 {filteredContents.map((content) => (
-                  <li onClick={() => handleContentClick(content._id)} key={content._id} className="border-b border-gray-300 py-2">
+                  <li onClick={() => handleContentClick(content._id)} key={content._id} className="border-b cursor-pointer border-gray-300 py-2">
                     {content.title}
                   </li>
                 ))}

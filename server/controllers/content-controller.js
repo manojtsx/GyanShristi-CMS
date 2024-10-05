@@ -244,7 +244,7 @@ const editPdfContent = async (req, res) => {
     // Check if user is authorized to edit the post
     if (
       user.role === "viewer" ||
-      (user.role === "author" && post.user_id.toString() !== userIdToUse)
+      (req.user.role === "author" && content.user_id.toString() !== userIdToUse)
     ) {
       return res.status(401).json({ msg: "Not authorized to edit this pdf" });
     }
@@ -252,8 +252,8 @@ const editPdfContent = async (req, res) => {
     // Save the new file
     content.title = title || content.title; // Update content title
     content.description = description || content.description; // Update content description
-    content.user_id = userIdToUse; // Update post user
-    content.category_id = category_id || post.category_id; // Update post category
+    content.user_id = userIdToUse; // Update content user
+    content.category_id = category_id || content.category_id; // Update post category
 
     await content.save(); // Save updated content to database
 
@@ -286,9 +286,10 @@ const editVideoContent = async (req, res) => {
     }
 
     // Check if user is authorized to edit the post
+    console.log(user.role === "author" && content.user_id.toString() !== userIdToUse);
     if (
       user.role === "viewer" ||
-      (user.role === "author" && post.user_id.toString() !== userIdToUse)
+      (req.user.role === "author" && content.user_id.toString() !== userIdToUse)
     ) {
       return res.status(401).json({ msg: "Not authorized to edit this video" });
     }
@@ -296,7 +297,7 @@ const editVideoContent = async (req, res) => {
     content.title = title || content.title;
     content.description = description || content.description;
     content.user_id = userIdToUse; // Update post user
-    content.category_id = category_id || post.category_id; // Update post category
+    content.category_id = category_id || cotent.category_id; // Update post category
 
     await content.save();
 

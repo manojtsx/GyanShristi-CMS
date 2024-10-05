@@ -18,7 +18,7 @@ const API = process.env.NEXT_PUBLIC_BACKEND_API;
 
 const SideMenuBarAdmin = () => {
   const router = useRouter();
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const [open, setOpen] = useState(true);
   const [userMenuOpen, setUserMenuOpen] = useState(false); //submenu
   const [logoutModalOpen, setLogoutModalOpen] = useState(false); // State for modal
@@ -32,9 +32,15 @@ const SideMenuBarAdmin = () => {
     setLogoutModalOpen(false);
   };
 
-  const handleConfirmLogout = () => {
-    // Add your logout logic here
-    setLogoutModalOpen(false);
+  const handleConfirmLogout = async() => {
+    try {
+      await logout();
+      router.push("/login");
+    } catch (error) {
+      console.error("Logout failed", error);
+    } finally {
+      setLogoutModalOpen(false);
+    }
   };
   const handleNavigation = (path?: string, label?: string) => {
     setActiveMenuItem(label || "Default Label");

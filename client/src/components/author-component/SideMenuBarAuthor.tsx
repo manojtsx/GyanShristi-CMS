@@ -12,6 +12,8 @@ import Logout from "../Logout";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 
+const API = process.env.NEXT_PUBLIC_BACKEND_API;
+
 const SideMenuBarAuthor = () => {
   const router = useRouter();
   const { user, logout } = useAuth();
@@ -116,10 +118,11 @@ const SideMenuBarAuthor = () => {
         } duration-300`}
         onClick={() => {
           setActiveMenuItem("Profile");
+          router.push(`/${user.role}/profile`);
         }}
       >
         <Image
-          src="/logo.png"
+          src={user ? `${API}${user.profile_pic}` : '/default.jpg'}
           width={45}
           height={45}
           className="rounded-full border-[#011936]"
