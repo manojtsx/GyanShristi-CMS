@@ -112,17 +112,7 @@ function TopMenuContent() {
           ))}
         </ul>
         <div className="flex gap-x-7 pr-8">
-          <div className="relative">
-            <input
-              type="text"
-              value=""
-              className="pr-10 h-9 border border-gray-300 rounded-lg"
-              placeholder="Search..."
-            />
-            <span className="absolute inset-y-0 right-0 flex items-center pr-3">
-              <ImSearch className="text-gray-500" />
-            </span>
-          </div>
+          
           {activeLink !== "all" && (
             <button
               className="w-[150px] h-9 bg-[#3570E2] rounded-md text-white"

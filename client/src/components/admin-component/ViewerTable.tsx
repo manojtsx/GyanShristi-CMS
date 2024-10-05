@@ -7,16 +7,17 @@ import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import { useHandleDelete } from "@/utils/useHandleDelete";
 import Pagination from "../mini-component/Pagination";
+import { ImSearch } from "react-icons/im";
 
 // Call the backend api
 const API = process.env.NEXT_PUBLIC_BACKEND_API;
 
-interface User{
-  _id : string;
-  username : string;
-  name : string;
-  phone_number : string;
-  email : string;
+interface User {
+  _id: string;
+  username: string;
+  name: string;
+  phone_number: string;
+  email: string;
 }
 
 function ViewerTable() {
@@ -92,6 +93,7 @@ function ViewerTable() {
   };
   // State for pagination
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState("");
   const itemsPerPage = 10; // Number of items per page
 
   // Calculate total pages based on data length
@@ -100,9 +102,19 @@ function ViewerTable() {
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  };
+
+  // Filter data based on search query
+  const filteredData = users.filter((row) =>
+    row.name.toLowerCase().includes(searchQuery.toLowerCase()) || row.username.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   // Get the current page's data
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const paginatedUsers = users.slice(startIndex, startIndex + itemsPerPage);
+  const paginatedUsers = filteredData.slice(startIndex, startIndex + itemsPerPage);
 
   useEffect(() => {
     getUserList();
@@ -113,29 +125,17 @@ function ViewerTable() {
         All Viewers
       </h1>
       <div className="flex justify-between items-center mb-3">
-        <div className="flex gap-x-3">
-          <select
-            id="date"
-            name="date"
-            className="rounded-lg h-9 w-[200px] text-center cursor-pointer border-gray-500 text-gray-600"
-            value=""
-            required
-          >
-            <option value="">Select date</option>
-            <option value="">Select date</option>
-          </select>
-          <select
-            id="category"
-            name="category"
-            className="rounded-lg h-9 w-[200px] text-center cursor-pointer border-gray-500 text-gray-600"
-            value=""
-            required
-          >
-            <option value="">Select category</option>
-          </select>
-          <button className="w-[100px] h-9 bg-[#3570E2] rounded-md text-white cursor-pointer">
-            filter
-          </button>
+        <div className="relative">
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={handleSearchChange}
+            className="pr-10 h-9 border border-gray-300 rounded-lg"
+            placeholder="Search..."
+          />
+          <span className="absolute inset-y-0 right-0 flex items-center pr-3">
+            <ImSearch className="text-gray-500" />
+          </span>
         </div>
 
         <div className=" mr-6">
@@ -209,7 +209,7 @@ function ViewerTable() {
           {isPopupVisible && (
             <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
               <div className="bg-white p-4 rounded shadow-lg">
-                <h2 className="text-lg font-bold mb-4">Change Role for {selectedUser? selectedUser.username : ""}</h2>
+                <h2 className="text-lg font-bold mb-4">Change Role for {selectedUser ? selectedUser.username : ""}</h2>
                 <button
                   onClick={() => handleRoleChange('editor')}
                   className="w-full bg-blue-500 text-white px-4 py-2 rounded mb-2"
