@@ -2,9 +2,10 @@ const dotenv = require('dotenv');
 dotenv.config();
 const FRONTEND_URL= process.env.FRONTEND_URL;
 const HOSTED_URL= process.env.FRONTEND_HOSTED_URL;
+const NGROK_URL= process.env.NGROK_URL;
 
 const corsOption = {
-    origin: [FRONTEND_URL, HOSTED_URL],
+    origin: [FRONTEND_URL, HOSTED_URL, NGROK_URL],
     optionsSuccessStatus: 200,
     methods: "GET, HEAD, PUT, PATCH, POST, DELETE",
     allowHeaders: "Content-Type, Authorization",
