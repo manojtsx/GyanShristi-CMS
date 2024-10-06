@@ -14,7 +14,7 @@ const nextConfig = {
     return config;
   },
   images : {
-    domains : ['localhost','05cf-117-103-119-86.ngrok-free.app']
+    domains : ['localhost',' https://a04d-117-103-119-5.ngrok-free.app']
   }
 };
 
