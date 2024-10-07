@@ -18,6 +18,7 @@ interface User {
   name: string;
   phone_number: string;
   email: string;
+  role: string;
 }
 
 
@@ -31,7 +32,8 @@ function EditorTable() {
     username: "",
     name: "",
     phone_number: "",
-    email: ""
+    email: "",
+    role: ""
   }]);
 
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
@@ -43,8 +45,18 @@ function EditorTable() {
   };
 
   const handleRoleChange = async (role: string) => {
+    let url = '';
+    if (role === 'admin') {
+      url = `${API}api/user/promote-admin/${selectedUser}`;
+    } else if (role === 'editor') {
+      url = `${API}api/user/change-to-editor/${selectedUser}`;
+    } else if (role === 'author') {
+      url = `${API}api/user/change-to-author/${selectedUser}`;
+    } else if (role === 'viewer') {
+      url = `${API}api/user/change-to-viewer/${selectedUser}`;
+    }
     try {
-      const res = await fetch(`${API}api/user/${role === 'editor' ? 'change-to-editor' : 'promote-admin'}/${selectedUser}`, {
+      const res = await fetch(url, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -210,20 +222,32 @@ function EditorTable() {
               <div className="bg-white p-4 rounded shadow-lg">
                 <h2 className="text-lg font-bold mb-4">Change Role for {selectedUser ? selectedUser.username : ""}</h2>
                 <button
-                  onClick={() => handleRoleChange('editor')}
-                  className="w-full bg-blue-500 text-white px-4 py-2 rounded mb-2"
-                >
-                  Change to Editor
-                </button>
-                <button
                   onClick={() => handleRoleChange('admin')}
-                  className="w-full bg-green-500 text-white px-4 py-2 rounded"
+                  className="w-full bg-green-500 hover:bg-green-600 text-white px-4 py-2 mb-2 rounded transition duration-300"
                 >
                   Change to Admin
                 </button>
                 <button
+                  onClick={() => handleRoleChange('editor')}
+                  className="w-full bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded mb-2 transition duration-300"
+                >
+                  Change to Editor
+                </button>
+                <button
+                  onClick={() => handleRoleChange('author')}
+                  className="w-full bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded mb-2 transition duration-300"
+                >
+                  Change to Author
+                </button>
+                <button
+                  onClick={() => handleRoleChange('viewer')}
+                  className="w-full bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded transition duration-300"
+                >
+                  Change to Viewer
+                </button>
+                <button
                   onClick={handleClosePopup}
-                  className="w-full bg-gray-500 text-white px-4 py-2 rounded mt-2"
+                  className="w-full bg-red-400 text-white px-4 py-2 rounded mt-2"
                 >
                   Close
                 </button>

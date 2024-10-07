@@ -204,6 +204,7 @@ const editPostContent = async (req, res) => {
     const blogFileName = `post-${Date.now()}.txt`; // Generate a unique filename
     const writeFilePath = path.join(__dirname, "../uploads/post", blogFileName); // Create file path
     const blogFilePath = path.join("uploads/post", blogFileName); // Create relative file path
+    console.log(blog)
     fs.writeFileSync(writeFilePath, blog); // Write blog content to file asynchronously
     console.log(writeFilePath);
     console.log(blogFilePath)

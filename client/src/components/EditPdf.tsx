@@ -100,11 +100,17 @@ function EditPdf() {
 
   const handleThumbnailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0] || null;
+
     setPdf((prevPdf) => ({
       ...prevPdf,
       thumbnail: file,
     }));
     if (file) {
+      const fileSizeInMB = file.size / 1024 / 1024;
+      if (fileSizeInMB > 5) {
+        addNotification("Thumbnail size exceeds 5MB limit", "error");
+        return;
+      }
       setThumbnailPreview(URL.createObjectURL(file));
     }
   };

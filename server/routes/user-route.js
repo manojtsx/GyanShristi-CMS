@@ -23,5 +23,7 @@ router.route("/change-email/:id").put(verifyToken,userController.changeEmail);
 router.route("/approve-author/:id").put(verifyToken,userController.approveAsAuthor);
 router.route("/change-to-editor/:id").put(verifyToken, userController.changeUserToEditor);
 router.route("/promote-admin/:id").put( verifyToken, userController.promoteToAdmin);
+router.route("/change-to-author/:id").put(verifyToken, userController.changeUserToAuthor);
+router.route("/change-to-viewer/:id").put(verifyToken, userController.changeUserToViewer);
 
 module.exports = router;

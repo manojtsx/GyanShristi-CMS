@@ -1,9 +1,10 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { ImReply } from "react-icons/im";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import Pagination from "../mini-component/Pagination";
 import { useAuth } from "@/context/AuthContext";
+import Loading from "../Loading";
+import { ImSearch } from "react-icons/im";
 
 const API = process.env.NEXT_PUBLIC_BACKEND_API;
 
@@ -24,6 +25,7 @@ interface Comment {
 
 function CommentTable() {
   const [data, setData] = useState<Comment[]>([]);
+  const [filteredData, setFilteredData] = useState<Comment[]>([]);
   const { token } = useAuth();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -32,24 +34,40 @@ function CommentTable() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5; // Number of items per page
 
+  // Search state
+  const [searchQuery, setSearchQuery] = useState("");
+
   useEffect(() => {
     fetchComments();
-  }, []);
+  }, [currentPage, searchQuery]);
 
   const fetchComments = async () => {
     try {
-      const response = await fetch(`${API}api/comment/`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-      });
+      const response = await fetch(
+        `${API}api/comment?page=${currentPage}&limit=${itemsPerPage}&search=${searchQuery}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       const result = await response.json();
       if (!response.ok) {
-        throw new Error(result.msg || 'Failed to fetch comments');
+        throw new Error(result.msg || "Failed to fetch comments");
       }
-      setData(result.comments);
+      const filteredData = result.comments.filter((row: Comment) => {
+        return (
+          row.content.title !== "unknown" &&
+          row.user.name !== "unknown" &&
+          (row.user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            row.content.title 
+              .toLowerCase()
+              .includes(searchQuery.toLowerCase()) || row.description.toLowerCase().includes(searchQuery.toLowerCase()))
+        );
+      });
+      setFilteredData(filteredData);
     } catch (error: any) {
       setError(error.message);
     } finally {
@@ -61,31 +79,35 @@ function CommentTable() {
     setCurrentPage(page);
   };
 
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const paginatedData = data.slice(startIndex, startIndex + itemsPerPage);
-  const totalPages = Math.ceil(data.length / itemsPerPage);
-
   const handleDelete = async (id: string) => {
     try {
       const response = await fetch(`${API}api/comment/delete/${id}`, {
-        method: 'DELETE',
+        method: "DELETE",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization' :  `Bearer ${token}`
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
       });
-      const result = await response.json();
       if (!response.ok) {
-        throw new Error();
+        throw new Error("Failed to delete comment");
       }
       setData(data.filter((row) => row._id !== id));
+      setFilteredData(filteredData.filter((row) => row._id !== id));
     } catch (error: any) {
       setError(error.message);
     }
   };
 
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+  };
+
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const paginatedData = filteredData.slice(startIndex, startIndex + itemsPerPage);
+  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+
   if (loading) {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
 
   if (error) {
@@ -98,29 +120,17 @@ function CommentTable() {
         All Comments
       </h1>
       <div className="flex justify-between items-center mb-3">
-        <div className="flex gap-x-3">
-          <select
-            id="date"
-            name="date"
-            className="rounded-lg h-9 w-[200px] text-center cursor-pointer border-gray-500 text-gray-600"
-            value=""
-            required
-          >
-            <option value="">Select date</option>
-            <option value="">Select date</option>
-          </select>
-          <select
-            id="category"
-            name="category"
-            className="rounded-lg h-9 w-[200px] text-center cursor-pointer border-gray-500 text-gray-600"
-            value=""
-            required
-          >
-            <option value="">Select category</option>
-          </select>
-          <button className="w-[100px] h-9 bg-[#3570E2] rounded-md text-white cursor-pointer">
-            filter
-          </button>
+        <div className="relative">
+          <input
+            type="text"
+            className="pr-10 h-9 w-80 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
+            placeholder="Search..."
+            value={searchQuery}
+            onChange={(e) => handleSearch(e.target.value)}
+          />
+          <span className="absolute inset-y-0 right-0 flex items-center pr-3">
+            <ImSearch className="text-gray-500" />
+          </span>
         </div>
 
         <div className=" mr-6">
@@ -161,13 +171,14 @@ function CommentTable() {
                 <td className="px-6 py-4">{row.user.name}</td>
                 <td className="px-6 py-4">{row.content.title}</td>
                 <td className="px-1 py-4">{row.description}</td>
-                <td className="px-6 py-4">{new Date(row.created_at).toLocaleDateString()}</td>
+                <td className="px-6 py-4">
+                  {new Date(row.created_at).toLocaleDateString()}
+                </td>
                 <td className="flex space-x-5 px-6 py-4">
-                  <ImReply className="text-[#011936] text-xl cursor-pointer" />
-                  {/* <RiDeleteBin6Line
+                  <RiDeleteBin6Line
                     className="text-[#011936] text-xl cursor-pointer"
                     onClick={() => handleDelete(row._id)}
-                  /> */}
+                  />
                 </td>
               </tr>
             ))}

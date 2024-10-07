@@ -1,5 +1,6 @@
 "use client";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
+import { debounce } from "lodash";
 import SpeechToTextEditor from "./SpeechToTextEditor";
 import { useAuth } from "@/context/AuthContext";
 import { useNotifications } from "@/context/NotificationContext";
@@ -128,6 +129,11 @@ function EditPost() {
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
+      const fileSizeInMB = file.size / 1024 / 1024;
+      if (fileSizeInMB > 5) {
+        addNotification("Thumbnail size exceeds 5MB limit", "error");
+        return;
+      }
       // Create a preview URL for the selected file
       const previewUrl = URL.createObjectURL(file);
       setPhotoPreview(previewUrl);
@@ -136,11 +142,15 @@ function EditPost() {
   };
 
   const handleBlogChange = (newBlogContent: string) => {
+    console.log(newBlogContent)
     setPost((prevPost) => ({
       ...prevPost,
       blog: newBlogContent,
     }));
   };
+
+  // Debounce the handleBlogChange function
+  const debouncedHandleBlogChange = useCallback(debounce(handleBlogChange, 300), []);
 
   const handleSubmit = async () => {
     try {
@@ -226,7 +236,7 @@ function EditPost() {
         <div className="w-full mb-8">
           <label className="block text-lg font-medium text-gray-800 mb-2">Content:</label>
           <div className="max-h-[400px] overflow-auto">
-            <SpeechToTextEditor value={post.blog} onChange={handleBlogChange} />
+            <SpeechToTextEditor value={post.blog} onChange={debouncedHandleBlogChange} />
           </div>
         </div>
       </div>

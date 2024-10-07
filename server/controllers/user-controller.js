@@ -275,59 +275,50 @@ const approveAsAuthor = async (req, res) => {
   }
 };
 
-//change user role to editor
-const changeUserToEditor = async (req, res) => {
+// Generic function to change user role
+const changeUserRole = async (req, res, newRole) => {
   try {
     const userId = req.params.id;
     const userRole = req.user.role;
 
     const user = await User.findById(userId);
     if (!user) {
-      return res.status(404).json({ msg: "User doesnot exists." });
+      return res.status(404).json({ msg: "User does not exist." });
     }
-    if (userRole === "admin") {
-      if (user.role === "editor") {
-        return res.status(409).json({ msg: "Selected user already a editor." });
+    if (userRole === "admin" || userRole === "editor") {
+      if (user.role === newRole) {
+        return res.status(409).json({ msg: `Selected user is already a ${newRole}.` });
       }
-      user.role = "editor";
+      user.role = newRole;
       user.status = "approved";
       await user.save();
-      res.status(200).json({ msg: "User role changed to editor", user });
+      res.status(200).json({ msg: `User role changed to ${newRole}`, user });
     } else {
-      return res
-        .status(403)
-        .json({ msg: "You are not authorized to make this user editor." });
+      return res.status(403).json({ msg: `You are not authorized to change this user to ${newRole}.` });
     }
   } catch (err) {
     res.status(500).json({ msg: err.message });
   }
 };
 
-// promote user to admin
-const promoteToAdmin = async (req, res) => {
-  try {
-    const userId = req.params.id;
-    const userRole = req.user.role;
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({ msg: "User doesnot exists." });
-    }
-    if (userRole === "admin") {
-      if (user.role === "admin") {
-        return res.status(409).json({ msg: "Selected user is already admin." });
-      }
-      user.role = "admin";
-      user.status = "approved";
-      await user.save();
-      return res.status(200).json({ msg: "User role changed to admin", user });
-    } else {
-      return res
-        .status(403)
-        .json({ msg: "You are not authorized to delete this user" });
-    }
-  } catch (err) {
-    res.status(500).json({ msg: err.message });
-  }
+// Change user role to editor
+const changeUserToEditor = (req, res) => {
+  changeUserRole(req, res, "editor");
+};
+
+// Promote user to admin
+const promoteToAdmin = (req, res) => {
+  changeUserRole(req, res, "admin");
+};
+
+// Change user role to author
+const changeUserToAuthor = (req, res) => {
+  changeUserRole(req, res, "author");
+};
+
+// Change user role to viewer
+const changeUserToViewer = (req, res) => {
+  changeUserRole(req, res, "viewer");
 };
 
 // save profile picture path
@@ -492,6 +483,8 @@ module.exports = {
   approveAsAuthor,
   changeUserToEditor,
   promoteToAdmin,
+  changeUserToAuthor,
+  changeUserToViewer,
   uploadProfilePicture,
   countUser,
   addUser,
