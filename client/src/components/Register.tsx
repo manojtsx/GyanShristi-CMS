@@ -36,6 +36,7 @@ function Register() {
     confirm_password: "",
     otp: ""
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Handle the input change
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -58,6 +59,7 @@ function Register() {
   // submit the form for 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setIsSubmitting(true);
     try {
       if (user.password !== user.confirm_password) {
         throw new Error("Please match the password.");
@@ -80,12 +82,15 @@ function Register() {
       setShowOtpContainer(true);
     } catch (err: any) {
       addNotification(err.message, "error");
+    }finally{
+      setIsSubmitting(false);
     }
   }
 
   // submit the form for OTP verification
   const handleOTPSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setIsSubmitting(false);
     try {
       const res = await fetch(`${API}api/auth/register`, {
         method: "POST",
@@ -105,11 +110,13 @@ function Register() {
       router.push("/login");
     } catch (err: any) {
       addNotification(err.message, "error");
+    }finally{
+      setIsSubmitting(false);
     }
   };
   return (
-    <main className=" flex min-h-screen dark:bg-[#121212] dark:text-white">
-      <div className="flex flex-col items-start justify-center w-1/2 pl-40 ">
+    <main className=" flex flex-col md:flex-row min-h-screen dark:bg-[#121212] dark:text-white mt-10">
+      <div className="flex flex-col items-center justify-center w-full md:w-1/2 pl-3 md:pl-40 ">
         <h1 className=" font-bold text-4xl">GyanShristi CMS</h1>
         <p className=" text-gray-400 mt-4">
           A CMS based on Voice Recognition and Text to Speech Technology for the better management of the contents.
@@ -120,7 +127,7 @@ function Register() {
         </button>
         </Link>
       </div>
-      <div className="flex justify-center items-center min-h-[90vh] w-1/2 pl-24">
+      <div className="flex justify-center items-center min-h-[90vh] w-full md:w-1/2 md:pl-24 mt-10 md:mt-0">
         {!showOtpContainer ? (
 
           <form onSubmit={handleSubmit}>
@@ -187,9 +194,10 @@ function Register() {
 
                   <button
                     type="submit"
-                    className="w-[100px] h-10 bg-[#3570E2] text-white font-bold"
+                    className={`w-[100px] h-10 ${isSubmitting ? 'bg-[#708ec9]' : 'bg-[#3570E2]'}  text-white font-bold`}
+                    disabled={isSubmitting}
                   >
-                    Submit
+                    {isSubmitting ? "Submitting..." : "Submit"}
                   </button>
                 </div>
               </div>
@@ -205,8 +213,9 @@ function Register() {
             onChange={handleOtpChange}
             className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
-          <button type="submit" className="w-full px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
-            Verify OTP
+          <button type="submit" className={`w-full px-4 py-2 ${isSubmitting ? 'bg-[#708ec9]' : 'bg-[#3570E2]'}} text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500`}
+          disabled={isSubmitting}>
+          {isSubmitting ? "Verifying..." : "Verify OTP"}
           </button>
         </form>
         )}

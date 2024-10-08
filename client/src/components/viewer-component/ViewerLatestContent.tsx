@@ -23,7 +23,7 @@ interface Content {
   title: string;
   description: string;
   user_id: User;
-  category_id: Category[];
+  category_id: Category;
   updated_at: string;
 }
 
@@ -62,7 +62,7 @@ function ViewerLatestContent() {
   return (
     <div className='bg-[#1E58C8] flex flex-col justify-center dark:bg-[#181818]'>
       <p className='text-white font-semibold text-2xl pt-5 text-center md:text-left md:px-20'>Latest Contents</p>
-      <div className='flex pb-5 flex-col lg:flex-row items-center justify-around cursor-pointer lg:px-12'>
+      <div className='flex pb-5 flex-col lg:flex-row items-center justify-around lg:px-12 w-full'>
         {latestContents.map((content) => (
           <div key={content._id} className='bg-white rounded-2xl hover:scale-105 transition-transform duration-300 mt-8'>
             <div className='flex flex-col justify-center items-center px-4 pt-4 pb-2 gap-1'>
@@ -80,7 +80,7 @@ function ViewerLatestContent() {
                   >
                     {content.description}
                   </p>
-                  <p className='text-base text-[#CCC6C6]'>Get updated with GyanShristi</p>
+  
                 </div>
                 <Image 
                   src={`${API}${content.thumbnail}`} 
@@ -133,12 +133,12 @@ function ViewerLatestContent() {
                 )}
               </div>
               <div className='text-right'>
-                {content.category_id.length > 0 && (
+                {content.category_id && content.category_id.title && (
                   <p
                     className='overflow-hidden text-ellipsis whitespace-nowrap font-semibold'
-                    title={content.category_id[0]?.title}
+                    title={content.category_id?.title}
                   >
-                    {typeof content.category_id[0]?.title === 'string' ? content.category_id[0]?.title : "Unknown Category"}
+                    {typeof content.category_id?.title === 'string' ? content.category_id?.title : "Unknown Category"}
                   </p>
                 )}
                 <p

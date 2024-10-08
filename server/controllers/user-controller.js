@@ -286,6 +286,9 @@ const changeUserRole = async (req, res, newRole) => {
       return res.status(404).json({ msg: "User does not exist." });
     }
     if (userRole === "admin" || userRole === "editor") {
+      if(userRole ==="editor" && newRole === "admin"){
+        return res.status(403).json({ msg: `You are not authorized to change this user to ${newRole}.` });
+      }
       if (user.role === newRole) {
         return res.status(409).json({ msg: `Selected user is already a ${newRole}.` });
       }

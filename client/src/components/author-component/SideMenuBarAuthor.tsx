@@ -4,7 +4,6 @@ import React, { useState, useEffect } from "react";
 import { BsArrowLeftShort } from "react-icons/bs";
 import { GoHome } from "react-icons/go";
 import { BiSolidBookContent } from "react-icons/bi";
-import { VscCommentDiscussion } from "react-icons/vsc";
 import { FaRegBell } from "react-icons/fa6";
 import { TbCategoryFilled } from "react-icons/tb";
 import { HiOutlineLogout } from "react-icons/hi";
@@ -62,12 +61,6 @@ const SideMenuBarAuthor = () => {
       label: "Content",
       path: "/author/content",
     },
-    {
-      icon: <VscCommentDiscussion />,
-      label: "Comment",
-      path: "/author/comment",
-    },
-    { icon: <FaRegBell />, label: "Notification" },
     {
       icon: <TbCategoryFilled />,
       label: "Category",
@@ -149,7 +142,6 @@ const SideMenuBarAuthor = () => {
       <Logout
         isOpen={logoutModalOpen}
         onClose={handleCloseModal}
-        onConfirm={handleConfirmLogout}
       />
     </div>
   );

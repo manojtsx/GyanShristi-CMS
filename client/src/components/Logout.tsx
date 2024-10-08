@@ -7,7 +7,6 @@ import { useRouter } from 'next/navigation'
 interface LogoutModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onConfirm: () => void;
 }
 
 const Logout: React.FC<LogoutModalProps> = ({ isOpen, onClose}) => {

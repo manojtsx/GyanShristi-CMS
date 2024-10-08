@@ -33,7 +33,7 @@ function Post() {
     title: "",
     description: "",
     blog: "",
-    user_id: "",
+    user_id: user._id,
     category_id: "",
     content_type: "post",
   });
@@ -55,21 +55,23 @@ function Post() {
       setCategories(categoriesData);
 
       // Fetch users excluding "viewer" role
-      const usersResponse = await fetch(`${API}api/user/role?role=non-viewer`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-      const usersData = await usersResponse.json();
-      if (!usersResponse.ok) throw new Error(usersData.msg);
-
-      // Ensure usersData is an array
-      if (Array.isArray(usersData)) {
-        setUsers(usersData);
-      } else {
-        throw new Error("Users data is not an array");
+      if(user.role === "admin" || user.role === "editor") {
+        const usersResponse = await fetch(`${API}api/user/role?role=non-viewer`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+        const usersData = await usersResponse.json();
+        if (!usersResponse.ok) throw new Error(usersData.msg);
+        
+        // Ensure usersData is an array
+        if (Array.isArray(usersData)) {
+          setUsers(usersData);
+        } else {
+          throw new Error("Users data is not an array");
+        }
       }
     } catch (error: any) {
       addNotification(error.message, "error");
@@ -231,6 +233,9 @@ function Post() {
           </select>
         </div>
     
+    {
+      user.role === "admin" || user.role === "editor" && (
+
         <div className="w-full">
           <label htmlFor="author" className="block text-lg font-medium text-gray-800 mb-2">
             Author:
@@ -251,6 +256,8 @@ function Post() {
             ))}
           </select>
         </div>
+      )
+    }
     
         <div className="w-full">
           <label className="block text-lg font-medium text-gray-800 mb-2">Featured Photo:</label>

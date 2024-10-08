@@ -39,15 +39,19 @@ function ViewerCategory() {
 
 
   return (
-    <div className='bg-white flex flex-col justify-center md:items-start items-center py-12 px-5 md:px-20 gap-8 dark:bg-[#121212] dark:text-white'>
+        <div className='bg-white flex flex-col justify-center md:items-start items-center py-12 px-5 md:px-20 gap-8 dark:bg-[#121212] dark:text-white'>
       <p className='text-2xl font-semibold '>Category</p>
       {error && <p className='text-red-500'>{error}</p>}
-      <div className='flex flex-col md:flex-row gap-5 items-center'>
+      <div className='flex flex-row flex-wrap gap-5 items-center'>
         {category.length === 0 ? (
           <p>No category created till now</p>
         ) : (
           category.map((item, index) => (
-            <button key={index} className='flex text-white justify-center items-center bg-[#1E58C8] rounded-full hover:bg-[#2B2E4A] hover:opacity-70 w-40 h-10' onClick={()=>router.push(`/category/${item._id}`)}>
+            <button
+              key={index}
+              className='flex text-white justify-center items-center bg-[#1E58C8] rounded-full hover:bg-[#2B2E4A] hover:opacity-70 w-full sm:w-40 md:w-48 lg:w-56 xl:w-64 h-10'
+              onClick={() => router.push(`/category/${item._id}`)}
+            >
               {item.title}
             </button>
           ))
