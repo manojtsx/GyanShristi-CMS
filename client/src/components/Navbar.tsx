@@ -287,7 +287,7 @@ function Navbar() {
           </div>
         </div>
       )}
-      <Logout isOpen={logoutModalOpen} onClose={handleCloseModal} onConfirm={handleConfirmLogout} />
+      <Logout isOpen={logoutModalOpen} onClose={handleCloseModal} />
     </>
   );
 }

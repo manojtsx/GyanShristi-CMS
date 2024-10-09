@@ -18,6 +18,7 @@ interface User {
   name: string;
   phone_number: string;
   email: string;
+  role: string;
 }
 
 function UserTable() {
@@ -32,6 +33,7 @@ function UserTable() {
       name: "",
       phone_number: "",
       email: "",
+      role: ""
     },
   ]);
 
@@ -44,8 +46,18 @@ function UserTable() {
   };
 
   const handleRoleChange = async (role: string) => {
+    let url = '';
+    if (role === 'admin') {
+      url = `${API}api/user/promote-admin/${selectedUser}`;
+    } else if (role === 'editor') {
+      url = `${API}api/user/change-to-editor/${selectedUser}`;
+    } else if (role === 'author') {
+      url = `${API}api/user/change-to-author/${selectedUser}`;
+    } else if (role === 'viewer') {
+      url = `${API}api/user/change-to-viewer/${selectedUser}`;
+    }
     try {
-      const res = await fetch(`${API}api/user/${role === 'editor' ? 'change-to-editor' : 'promote-admin'}/${selectedUser}`, {
+      const res = await fetch(url, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -164,6 +176,9 @@ function UserTable() {
                 Email
               </th>
               <th scope="col" className="px-6 py-3">
+                Role
+              </th>
+              <th scope="col" className="px-6 py-3">
                 Contact
               </th>
               <th scope="col" className="px-6 py-3">
@@ -182,6 +197,7 @@ function UserTable() {
                   <td className="px-6 py-4" onClick={() => handleUsernameClick(row._id)}>{row.username}</td>
                   <td className="px-6 py-4">{row.name}</td>
                   <td className="px-6 py-4">{row.email}</td>
+                  <td className="px-6 py-4">{row.role}</td>
                   <td className="px-6 py-4">{row.phone_number}</td>
                   <td className="flex space-x-5 px-6 py-4">
                     <MdOutlineEdit
@@ -210,22 +226,40 @@ function UserTable() {
           {isPopupVisible && (
             <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
               <div className="bg-white p-4 rounded shadow-lg">
-                <h2 className="text-lg font-bold mb-4">Change Role for {selectedUser ? selectedUser.username : ""}</h2>
+                <h2 className="text-lg font-bold mb-4">Change Role To:</h2>
+                {
+                  user.role === "admin" &&
+                  <button
+                    onClick={() => handleRoleChange('admin')}
+                    className="w-full bg-green-500 hover:bg-green-600 text-white px-4 py-2 mb-2 rounded transition duration-300"
+                  >
+                    Change to Admin
+                  </button>
+                }
+                {
+                  user.role === "admin" || user.role === "editor" &&
+                  <button
+                    onClick={() => handleRoleChange('editor')}
+                    className="w-full bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded mb-2 transition duration-300"
+                  >
+                    Change to Editor
+                  </button>
+                }
                 <button
-                  onClick={() => handleRoleChange('editor')}
-                  className="w-full bg-blue-500 text-white px-4 py-2 rounded mb-2"
+                  onClick={() => handleRoleChange('author')}
+                  className="w-full bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded mb-2 transition duration-300"
                 >
-                  Change to Editor
+                  Change to Author
                 </button>
                 <button
-                  onClick={() => handleRoleChange('admin')}
-                  className="w-full bg-green-500 text-white px-4 py-2 rounded"
+                  onClick={() => handleRoleChange('viewer')}
+                  className="w-full bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded transition duration-300"
                 >
-                  Change to Admin
+                  Change to Viewer
                 </button>
                 <button
                   onClick={handleClosePopup}
-                  className="w-full bg-gray-500 text-white px-4 py-2 rounded mt-2"
+                  className="w-full bg-red-400 text-white px-4 py-2 rounded mt-2"
                 >
                   Close
                 </button>

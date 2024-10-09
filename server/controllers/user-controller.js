@@ -1,6 +1,9 @@
 const User = require("../models/user-model");
 const path = require("path");
 const fs = require("fs");
+const sendRejectedAsAuthorNotification = require("../utils/notification/sendRejectedAsAuthorNotification");
+const sendAcceptedAsAuthorNotification = require("../utils/notification/sendAcceptedAsAuthorNotification");
+const forgetPassword = require("../utils/password/forgetPassword");
 
 // controller to get all the user data
 const getUser = async (req, res) => {
@@ -258,12 +261,13 @@ const approveAsAuthor = async (req, res) => {
       ) {
         user.status = "unrequested";
         await user.save();
+        sendRejectedAsAuthorNotification(user.email);
         return res.status(200).json({ msg: "Viewer request rejected." });
       } else {
         return res.status(409).json({ msg: "User isnot a pending viewer" });
       }
       await user.save();
-
+      sendAcceptedAsAuthorNotification(user.email);
       res.status(200).json({ msg: "Viewer approved as Author Successfully" });
     } else {
       return res.status(403).json({
@@ -275,59 +279,53 @@ const approveAsAuthor = async (req, res) => {
   }
 };
 
-//change user role to editor
-const changeUserToEditor = async (req, res) => {
+// Generic function to change user role
+const changeUserRole = async (req, res, newRole) => {
   try {
     const userId = req.params.id;
     const userRole = req.user.role;
 
     const user = await User.findById(userId);
     if (!user) {
-      return res.status(404).json({ msg: "User doesnot exists." });
+      return res.status(404).json({ msg: "User does not exist." });
     }
-    if (userRole === "admin") {
-      if (user.role === "editor") {
-        return res.status(409).json({ msg: "Selected user already a editor." });
+    if (userRole === "admin" || userRole === "editor") {
+      if(userRole ==="editor" && newRole === "admin"){
+        return res.status(403).json({ msg: `You are not authorized to change this user to ${newRole}.` });
       }
-      user.role = "editor";
+      if (user.role === newRole) {
+        return res.status(409).json({ msg: `Selected user is already a ${newRole}.` });
+      }
+      user.role = newRole;
       user.status = "approved";
       await user.save();
-      res.status(200).json({ msg: "User role changed to editor", user });
+      res.status(200).json({ msg: `User role changed to ${newRole}`, user });
     } else {
-      return res
-        .status(403)
-        .json({ msg: "You are not authorized to make this user editor." });
+      return res.status(403).json({ msg: `You are not authorized to change this user to ${newRole}.` });
     }
   } catch (err) {
     res.status(500).json({ msg: err.message });
   }
 };
 
-// promote user to admin
-const promoteToAdmin = async (req, res) => {
-  try {
-    const userId = req.params.id;
-    const userRole = req.user.role;
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({ msg: "User doesnot exists." });
-    }
-    if (userRole === "admin") {
-      if (user.role === "admin") {
-        return res.status(409).json({ msg: "Selected user is already admin." });
-      }
-      user.role = "admin";
-      user.status = "approved";
-      await user.save();
-      return res.status(200).json({ msg: "User role changed to admin", user });
-    } else {
-      return res
-        .status(403)
-        .json({ msg: "You are not authorized to delete this user" });
-    }
-  } catch (err) {
-    res.status(500).json({ msg: err.message });
-  }
+// Change user role to editor
+const changeUserToEditor = (req, res) => {
+  changeUserRole(req, res, "editor");
+};
+
+// Promote user to admin
+const promoteToAdmin = (req, res) => {
+  changeUserRole(req, res, "admin");
+};
+
+// Change user role to author
+const changeUserToAuthor = (req, res) => {
+  changeUserRole(req, res, "author");
+};
+
+// Change user role to viewer
+const changeUserToViewer = (req, res) => {
+  changeUserRole(req, res, "viewer");
 };
 
 // save profile picture path
@@ -481,6 +479,46 @@ const applyAsAuthor = async (req, res) => {
   }
 };
 
+const sendForgotPasswordOTP = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ msg: "User not found" });
+    }
+    const otp = await forgetPassword(email);
+    // save otp in document
+    user.otp = otp;
+    await user.save();
+    res.status(200).json({ msg: "OTP sent successfully", otp });
+
+  } catch (err) {
+    res.status(500).json({ msg: err.message });
+  }
+}
+
+const changePasswordWithOTP = async (req, res) => {
+  try {
+    const { email, otp, new_password } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ msg: "User not found" });
+    }
+    const isMatch = await user.otp === otp;
+    if (!isMatch) {
+      return res.status(401).json({ msg: "Invalid OTP" });
+    }
+    user.password = new_password;
+    // remove otp from the document
+    user.otp = null;
+    await user.save();
+    res.status(200).json({ msg: "Password changed successfully" });
+  }
+  catch (err) {
+    res.status(500).json({ msg: err.message });
+  }
+}
+
 module.exports = {
   getUser,
   getUserByRole,
@@ -492,8 +530,12 @@ module.exports = {
   approveAsAuthor,
   changeUserToEditor,
   promoteToAdmin,
+  changeUserToAuthor,
+  changeUserToViewer,
   uploadProfilePicture,
   countUser,
   addUser,
   applyAsAuthor,
+  sendForgotPasswordOTP,
+  changePasswordWithOTP
 };

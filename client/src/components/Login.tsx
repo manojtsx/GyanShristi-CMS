@@ -68,6 +68,7 @@ function Login() {
         <SubmitButton text="Login"/>
         <hr />
         <p className='dark:text-[#B0B0B0]'>Don't have an account? <Link href="/register" className='font-bold text-black'>Sign Up</Link></p>
+        <p className='dark:text-[#B0B0B0]'>Forgot your password? <Link href="/forget-password" className='font-bold text-black'>Click Here</Link></p>
     </form>
     </div>
   )

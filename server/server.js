@@ -23,9 +23,8 @@ const PORT = process.env.PORT;
 //     optionsSuccessStatus : 200
 // }
 
-// app.use(cors(corsOption));
-// app.options("*", cors(corsOption));
-app.use(cors())
+app.use(cors(corsOption));
+
 app.use(express.json());
 
 // Handle all the routes here
@@ -45,7 +44,6 @@ app.get("/", async (req, res) => {
 
 dbConnection()
   .then((data) => {
-    console.log(data);
     app.listen(PORT, () => {
       console.log(`Listening to the server at PORT ${PORT}`);
     });

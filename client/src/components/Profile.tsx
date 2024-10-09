@@ -25,10 +25,15 @@ function Profile() {
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      const file = e.target.files[0];
-      setSelectedFile(file);
-      setPreviewUrl(URL.createObjectURL(file));
+    const file = e.target.files?.[0];
+      if(file){
+        const fileSizeInMB = file.size / 1024 / 1024;
+      if (fileSizeInMB > 5) {
+        addNotification("Profile Picture size exceeds 5MB limit", "error");
+        return;
+      }
+    setSelectedFile(file);
+    setPreviewUrl(URL.createObjectURL(file));
     }
   };
 
@@ -58,7 +63,6 @@ function Profile() {
     }
   };
 
-  const handleEditUserChange = (e: React.ChangeEvent<HTMLInputElement>) => { };
   return (
     <div
       className="flex flex-col h-screen justify-center items-center" // Light background
@@ -67,7 +71,7 @@ function Profile() {
         <div className="flex flex-col gap-2 items-center justify-center">
           <div className="w-24 relative cursor-pointer" onClick={handleProfileClick}>
             <Image
-              src={previewUrl ? `${API}${previewUrl}` :  "/default.jpg"}
+              src={previewUrl ? `${API}${previewUrl}` : "/default.jpg"}
               alt="Profile Picture"
               height={500}
               width={500}
@@ -83,10 +87,10 @@ function Profile() {
             <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
               <div className="bg-white p-4 rounded shadow-lg">
                 <h2 className="text-lg font-bold mb-4">Upload Profile Picture</h2>
-                <input type="file" onChange={handleFileChange} />
+                <input type="file" accept="image/*" onChange={handleFileChange} />
                 {previewUrl && (
                   <div className="mt-4">
-                    <img src={previewUrl} alt="Preview" className="w-32 h-32 object-cover rounded-full" />
+                    <img src={previewUrl ? `${API}${previewUrl}` : "/default.jpg"} alt="Preview" className="w-32 h-32 object-cover rounded-full" />
                   </div>
                 )}
                 <button

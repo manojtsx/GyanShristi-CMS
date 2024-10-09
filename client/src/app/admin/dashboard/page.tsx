@@ -8,8 +8,8 @@ export default function Page({ params }: { params: { id: string } }) {
   return (
     <div className="flex flex-col h-full">
       <DashboardTopMenu />
-      <div className="flex p-5 gap-5 flex-grow h-full w-full">
-        <div className="flex flex-col gap-2 w-4/6">
+      <div className="flex flex-col md:flex-row p-5 gap-5 flex-grow h-full w-full">
+        <div className="flex flex-col gap-2 md:w-4/6">
           <div className="flex-grow">
             <NoOfUsers />
           </div>

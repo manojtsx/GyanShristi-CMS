@@ -50,6 +50,7 @@ function EditPassword() {
         throw Error(data.msg)
       }
       addNotification(data.msg, 'success')
+      router.push(`/${user?.role}/profile`);
 
     }catch(err : any){
       addNotification(err.message, 'error')

@@ -178,7 +178,6 @@ const SideMenuBarAdmin = () => {
       <Logout
         isOpen={logoutModalOpen}
         onClose={handleCloseModal}
-        onConfirm={handleConfirmLogout}
       />
     </div>
   );

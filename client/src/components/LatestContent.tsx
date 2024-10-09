@@ -25,7 +25,9 @@ function LatestContent() {
         if (!res.ok) {
           throw new Error(data.msg);
         }
-        setLatestContent(data.content);
+        const sortedContent = data.content.sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+        const limitedContent = sortedContent.slice(0, 10);
+        setLatestContent(limitedContent);
       } catch (err: any) {
         setError(err.message);
       }

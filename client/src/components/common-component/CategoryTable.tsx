@@ -129,9 +129,6 @@ function CategoryTable() {
               <th scope="col" className="px-6 py-3">
                 Created By
               </th>
-              <th scope="col" className="px-6 py-3">
-                Action
-              </th>
             </tr>
           </thead>
           <tbody>
@@ -143,15 +140,6 @@ function CategoryTable() {
                 <td className="px-6 py-4">{startIndex + index + 1}</td>
                 <td className="px-6 py-4">{row.title}</td>
                 <td className="px-6 py-4">{row.user.name}</td>
-                <td className="flex space-x-5 px-6 py-4">
-                  <MdOutlineEdit
-                    className="text-[#011936] text-xl cursor-pointer"
-                    onClick={() => {
-                      router.push(`/${user.role}/category/edit/${row._id}`);
-                    }}
-                  />
-                  <RiDeleteBin6Line className="text-[#011936] text-xl cursor-pointer" onClick={() => handleDelete(row._id)} />
-                </td>
               </tr>
             ))}
           </tbody>

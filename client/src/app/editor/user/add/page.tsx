@@ -1,10 +1,10 @@
-import ViewerTable from '@/components/admin-component/ViewerTable'
+import AddUser from '@/components/common-component/AddUser'
 import React from 'react'
 
 function Page({params} : {params : {id : string}}) {
   return (
   <>
-  <ViewerTable />
+  <AddUser />
   </>
   )
 }

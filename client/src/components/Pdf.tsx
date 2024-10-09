@@ -17,7 +17,7 @@ function Pdf() {
     title: '',
     description: '',
     category_id: '',
-    user_id: '',
+    user_id: user._id,
     content_type: 'pdf'
   });
   const [categories, setCategories] = useState([
@@ -56,21 +56,24 @@ function Pdf() {
       setCategories(categoriesData);
 
       // Fetch users excluding "viewer" role
-      const usersResponse = await fetch(`${API}api/user/role?role=non-viewer`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-      const usersData = await usersResponse.json();
-      if (!usersResponse.ok) throw new Error(usersData.msg);
+      if (user.role === "admin" || user.role === "editor") {
 
-      // Ensure usersData is an array
-      if (Array.isArray(usersData)) {
-        setUsers(usersData);
-      } else {
-        throw new Error("Users data is not an array");
+        const usersResponse = await fetch(`${API}api/user/role?role=non-viewer`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+        const usersData = await usersResponse.json();
+        if (!usersResponse.ok) throw new Error(usersData.msg);
+
+        // Ensure usersData is an array
+        if (Array.isArray(usersData)) {
+          setUsers(usersData);
+        } else {
+          throw new Error("Users data is not an array");
+        }
       }
     } catch (error: any) {
       addNotification(error.message, "error");
@@ -106,9 +109,19 @@ function Pdf() {
     if (file) {
       const previewUrl = URL.createObjectURL(file);
       if (event.target.name === "thumbnail") {
+        const fileSizeInMB = file.size / 1024 / 1024;
+        if (fileSizeInMB > 5) {
+          addNotification("Thumbnail size exceeds 5MB limit", "error");
+          return;
+        }
         setPhotoPreview(previewUrl);
 
       } else if (event.target.name === "pdf") {
+        const fileSizeInMB = file.size / 1024 / 1024;
+        if (fileSizeInMB > 100) {
+          addNotification("PDF size exceeds 100MB limit", "error");
+          return;
+        }
         setPdfPreview(previewUrl);
       }
     }
@@ -153,135 +166,137 @@ function Pdf() {
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col md:flex-row gap-x-14 gap-y-10 p-8 bg-white rounded-xl shadow-lg overflow-auto">
-    <div className="flex flex-col items-start justify-center md:w-2/3 max-h-full overflow-y-auto">
-      <div className="w-full mb-8">
-        <label htmlFor="title" className="block text-lg font-medium text-gray-800 mb-2">Title:</label>
-        <input
-          type="text"
-          name="title"
-          value={pdf.title}
-          onChange={handleInputChange}
-          className="w-full h-10 px-4 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          required
-        />
-      </div>
-      <div className="w-full mb-8">
-        <label htmlFor="description" className="block text-lg font-medium text-gray-800 mb-2">Description:</label>
-        <input
-          type="text"
-          name="description"
-          value={pdf.description}
-          onChange={handleInputChange}
-          className="w-full h-10 px-4 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          required
-        />
-      </div>
-      <div className="w-full mb-8">
-        <label className="block text-lg font-medium text-gray-800 mb-2">Upload PDF:</label>
-        <div className="max-h-[400px] overflow-auto border border-gray-300 rounded-lg">
+      <div className="flex flex-col items-start justify-center md:w-2/3 max-h-full overflow-y-auto">
+        <div className="w-full mb-8">
+          <label htmlFor="title" className="block text-lg font-medium text-gray-800 mb-2">Title:</label>
           <input
-            type="file"
-            ref={pdfInputRef}
-            style={{ display: 'none' }}
-            name="pdf"
-            accept="application/pdf"
-            onChange={handleFileChange}
+            type="text"
+            name="title"
+            value={pdf.title}
+            onChange={handleInputChange}
+            className="w-full h-10 px-4 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
           />
-          <div
-            className="cursor-pointer flex items-center justify-center h-full p-4 border-dashed border-2 border-gray-300 rounded-lg"
-            onClick={handlepdfClick}
-          >
-            {pdfPreview ? (
-              <iframe
-                src={pdfPreview}
-                style={{ width: '100%', height: '1000px' }}
-              >
-                This browser does not support PDFs. Please download the PDF to view it: <a href={pdfPreview}>Download PDF</a>
-              </iframe>
-            ) : (
-              <span className="text-gray-500">Upload PDF</span>
-            )}
+        </div>
+        <div className="w-full mb-8">
+          <label htmlFor="description" className="block text-lg font-medium text-gray-800 mb-2">Description:</label>
+          <input
+            type="text"
+            name="description"
+            value={pdf.description}
+            onChange={handleInputChange}
+            className="w-full h-10 px-4 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
+          />
+        </div>
+        <div className="w-full mb-8">
+          <label className="block text-lg font-medium text-gray-800 mb-2">Upload PDF:</label>
+          <div className="max-h-[400px] overflow-auto border border-gray-300 rounded-lg">
+            <input
+              type="file"
+              ref={pdfInputRef}
+              style={{ display: 'none' }}
+              name="pdf"
+              accept="application/pdf"
+              onChange={handleFileChange}
+              required
+            />
+            <div
+              className="cursor-pointer flex items-center justify-center h-full p-4 border-dashed border-2 border-gray-300 rounded-lg"
+              onClick={handlepdfClick}
+            >
+              {pdfPreview ? (
+                <iframe
+                  src={pdfPreview}
+                  style={{ width: '100%', height: '1000px' }}
+                >
+                  This browser does not support PDFs. Please download the PDF to view it: <a href={pdfPreview}>Download PDF</a>
+                </iframe>
+              ) : (
+                <span className="text-gray-500">Upload PDF</span>
+              )}
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  
-    <div className="flex flex-col items-start justify-start md:w-1/3 gap-y-6">
-      <div className="w-full">
-        <label htmlFor="categories" className="block text-lg font-medium text-gray-800 mb-2">Categories:</label>
-        <select
-          id="categories"
-          name="category_id"
-          value={pdf.category_id}
-          onChange={handleInputChange}
-          className="w-full h-10 px-4 rounded-lg border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-          required
-        >
-          <option value="">Select Category</option>
-          {categories.map((cat: any) => (
-            <option key={cat._id} value={cat._id}>
-              {cat.title}
-            </option>
-          ))}
-        </select>
-      </div>
-  
-      <div className="w-full">
-        <label htmlFor="author" className="block text-lg font-medium text-gray-800 mb-2">Author:</label>
-        <select
-          id="author"
-          name="user_id"
-          value={pdf.user_id}
-          onChange={handleInputChange}
-          className="w-full h-10 px-4 rounded-lg border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-          required
-        >
-          <option value="">Select Author</option>
-          {users.map((user: any) => (
-            <option key={user._id} value={user._id}>
-              {user.name}
-            </option>
-          ))}
-        </select>
-      </div>
-  
-      <div className="w-full">
-        <label className="block text-lg font-medium text-gray-800 mb-2">Featured Photo:</label>
-        <div
-          className="w-full h-36 border border-gray-300 rounded-lg cursor-pointer flex items-center justify-center bg-gray-50 hover:bg-gray-100 transition-all"
-          onClick={handlePhotoClick}
-        >
-          {photoPreview ? (
-            <img
-              src={photoPreview}
-              alt="Uploaded Photo"
-              className="w-full h-full object-cover rounded-lg"
-            />
-          ) : (
-            <span className="text-gray-500">Upload</span>
-          )}
+
+      <div className="flex flex-col items-start justify-start md:w-1/3 gap-y-6">
+        <div className="w-full">
+          <label htmlFor="categories" className="block text-lg font-medium text-gray-800 mb-2">Categories:</label>
+          <select
+            id="categories"
+            name="category_id"
+            value={pdf.category_id}
+            onChange={handleInputChange}
+            className="w-full h-10 px-4 rounded-lg border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
+          >
+            <option value="">Select Category</option>
+            {categories.map((cat: any) => (
+              <option key={cat._id} value={cat._id}>
+                {cat.title}
+              </option>
+            ))}
+          </select>
         </div>
-        <input
-          type="file"
-          ref={fileInputRef}
-          style={{ display: 'none' }}
-          name="thumbnail"
-          accept="image/*"
-          onChange={handleFileChange}
-          required
-        />
+        {
+          user.role === "admin" || user.role == "editor" &&
+          <div className="w-full">
+            <label htmlFor="author" className="block text-lg font-medium text-gray-800 mb-2">Author:</label>
+            <select
+              id="author"
+              name="user_id"
+              value={pdf.user_id}
+              onChange={handleInputChange}
+              className="w-full h-10 px-4 rounded-lg border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            >
+              <option value="">Select Author</option>
+              {users.map((user: any) => (
+                <option key={user._id} value={user._id}>
+                  {user.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        }
+
+        <div className="w-full">
+          <label className="block text-lg font-medium text-gray-800 mb-2">Featured Photo:</label>
+          <div
+            className="w-full h-36 border border-gray-300 rounded-lg cursor-pointer flex items-center justify-center bg-gray-50 hover:bg-gray-100 transition-all"
+            onClick={handlePhotoClick}
+          >
+            {photoPreview ? (
+              <img
+                src={photoPreview}
+                alt="Uploaded Photo"
+                className="w-full h-full object-cover rounded-lg"
+              />
+            ) : (
+              <span className="text-gray-500">Upload</span>
+            )}
+          </div>
+          <input
+            type="file"
+            ref={fileInputRef}
+            style={{ display: 'none' }}
+            name="thumbnail"
+            accept="image/*"
+            onChange={handleFileChange}
+            required
+          />
+        </div>
+
+        <button
+          className="self-start w-32 h-10 bg-blue-600 hover:bg-blue-700 transition-colors rounded-md text-white font-semibold mt-4"
+          type="submit"
+        >
+          Save
+        </button>
       </div>
-  
-      <button
-        className="self-start w-32 h-10 bg-blue-600 hover:bg-blue-700 transition-colors rounded-md text-white font-semibold mt-4"
-        type="submit"
-      >
-        Save
-      </button>
-    </div>
-  </form>
-  
+    </form>
+
   );
 }
 

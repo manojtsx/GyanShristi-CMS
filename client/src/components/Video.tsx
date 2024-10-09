@@ -14,7 +14,7 @@ function Video() {
     title: '',
     description: '',
     category_id: '',
-    user_id: '',
+    user_id: user._id,
     content_type: 'video'
   });
   const [categories, setCategories] = useState([
@@ -35,6 +35,7 @@ function Video() {
   const [videoPreview, setVideoPreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const videoInputRef = useRef<HTMLInputElement>(null);
+  const [isUploading, setIsUploading] = useState(false);
 
   const fetchCategoriesAndUsers = async () => {
     try {
@@ -53,21 +54,23 @@ function Video() {
       setCategories(categoriesData);
 
       // Fetch users excluding "viewer" role
-      const usersResponse = await fetch(`${API}api/user/role?role=non-viewer`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-      const usersData = await usersResponse.json();
-      if (!usersResponse.ok) throw new Error(usersData.msg);
+      if (user.role === "admin" || user.role === "editor") {
+        const usersResponse = await fetch(`${API}api/user/role?role=non-viewer`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+        const usersData = await usersResponse.json();
+        if (!usersResponse.ok) throw new Error(usersData.msg);
 
-      // Ensure usersData is an array
-      if (Array.isArray(usersData)) {
-        setUsers(usersData);
-      } else {
-        throw new Error("Users data is not an array");
+        // Ensure usersData is an array
+        if (Array.isArray(usersData)) {
+          setUsers(usersData);
+        } else {
+          throw new Error("Users data is not an array");
+        }
       }
     } catch (error: any) {
       addNotification(error.message, "error");
@@ -103,9 +106,19 @@ function Video() {
     if (file) {
       const previewUrl = URL.createObjectURL(file);
       if (event.target.name === "thumbnail") {
+        const fileSizeInMB = file.size / 1024 / 1024;
+        if (fileSizeInMB > 5) {
+          addNotification("Thubnail size exceeds 5MB limit", "error");
+          return;
+        }
         setPhotoPreview(previewUrl);
 
       } else if (event.target.name === "video") {
+        const fileSizeInMB = file.size / 1024 / 1024;
+        if (fileSizeInMB > 1024) {
+          addNotification("Video size exceeds 1GB limit", "error");
+          return;
+        }
         setVideoPreview(previewUrl);
       }
     }
@@ -113,6 +126,7 @@ function Video() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsUploading(true);
 
     const formData = new FormData();
     formData.append("title", video.title);
@@ -150,134 +164,138 @@ function Video() {
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col md:flex-row gap-y-10 gap-x-14 p-8 bg-white rounded-xl shadow-lg overflow-auto">
-    <div className="flex flex-col items-start justify-center md:w-2/3 max-h-full overflow-y-auto">
-      <div className="w-full mb-8">
-        <label htmlFor="title" className="block text-lg font-medium text-gray-800 mb-2">Title:</label>
-        <input
-          type="text"
-          name="title"
-          value={video.title}
-          onChange={handleInputChange}
-          className="w-full h-10 px-4 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          required
-        />
-      </div>
-      <div className="w-full mb-8">
-        <label htmlFor="description" className="block text-lg font-medium text-gray-800 mb-2">Description:</label>
-        <input
-          type="text"
-          name="description"
-          value={video.description}
-          onChange={handleInputChange}
-          className="w-full h-10 px-4 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          required
-        />
-      </div>
-      <div className="w-full mb-8">
-        <label className="block text-lg font-medium text-gray-800 mb-2">Content:</label>
-        <div className="max-h-[400px] overflow-auto border border-gray-300 rounded-lg">
+      <div className="flex flex-col items-start justify-center md:w-2/3 max-h-full overflow-y-auto">
+        <div className="w-full mb-8">
+          <label htmlFor="title" className="block text-lg font-medium text-gray-800 mb-2">Title:</label>
           <input
-            type="file"
-            ref={videoInputRef}
-            style={{ display: 'none' }}
-            name="video"
-            accept="video/*"
-            onChange={handleFileChange}
+            type="text"
+            name="title"
+            value={video.title}
+            onChange={handleInputChange}
+            className="w-full h-10 px-4 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
           />
-          <div
-            className="cursor-pointer flex items-center justify-center h-full p-4 border-dashed border-2 border-gray-300 rounded-lg"
-            onClick={handleVideoClick}
-          >
-            {videoPreview ? (
-              <video
-                src={videoPreview}
-                controls
-                className="w-full h-full object-cover rounded-lg"
-              />
-            ) : (
-              <span className="text-gray-500">Upload Video</span>
-            )}
+        </div>
+        <div className="w-full mb-8">
+          <label htmlFor="description" className="block text-lg font-medium text-gray-800 mb-2">Description:</label>
+          <input
+            type="text"
+            name="description"
+            value={video.description}
+            onChange={handleInputChange}
+            className="w-full h-10 px-4 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
+          />
+        </div>
+        <div className="w-full mb-8">
+          <label className="block text-lg font-medium text-gray-800 mb-2">Content:</label>
+          <div className="max-h-[400px] overflow-auto border border-gray-300 rounded-lg">
+            <input
+              type="file"
+              ref={videoInputRef}
+              style={{ display: 'none' }}
+              name="video"
+              accept="video/*"
+              onChange={handleFileChange}
+              required
+            />
+            <div
+              className="cursor-pointer flex items-center justify-center h-full p-4 border-dashed border-2 border-gray-300 rounded-lg"
+              onClick={handleVideoClick}
+            >
+              {videoPreview ? (
+                <video
+                  src={videoPreview}
+                  controls
+                  className="w-full h-full object-cover rounded-lg"
+                />
+              ) : (
+                <span className="text-gray-500">Upload Video</span>
+              )}
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  
-    <div className="flex flex-col items-start justify-start md:w-1/3 gap-y-6">
-      <div className="w-full">
-        <label htmlFor="categories" className="block text-lg font-medium text-gray-800 mb-2">Categories:</label>
-        <select
-          id="categories"
-          name="category_id"
-          value={video.category_id}
-          onChange={handleInputChange}
-          className="w-full h-10 px-4 rounded-lg border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-          required
-        >
-          <option value="">Select Category</option>
-          {categories.map((cat: any) => (
-            <option key={cat._id} value={cat._id}>
-              {cat.title}
-            </option>
-          ))}
-        </select>
-      </div>
-  
-      <div className="w-full">
-        <label htmlFor="author" className="block text-lg font-medium text-gray-800 mb-2">Author:</label>
-        <select
-          id="author"
-          name="user_id"
-          value={video.user_id}
-          onChange={handleInputChange}
-          className="w-full h-10 px-4 rounded-lg border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-          required
-        >
-          <option value="">Select Author</option>
-          {users.map((user: any) => (
-            <option key={user._id} value={user._id}>
-              {user.name}
-            </option>
-          ))}
-        </select>
-      </div>
-  
-      <div className="w-full">
-        <label className="block text-lg font-medium text-gray-800 mb-2">Featured Photo:</label>
-        <div
-          className="w-full h-36 border border-gray-300 rounded-lg cursor-pointer flex items-center justify-center bg-gray-50 hover:bg-gray-100 transition-all"
-          onClick={handlePhotoClick}
-        >
-          {photoPreview ? (
-            <img
-              src={photoPreview}
-              alt="Uploaded Photo"
-              className="w-full h-full object-cover rounded-lg"
-            />
-          ) : (
-            <span className="text-gray-500">Upload</span>
-          )}
+
+      <div className="flex flex-col items-start justify-start md:w-1/3 gap-y-6">
+
+        <div className="w-full">
+          <label htmlFor="categories" className="block text-lg font-medium text-gray-800 mb-2">Categories:</label>
+          <select
+            id="categories"
+            name="category_id"
+            value={video.category_id}
+            onChange={handleInputChange}
+            className="w-full h-10 px-4 rounded-lg border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
+          >
+            <option value="">Select Category</option>
+            {categories.map((cat: any) => (
+              <option key={cat._id} value={cat._id}>
+                {cat.title}
+              </option>
+            ))}
+          </select>
         </div>
-        <input
-          type="file"
-          ref={fileInputRef}
-          style={{ display: 'none' }}
-          name="thumbnail"
-          accept="image/*"
-          onChange={handleFileChange}
-          required
-        />
+        {
+          user.role === "admin" || user.role === "editor" &&
+          <div className="w-full">
+            <label htmlFor="author" className="block text-lg font-medium text-gray-800 mb-2">Author:</label>
+            <select
+              id="author"
+              name="user_id"
+              value={video.user_id}
+              onChange={handleInputChange}
+              className="w-full h-10 px-4 rounded-lg border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            >
+              <option value="">Select Author</option>
+              {users.map((user: any) => (
+                <option key={user._id} value={user._id}>
+                  {user.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+        }
+        <div className="w-full">
+          <label className="block text-lg font-medium text-gray-800 mb-2">Featured Photo:</label>
+          <div
+            className="w-full h-36 border border-gray-300 rounded-lg cursor-pointer flex items-center justify-center bg-gray-50 hover:bg-gray-100 transition-all"
+            onClick={handlePhotoClick}
+          >
+            {photoPreview ? (
+              <img
+                src={photoPreview}
+                alt="Uploaded Photo"
+                className="w-full h-full object-cover rounded-lg"
+              />
+            ) : (
+              <span className="text-gray-500">Upload</span>
+            )}
+          </div>
+          <input
+            type="file"
+            ref={fileInputRef}
+            style={{ display: 'none' }}
+            name="thumbnail"
+            accept="image/*"
+            onChange={handleFileChange}
+            required
+          />
+        </div>
+
+        <button
+          className={`self-start w-32 h-10 ${isUploading ? 'bg-gray-400' : 'bg-blue-600 hover:bg-blue-700'} transition-colors rounded-md text-white font-semibold mt-4`}
+          type="submit"
+          disabled={isUploading}
+        >
+          {isUploading ? "Uploading..." : "Upload"}
+        </button>
       </div>
-  
-      <button
-        className="self-start w-32 h-10 bg-blue-600 hover:bg-blue-700 transition-colors rounded-md text-white font-semibold mt-4"
-        type="submit"
-      >
-        Save
-      </button>
-    </div>
-  </form>
-    
+    </form>
+
   );
 }
 

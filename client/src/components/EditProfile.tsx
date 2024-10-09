@@ -50,14 +50,9 @@ function EditProfile() {
       }
 
       addNotification(result.msg, 'success')
-      router.push(`/${user?.role}/profile`)
-      setTimeout(() => {
-        window.location.reload();
-      }, 2000);
-      
-      // Optionally update localStorage and context here
+      router.push(`/${user?.role}/profile`);
+      setTimeout(()=>window.location.reload(),1000);
     } catch (error : any) {
-      console.error('Error updating user:', error);
       addNotification(error.message,'error')
     }
   };
@@ -68,13 +63,12 @@ function EditProfile() {
         <div className='flex flex-col justify-center items-center w-96 gap-5 px-10 py-3 shadow-lg bg-[#F9F7F7]'>
         <div className="w-24 relative">
               <Image
-                src="/GirlProfile.jpg"
+                src={user.profile_pic ? `${API}${user.profile_pic}` : "/default.jpg"}
                 alt="Profile Picture"
                 height={500}
                 width={500}
                 className="h-24 w-24 rounded-full object-cover"
               />
-              <FontAwesomeIcon icon={faPenToSquare} className='w-7 h-7 absolute bottom-0 right-0 cursor-pointer'/>
             </div>
             <div className='w-full flex justify-between items-center'>
             <label htmlFor="name" className='text-left w-32'>Name: </label> 

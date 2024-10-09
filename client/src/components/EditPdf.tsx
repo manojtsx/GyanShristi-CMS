@@ -74,16 +74,18 @@ function EditPdf() {
       const categoriesData = await categoriesResponse.json();
       setCategories(categoriesData);
 
-      const usersResponse = await fetch(`${API}api/user/role?role=non-viewer`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-      if (!usersResponse.ok) throw new Error("Failed to fetch users");
-      const usersData = await usersResponse.json();
-      setUsers(usersData);
+      if (user.role === "admin" || user.role === "editor") {
+        const usersResponse = await fetch(`${API}api/user/role?role=non-viewer`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+        if (!usersResponse.ok) throw new Error("Failed to fetch users");
+        const usersData = await usersResponse.json();
+        setUsers(usersData);
+      }
     } catch (error) {
       if (error instanceof Error) {
         addNotification(error.message, "error");
@@ -100,11 +102,17 @@ function EditPdf() {
 
   const handleThumbnailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0] || null;
+
     setPdf((prevPdf) => ({
       ...prevPdf,
       thumbnail: file,
     }));
     if (file) {
+      const fileSizeInMB = file.size / 1024 / 1024;
+      if (fileSizeInMB > 5) {
+        addNotification("Thumbnail size exceeds 5MB limit", "error");
+        return;
+      }
       setThumbnailPreview(URL.createObjectURL(file));
     }
   };
@@ -182,22 +190,25 @@ function EditPdf() {
         </div>
 
         <div className="flex flex-col w-full md:w-1/2 space-y-6">
-          <div>
-            <label className="block text-lg font-medium text-gray-800 mb-1">Author:</label>
-            <select
-              value={pdf.user_id}
-              onChange={(e) => setPdf({ ...pdf, user_id: e.target.value })}
-              className="w-full h-10 px-4 rounded-lg border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            >
-              <option value="">Select Author</option>
-              {users.map((user) => (
-                <option key={user._id} value={user._id}>
-                  {user.name}
-                </option>
-              ))}
-            </select>
-          </div>
+          {
+            user.role === "admin" || user.role === "editor" &&
+            <div>
+              <label className="block text-lg font-medium text-gray-800 mb-1">Author:</label>
+              <select
+                value={pdf.user_id}
+                onChange={(e) => setPdf({ ...pdf, user_id: e.target.value })}
+                className="w-full h-10 px-4 rounded-lg border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              >
+                <option value="">Select Author</option>
+                {users.map((user) => (
+                  <option key={user._id} value={user._id}>
+                    {user.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          }
 
           <div>
             <label className="block text-lg font-medium text-gray-800 mb-1">Category:</label>

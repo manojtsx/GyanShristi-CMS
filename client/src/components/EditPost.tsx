@@ -1,5 +1,6 @@
 "use client";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
+import { debounce } from "lodash";
 import SpeechToTextEditor from "./SpeechToTextEditor";
 import { useAuth } from "@/context/AuthContext";
 import { useNotifications } from "@/context/NotificationContext";
@@ -9,7 +10,7 @@ import { useRouter, useParams } from "next/navigation";
 const API = process.env.NEXT_PUBLIC_BACKEND_API;
 
 function EditPost() {
-  const { token } = useAuth();
+  const { token, user } = useAuth();
   const router = useRouter();
   const { id } = useParams();
   const { addNotification } = useNotifications();
@@ -87,21 +88,23 @@ function EditPost() {
       setCategories(categoriesData);
 
       // Fetch users excluding "viewer" role
-      const usersResponse = await fetch(`${API}api/user/role?role=non-viewer`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-      if (!usersResponse.ok) throw new Error("Failed to fetch users");
-      const usersData = await usersResponse.json();
+      if (user.role === "admin" || user.role === "editor") {
+        const usersResponse = await fetch(`${API}api/user/role?role=non-viewer`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+        if (!usersResponse.ok) throw new Error("Failed to fetch users");
+        const usersData = await usersResponse.json();
 
-      // Ensure usersData is an array
-      if (Array.isArray(usersData)) {
-        setUsers(usersData);
-      } else {
-        throw new Error("Users data is not an array");
+        // Ensure usersData is an array
+        if (Array.isArray(usersData)) {
+          setUsers(usersData);
+        } else {
+          throw new Error("Users data is not an array");
+        }
       }
     } catch (error: any) {
       addNotification(error.message, "error");
@@ -128,6 +131,11 @@ function EditPost() {
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
+      const fileSizeInMB = file.size / 1024 / 1024;
+      if (fileSizeInMB > 5) {
+        addNotification("Thumbnail size exceeds 5MB limit", "error");
+        return;
+      }
       // Create a preview URL for the selected file
       const previewUrl = URL.createObjectURL(file);
       setPhotoPreview(previewUrl);
@@ -141,6 +149,9 @@ function EditPost() {
       blog: newBlogContent,
     }));
   };
+
+  // Debounce the handleBlogChange function
+  const debouncedHandleBlogChange = useCallback(debounce(handleBlogChange, 300), []);
 
   const handleSubmit = async () => {
     try {
@@ -226,11 +237,11 @@ function EditPost() {
         <div className="w-full mb-8">
           <label className="block text-lg font-medium text-gray-800 mb-2">Content:</label>
           <div className="max-h-[400px] overflow-auto">
-            <SpeechToTextEditor value={post.blog} onChange={handleBlogChange} />
+            <SpeechToTextEditor value={post.blog} onChange={debouncedHandleBlogChange} />
           </div>
         </div>
       </div>
-    
+
       <div className="flex flex-col items-start justify-start md:w-1/3 gap-y-6">
         <div className="w-full">
           <label htmlFor="categories" className="block text-lg font-medium text-gray-800 mb-2">
@@ -252,28 +263,30 @@ function EditPost() {
             ))}
           </select>
         </div>
-    
-        <div className="w-full">
-          <label htmlFor="author" className="block text-lg font-medium text-gray-800 mb-2">
-            Author:
-          </label>
-          <select
-            id="author"
-            name="author"
-            className="w-full h-10 px-4 rounded-lg border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-            value={post.user_id}
-            onChange={(e) => setPost({ ...post, user_id: e.target.value })}
-            required
-          >
-            <option value="">Select Author</option>
-            {users.map((user) => (
-              <option key={user._id} value={user._id}>
-                {user.name}
-              </option>
-            ))}
-          </select>
-        </div>
-    
+        {
+          user.role === "admin" || user.role === "editor" &&
+          <div className="w-full">
+            <label htmlFor="author" className="block text-lg font-medium text-gray-800 mb-2">
+              Author:
+            </label>
+            <select
+              id="author"
+              name="author"
+              className="w-full h-10 px-4 rounded-lg border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              value={post.user_id}
+              onChange={(e) => setPost({ ...post, user_id: e.target.value })}
+              required
+            >
+              <option value="">Select Author</option>
+              {users.map((user) => (
+                <option key={user._id} value={user._id}>
+                  {user.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        }
+
         <div className="w-full">
           <label className="block text-lg font-medium text-gray-800 mb-2">Featured Photo:</label>
           <div
@@ -305,7 +318,7 @@ function EditPost() {
             required
           />
         </div>
-    
+
         <button
           className="self-start w-32 h-10 bg-blue-600 hover:bg-blue-700 transition-colors rounded-md text-white font-semibold mt-4"
           onClick={handleSubmit}

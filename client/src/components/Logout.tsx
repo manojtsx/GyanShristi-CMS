@@ -7,14 +7,22 @@ import { useRouter } from 'next/navigation'
 interface LogoutModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onConfirm: () => void;
 }
 
-const Logout: React.FC<LogoutModalProps> = ({ isOpen, onClose, onConfirm}) => {
+const Logout: React.FC<LogoutModalProps> = ({ isOpen, onClose}) => {
   if (!isOpen) return null;
   const {logout} = useAuth();
   const router = useRouter();
 
+  const onConfirm = async () => {
+    try {
+      await logout();
+      router.push("/login");
+    } catch (error) {
+      console.error("Logout failed", error);
+    }
+  }
+ 
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">

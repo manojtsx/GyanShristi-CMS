@@ -80,7 +80,7 @@ const ShowVideo: React.FC<ShowVideoProps> = ({
   }
 
   return (
-    <div className="container mx-auto p-4 lg:py-8 lg:px-12 flex gap-8 lg:flex-row">
+    <div className="container mx-auto p-4 lg:py-8 lg:px-12 flex gap-8 lg:flex-row flex-col">
       <div className="flex-1 bg-white shadow-lg rounded-lg my-4">
         <div className="relative">
           <img

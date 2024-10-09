@@ -78,7 +78,6 @@ function EditCategory() {
             ownerName: categoryData.ownerName || "Unknown"
           });
         } catch (error) {
-          console.error('Error fetching category:', error);
           addNotification('Failed to fetch category', 'error');
         }
       };
@@ -130,7 +129,6 @@ function EditCategory() {
         addNotification(result.msg, 'success');
         router.push(`/${user.role}/category`); // Redirect to the profile or any other desired route
       } catch (err: any) {
-        console.error('Error updating category:', err);
         addNotification(err.message, 'error');
       }
     };

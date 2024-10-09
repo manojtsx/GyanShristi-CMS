@@ -80,7 +80,6 @@ function EditUserProfile() {
 
       // Optionally update localStorage and context here
     } catch (error: any) {
-      console.error('Error updating user:', error);
       addNotification(error.message, 'error')
     }
   };

@@ -2,6 +2,8 @@ const User = require("../models/user-model"); // Import User model
 const Content = require("../models/content-model"); // Import Content model
 const fs = require("fs"); // Import file system module
 const path = require("path"); // Import path module
+const sendContentAcceptNotification = require("../utils/notification/sendContentAcceptNotification");
+const sendContentRejectNotification = require("../utils/notification/sendContentRejectNotification");
 
 // Add a new post content to the server
 const addPostContent = async (req, res) => {
@@ -205,8 +207,6 @@ const editPostContent = async (req, res) => {
     const writeFilePath = path.join(__dirname, "../uploads/post", blogFileName); // Create file path
     const blogFilePath = path.join("uploads/post", blogFileName); // Create relative file path
     fs.writeFileSync(writeFilePath, blog); // Write blog content to file asynchronously
-    console.log(writeFilePath);
-    console.log(blogFilePath)
     post.location = blogFilePath; // Update post location
 
     if (newFile) {
@@ -413,6 +413,8 @@ const approveContent = async (req, res) => {
     }
     content.status = "Uploaded";
     await content.save();
+    // Send content acceptance notification
+    sendContentAcceptNotification(user.email, content.title, content._id);
     res.status(200).json({ msg: "Approved Content" });
   } catch (err) {
     res.status(500).json({ msg: err.message });
@@ -452,6 +454,7 @@ const rejectContent = async (req, res) => {
     }
     content.status = "Rejected";
     await content.save();
+    sendContentRejectNotification(user.email, content.title);
     res.status(200).json({ msg: "Rejected Content" });
   } catch (err) {
     res.status(500).json({ msg: err.message });
@@ -591,12 +594,20 @@ const getVideoContentById = async (req, res) => {
 // Get all content details
 const getAllContent = async (req, res) => {
   try {
-    const { filter } = req.query;
+    const { filter, filter2 } = req.query;
+   
+   // Fetch all content from the database and populate user and category details
+   let content = await Content.find({ status: { $ne: "Pending" } })
+   .populate("user_id", "name email profile_pic") // Populate user details, fetching only name and email
+   .populate("category_id", "title"); // Populate category details, fetching only the title
+   
+   if(filter2){
 
-    // Fetch all content from the database and populate user and category details
-    let content = await Content.find({ status: { $ne: "Pending" } })
-      .populate("user_id", "name email profile_pic") // Populate user details, fetching only name and email
-      .populate("category_id", "title"); // Populate category details, fetching only the title
+     const user = await User.findById(filter2);
+     if(user.role === "author"){
+       content = content.filter((item) => item.user_id?._id.toString() === user._id.toString());
+      }
+    }
 
     if (!content || content.length === 0) {
       return res.status(404).json({ msg: "No content found" });
