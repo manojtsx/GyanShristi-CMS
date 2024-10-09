@@ -53,7 +53,6 @@ function EditProfile() {
       router.push(`/${user?.role}/profile`);
       setTimeout(()=>window.location.reload(),1000);
     } catch (error : any) {
-      console.error('Error updating user:', error);
       addNotification(error.message,'error')
     }
   };

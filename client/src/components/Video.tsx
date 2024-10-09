@@ -14,7 +14,7 @@ function Video() {
     title: '',
     description: '',
     category_id: '',
-    user_id: '',
+    user_id: user._id,
     content_type: 'video'
   });
   const [categories, setCategories] = useState([
@@ -54,21 +54,23 @@ function Video() {
       setCategories(categoriesData);
 
       // Fetch users excluding "viewer" role
-      const usersResponse = await fetch(`${API}api/user/role?role=non-viewer`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-      const usersData = await usersResponse.json();
-      if (!usersResponse.ok) throw new Error(usersData.msg);
+      if (user.role === "admin" || user.role === "editor") {
+        const usersResponse = await fetch(`${API}api/user/role?role=non-viewer`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+        const usersData = await usersResponse.json();
+        if (!usersResponse.ok) throw new Error(usersData.msg);
 
-      // Ensure usersData is an array
-      if (Array.isArray(usersData)) {
-        setUsers(usersData);
-      } else {
-        throw new Error("Users data is not an array");
+        // Ensure usersData is an array
+        if (Array.isArray(usersData)) {
+          setUsers(usersData);
+        } else {
+          throw new Error("Users data is not an array");
+        }
       }
     } catch (error: any) {
       addNotification(error.message, "error");
@@ -216,6 +218,7 @@ function Video() {
       </div>
 
       <div className="flex flex-col items-start justify-start md:w-1/3 gap-y-6">
+
         <div className="w-full">
           <label htmlFor="categories" className="block text-lg font-medium text-gray-800 mb-2">Categories:</label>
           <select
@@ -234,26 +237,28 @@ function Video() {
             ))}
           </select>
         </div>
+        {
+          user.role === "admin" || user.role === "editor" &&
+          <div className="w-full">
+            <label htmlFor="author" className="block text-lg font-medium text-gray-800 mb-2">Author:</label>
+            <select
+              id="author"
+              name="user_id"
+              value={video.user_id}
+              onChange={handleInputChange}
+              className="w-full h-10 px-4 rounded-lg border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            >
+              <option value="">Select Author</option>
+              {users.map((user: any) => (
+                <option key={user._id} value={user._id}>
+                  {user.name}
+                </option>
+              ))}
+            </select>
+          </div>
 
-        <div className="w-full">
-          <label htmlFor="author" className="block text-lg font-medium text-gray-800 mb-2">Author:</label>
-          <select
-            id="author"
-            name="user_id"
-            value={video.user_id}
-            onChange={handleInputChange}
-            className="w-full h-10 px-4 rounded-lg border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          >
-            <option value="">Select Author</option>
-            {users.map((user: any) => (
-              <option key={user._id} value={user._id}>
-                {user.name}
-              </option>
-            ))}
-          </select>
-        </div>
-
+        }
         <div className="w-full">
           <label className="block text-lg font-medium text-gray-800 mb-2">Featured Photo:</label>
           <div

@@ -64,7 +64,6 @@ function CommentTable() {
       }
 
       const data = await res.json();
-      console.log(data.comments);
       setComments(data.comments); // Assuming data.comments is the array of comments
     } catch (err: any) {
       addNotification(err.message, "error");
@@ -119,7 +118,6 @@ function CommentTable() {
       setReply("");
       getCommentList(); // Refresh the comment list
     } catch (error: any) {
-      console.error(error);
       alert(error.message);
     }
   };

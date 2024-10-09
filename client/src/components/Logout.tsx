@@ -15,8 +15,12 @@ const Logout: React.FC<LogoutModalProps> = ({ isOpen, onClose}) => {
   const router = useRouter();
 
   const onConfirm = async () => {
-    await logout();
-    router.push('/login');
+    try {
+      await logout();
+      router.push("/login");
+    } catch (error) {
+      console.error("Logout failed", error);
+    }
   }
  
 

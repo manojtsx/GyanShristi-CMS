@@ -44,7 +44,6 @@ app.get("/", async (req, res) => {
 
 dbConnection()
   .then((data) => {
-    console.log(data);
     app.listen(PORT, () => {
       console.log(`Listening to the server at PORT ${PORT}`);
     });

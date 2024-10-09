@@ -1,6 +1,9 @@
 const User = require("../models/user-model");
 const path = require("path");
 const fs = require("fs");
+const sendRejectedAsAuthorNotification = require("../utils/notification/sendRejectedAsAuthorNotification");
+const sendAcceptedAsAuthorNotification = require("../utils/notification/sendAcceptedAsAuthorNotification");
+const forgetPassword = require("../utils/password/forgetPassword");
 
 // controller to get all the user data
 const getUser = async (req, res) => {
@@ -258,12 +261,13 @@ const approveAsAuthor = async (req, res) => {
       ) {
         user.status = "unrequested";
         await user.save();
+        sendRejectedAsAuthorNotification(user.email);
         return res.status(200).json({ msg: "Viewer request rejected." });
       } else {
         return res.status(409).json({ msg: "User isnot a pending viewer" });
       }
       await user.save();
-
+      sendAcceptedAsAuthorNotification(user.email);
       res.status(200).json({ msg: "Viewer approved as Author Successfully" });
     } else {
       return res.status(403).json({
@@ -475,6 +479,46 @@ const applyAsAuthor = async (req, res) => {
   }
 };
 
+const sendForgotPasswordOTP = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ msg: "User not found" });
+    }
+    const otp = await forgetPassword(email);
+    // save otp in document
+    user.otp = otp;
+    await user.save();
+    res.status(200).json({ msg: "OTP sent successfully", otp });
+
+  } catch (err) {
+    res.status(500).json({ msg: err.message });
+  }
+}
+
+const changePasswordWithOTP = async (req, res) => {
+  try {
+    const { email, otp, new_password } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ msg: "User not found" });
+    }
+    const isMatch = await user.otp === otp;
+    if (!isMatch) {
+      return res.status(401).json({ msg: "Invalid OTP" });
+    }
+    user.password = new_password;
+    // remove otp from the document
+    user.otp = null;
+    await user.save();
+    res.status(200).json({ msg: "Password changed successfully" });
+  }
+  catch (err) {
+    res.status(500).json({ msg: err.message });
+  }
+}
+
 module.exports = {
   getUser,
   getUserByRole,
@@ -492,4 +536,6 @@ module.exports = {
   countUser,
   addUser,
   applyAsAuthor,
+  sendForgotPasswordOTP,
+  changePasswordWithOTP
 };

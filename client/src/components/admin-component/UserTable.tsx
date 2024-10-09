@@ -18,7 +18,7 @@ interface User {
   name: string;
   phone_number: string;
   email: string;
-  role :string;
+  role: string;
 }
 
 function UserTable() {
@@ -33,7 +33,7 @@ function UserTable() {
       name: "",
       phone_number: "",
       email: "",
-      role : ""
+      role: ""
     },
   ]);
 
@@ -227,18 +227,24 @@ function UserTable() {
             <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
               <div className="bg-white p-4 rounded shadow-lg">
                 <h2 className="text-lg font-bold mb-4">Change Role To:</h2>
-                <button
-                  onClick={() => handleRoleChange('admin')}
-                  className="w-full bg-green-500 hover:bg-green-600 text-white px-4 py-2 mb-2 rounded transition duration-300"
-                >
-                  Change to Admin
-                </button>
-                <button
-                  onClick={() => handleRoleChange('editor')}
-                  className="w-full bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded mb-2 transition duration-300"
-                >
-                  Change to Editor
-                </button>
+                {
+                  user.role === "admin" &&
+                  <button
+                    onClick={() => handleRoleChange('admin')}
+                    className="w-full bg-green-500 hover:bg-green-600 text-white px-4 py-2 mb-2 rounded transition duration-300"
+                  >
+                    Change to Admin
+                  </button>
+                }
+                {
+                  user.role === "admin" || user.role === "editor" &&
+                  <button
+                    onClick={() => handleRoleChange('editor')}
+                    className="w-full bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded mb-2 transition duration-300"
+                  >
+                    Change to Editor
+                  </button>
+                }
                 <button
                   onClick={() => handleRoleChange('author')}
                   className="w-full bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded mb-2 transition duration-300"

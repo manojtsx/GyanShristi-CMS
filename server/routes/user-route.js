@@ -11,6 +11,8 @@ const addUserSchema = require('../utils/validators/add-user-validation')
 // Define routes
 router.route("/role").get(verifyToken,userController.getUserByRole);
 router.route("/count-user").get(userController.countUser);
+router.route('/change-password-with-otp').put(userController.changePasswordWithOTP);
+router.route('/send-otp-forget-password').post(userController.sendForgotPasswordOTP);
 router.route("/upload-profile-picture/:id").put(verifyToken,upload, userController.uploadProfilePicture);
 router.route("/:id").get(userController.getUserById);
 router.route("/apply-as-author").put(verifyToken, userController.applyAsAuthor)

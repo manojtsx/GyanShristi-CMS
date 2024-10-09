@@ -47,7 +47,7 @@ function PdfTable() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`${API}api/content/?filter=pdf`, {
+        const response = await fetch(`${API}api/content/?filter=pdf&filter2=${user._id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -57,8 +57,8 @@ function PdfTable() {
         if (!response.ok) {
           throw new Error(result.msg);
         }
-
-        setData(result.content);
+        const sortedContent = result.content.sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+        setData(sortedContent);
       } catch (error: any) {
         console.error("Error fetching data:", error);
         addNotification(error.message, "error");
