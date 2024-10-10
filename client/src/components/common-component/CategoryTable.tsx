@@ -24,6 +24,10 @@ function CategoryTable() {
       },
     },
   ]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState("");
+  const itemsPerPage = 10; // Number of items per page
+  const [totalPages, setTotalPages] = useState(1);
 
   const getCategoryList = async () => {
     try {
@@ -45,8 +49,7 @@ function CategoryTable() {
 
   useEffect(() => {
     getCategoryList();
-    1;
-  }, []);
+  }, [category]);
 
   const handleDelete = async (id: string) => {
     try {
@@ -59,17 +62,12 @@ function CategoryTable() {
       });
       const data = await res.json();
       addNotification(data.msg, "success");
-      getCategoryList();
     } catch (err: any) {
       addNotification(err.message, "error");
     }
   }
 
   // State for pagination
-  const [currentPage, setCurrentPage] = useState(1);
-  const [searchQuery, setSearchQuery] = useState("");
-  const itemsPerPage = 10; // Number of items per page
-  const [totalPages, setTotalPages] = useState(1);
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
@@ -129,6 +127,12 @@ function CategoryTable() {
               <th scope="col" className="px-6 py-3">
                 Created By
               </th>
+              {
+                user.role === "admin" || user.role === "editor" ? (
+
+                  <th scope="col" className="px-6 py-3">Action</th>
+                ) : ""
+              }
             </tr>
           </thead>
           <tbody>
@@ -140,6 +144,18 @@ function CategoryTable() {
                 <td className="px-6 py-4">{startIndex + index + 1}</td>
                 <td className="px-6 py-4">{row.title}</td>
                 <td className="px-6 py-4">{row.user.name}</td>
+                {
+                  user.role === "admin" || user.role === "editor" ? (
+                    <td className="flex space-x-5 px-6 py-4">
+                      <MdOutlineEdit
+                        className="text-[#011936] text-xl cursor-pointer"
+                        onClick={() => {
+                          router.push(`/${user.role}/category/edit/${row._id}`);
+                        }}
+                      />
+                      <RiDeleteBin6Line className="text-[#011936] text-xl cursor-pointer" onClick={() => handleDelete(row._id)} />
+                    </td>
+                  ) : ""}
               </tr>
             ))}
           </tbody>

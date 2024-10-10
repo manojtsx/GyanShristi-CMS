@@ -51,7 +51,7 @@ function LatestContent() {
                 <Link href={`/post/${item._id}`} key={index} className="flex items-center gap-1 relative">
                 <div className="w-12 h-12">
                   <Image
-                    src={`${API}${item.thumbnail}`}
+                    src={item.thumbnail ? `${API}${item.thumbnail}` : "/default.jpg"}
                     alt="Profile Picture"
                     height={500}
                     width={500}

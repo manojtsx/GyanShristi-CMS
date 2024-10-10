@@ -18,7 +18,7 @@ function Profile() {
   const { addNotification } = useNotifications();
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(user?.profile_pic);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(user.profile_pic);
 
   const handleProfileClick = () => {
     setIsPopupVisible(true);
@@ -112,11 +112,11 @@ function Profile() {
             htmlFor="name"
             className="text-xl text-[#3742FA] font-semibold"
           >
-            {user?.name || "Name"}
+            {user.name}
           </label>
         </div>
         <div>
-          <Link href={`/${user?.role}/edit-profile`}>
+          <Link href={`/${user.role}/edit-profile`}>
             {" "}
             <button className="bg-[#3742FA] px-4 py-2 rounded-md text-white font-medium flex justify-center items-center gap-1 hover:bg-[#2B34CC]">
               <FontAwesomeIcon icon={faPen} /> Edit
@@ -126,7 +126,7 @@ function Profile() {
             <div className="w-full flex ">
               <p className="text-left w-24 text-[#333333] font-medium">Name:</p>
               <p className="text-left text-[#333333] font-medium">
-                {user?.name || "Name"}
+                {user.name}
               </p>
             </div>
 
@@ -135,7 +135,7 @@ function Profile() {
                 Username:
               </p>
               <p className="text-left text-[#333333] font-medium">
-                {user?.username || "Username"}
+                {user.username}
               </p>
             </div>
 
@@ -144,7 +144,7 @@ function Profile() {
                 Address:
               </p>
               <p className="text-left text-[#333333] font-medium">
-                {user?.address || "123 Street"}
+                {user.address}
               </p>
             </div>
 
@@ -153,7 +153,7 @@ function Profile() {
                 Contact:
               </p>
               <p className="text-left text-[#333333] font-medium">
-                {user?.phone_number || "98XXXXXXXXX"}
+                {user.phone_number}
               </p>
             </div>
 
@@ -162,7 +162,7 @@ function Profile() {
                 Email Id:
               </p>
               <p className="text-left text-[#333333] font-medium">
-                {user?.email || "abc@email.com"}
+                {user.email}
               </p>
             </div>
           </div>
