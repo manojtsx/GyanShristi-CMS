@@ -19,7 +19,7 @@ const API = process.env.NEXT_PUBLIC_BACKEND_API;
 
 function Navbar() {
   const { addNotification } = useNotifications();
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
   const [isClick, setIsClick] = useState(false);
@@ -135,31 +135,8 @@ function Navbar() {
     setLogoutModalOpen(false);
   }
 
-  const handleConfirmLogout = async () => {
-    try {
-      await logout();
-      router.push("/login");
-    } catch (error) {
-      console.error("Logout failed", error);
-    } finally {
-      setLogoutModalOpen(false);
-    }
-  }
-
   const navItems = [
     { id: "home", name: "Home", link: "/" },
-    {
-      id: "notification",
-      name: (
-        <>
-          <span className="hidden sm:inline">
-            <FontAwesomeIcon icon={faBell} className="h-5 w-5" />
-          </span>
-          <span className="inline sm:hidden">Notification</span>
-        </>
-      ),
-      link: "/notification",
-    },
     { id: "about", name: "About", link: "/about" },
     { id: "signup", name: (user ? <Image alt="Profile Logo" src={user.profile_pic ? `${API}${user.profile_pic}` : '/default.jpg'} width={30} height={30} className='rounded-full' /> : "Sign Up"), link: (user ? `${user.role}/profile` : "/register") },
     { id: "login", name: (user ? "Logout" : "Login"), link: (user ? "#" : "/login"), onClick: (user ? handleLogoutClick : undefined) },

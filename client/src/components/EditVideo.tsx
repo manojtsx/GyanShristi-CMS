@@ -194,7 +194,7 @@ function EditVideo() {
 
         <div className="flex flex-col w-full md:w-1/2 space-y-6">
         {
-          user.role === "admin" || user.role === "editor" &&
+          user.role === "admin" || user.role === "editor" ?
           <div>
             <label className="block text-lg font-medium text-gray-800 mb-1">Author:</label>
             <select
@@ -210,7 +210,7 @@ function EditVideo() {
                 </option>
               ))}
             </select>
-          </div>
+          </div> : ""
             }
 
           <div>

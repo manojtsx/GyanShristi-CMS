@@ -67,6 +67,7 @@ const ShowPost: React.FC = () => {
         throw new Error(data.msg);
       }
       setContentData(data);
+      console.log(data)
     } catch (error: any) {
       setError(error.message);
     } finally {
@@ -313,9 +314,6 @@ const ShowPost: React.FC = () => {
                 {contentData.userOwner ? contentData.userOwner.name : "Unknown"}
               </p>
             </div>
-            <p className="text-xs text-gray-700 text-right">
-              Information and communication technology
-            </p>
           </div>
           <div className="flex flex-col gap-2">
             <div className="flex items-center">

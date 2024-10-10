@@ -8,6 +8,7 @@ const ShowAdvertisement: React.FC = () => {
                 Advertisement
             </h2>
             <div className='flex flex-col gap-8 items-center'>
+                <Image src="/ad5.jpg" alt="Advertisement" width={300} height={250} className='w-full'/>
                 <Image src="/ad1.png" alt="Advertisement" width={300} height={250} className='w-full'/>
                 <Image src="/ad3.png" alt="Advertisement" width={300} height={250} className='w-full'/>
                 <Image src="/ad2.png" alt="Advertisement" width={300} height={250} className='w-full'/>

@@ -234,7 +234,7 @@ function Post() {
         </div>
     
     {
-      user.role === "admin" || user.role === "editor" && (
+      user.role === "admin" || user.role === "editor" ? (
 
         <div className="w-full">
           <label htmlFor="author" className="block text-lg font-medium text-gray-800 mb-2">
@@ -256,7 +256,7 @@ function Post() {
             ))}
           </select>
         </div>
-      )
+      ) : ""
     }
     
         <div className="w-full">

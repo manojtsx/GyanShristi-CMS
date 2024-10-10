@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { BsXLg } from "react-icons/bs";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from 'next/navigation'
@@ -10,16 +10,19 @@ interface LogoutModalProps {
 }
 
 const Logout: React.FC<LogoutModalProps> = ({ isOpen, onClose}) => {
+  const [loading, setLoading] = useState(false);
   if (!isOpen) return null;
   const {logout} = useAuth();
   const router = useRouter();
 
   const onConfirm = async () => {
     try {
-      await logout();
-      router.push("/login");
+      setLoading(true)
+      logout();
     } catch (error) {
       console.error("Logout failed", error);
+    }finally{
+      setLoading(false)
     }
   }
  
@@ -33,23 +36,31 @@ const Logout: React.FC<LogoutModalProps> = ({ isOpen, onClose}) => {
             onClick={onClose}
           />
         </div>
-        <p className=" flex justify-center items-center text-lg text-black mt-10">
-          Are you sure you want to logout?
-        </p>
-        <div className="flex justify-center space-x-3 mt-2 ">
-          <button
-            className="px-9 py-2 font-semibold bg-gray-200 rounded hover:bg-gray-400"
-            onClick={onConfirm}
-          >
-            Yes
-          </button>
-          <button
-            className="px-7 py-2 font-semibold bg-gray-200 rounded hover:bg-gray-400"
-            onClick={onClose}
-          >
-            Cancel
-          </button>
-        </div>
+        {loading ? (
+          <p className="flex justify-center items-center text-lg text-black mt-10">
+            Logging out...
+          </p>
+        ) : (
+          <>
+            <p className="flex justify-center items-center text-lg text-black mt-10">
+              Are you sure you want to logout?
+            </p>
+            <div className="flex justify-center space-x-3 mt-2 ">
+              <button
+                className="px-9 py-2 font-semibold bg-gray-200 rounded hover:bg-gray-400"
+                onClick={onConfirm}
+              >
+                Yes
+              </button>
+              <button
+                className="px-7 py-2 font-semibold bg-gray-200 rounded hover:bg-gray-400"
+                onClick={onClose}
+              >
+                Cancel
+              </button>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

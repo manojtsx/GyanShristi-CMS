@@ -36,16 +36,6 @@ const SideMenuBarAuthor = () => {
     setLogoutModalOpen(false);
   };
 
-  const handleConfirmLogout = async () => {
-    try {
-      await logout();
-      router.push("/login");
-    } catch (error) {
-      console.error("Logout failed", error);
-    } finally {
-      setLogoutModalOpen(false);
-    }
-  };
 
   const handleNavigation = (path?: string, label?: string) => {
     const menuItemLabel = label || "Default Label";
@@ -119,7 +109,7 @@ const SideMenuBarAuthor = () => {
         }}
       >
         <Image
-          src={user ? `${API}${user.profile_pic}` : '/default.jpg'}
+          src={user.profile_pic ? `${API}${user.profile_pic}` : '/default.jpg'}
           width={45}
           height={45}
           className="rounded-full border-[#011936]"
