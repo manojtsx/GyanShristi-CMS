@@ -172,7 +172,7 @@ function Navbar() {
               className="rounded-full"
             />
           </Link>
-          <ul className="hidden sm:flex justify-between gap-8 font-semibold">
+          <ul className="hidden sm:flex justify-between items-center gap-8 font-semibold">
             {navItems.map((item, index) => (
               <Link href={item.link} key={index}>
                 {" "}
