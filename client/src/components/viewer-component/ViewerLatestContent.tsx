@@ -69,13 +69,13 @@ function ViewerLatestContent() {
             <div className='flex justify-between gap-2'>
               <div className='w-44'>
                 <p
-                  className='font-bold text-lg overflow-hidden text-ellipsis'
+                  className='w-35 h-[3.2rem] font-bold text-lg overflow-hidden text-ellipsis'
                   title={content.title}
                 >
                   {content.title}
                 </p>
                 <p
-                  className='text-gray-500 text-sm overflow-hidden text-ellipsis'
+                  className='mt-2 w-35 h-[7.2rem] text-gray-500 text-sm overflow-hidden text-ellipsis'
                   title={content.description}
                 >
                   {content.description}

@@ -27,8 +27,11 @@ export default function RootLayout({
 
   return (
     <div className="flex relative">
+      <div className="relative">
       <SideMenuBarAdmin />
-      <div className="flex-1 overflow-y-auto">{children}</div>
+      </div>
+        
+      <div className="flex-1 overflow-y-auto ml-[14rem]">{children}</div>
     </div>
   );
 }

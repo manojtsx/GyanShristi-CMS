@@ -19,6 +19,7 @@ interface ShowVideoProps {
 }
 
 interface User {
+  _id: string;
   name: string;
   profile_pic: string;
 }

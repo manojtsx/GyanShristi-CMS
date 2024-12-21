@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { useEffect } from "react";
 import { useRouter } from "next/navigation"; // For navigating
 import { useAuth } from "@/context/AuthContext"; // Custom AuthContext hook
@@ -26,11 +26,11 @@ export default function RootLayout({
   }
 
   return (
-    <div className="flex h-screen">
-      <SideMenuBarAuthor />
-      <div className="flex-1 overflow-hidden">
-        {children}
+    <div className="flex  relative">
+      <div className="relative">
+        <SideMenuBarAuthor />
       </div>
+      <div className="flex-1 overflow-y-auto ml-[14rem]">{children}</div>
     </div>
   );
 }

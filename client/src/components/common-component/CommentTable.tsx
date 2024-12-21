@@ -5,6 +5,7 @@ import Pagination from "../mini-component/Pagination";
 import { useAuth } from "@/context/AuthContext";
 import Loading from "../Loading";
 import { ImSearch } from "react-icons/im";
+import Link from "next/link";
 
 const API = process.env.NEXT_PUBLIC_BACKEND_API;
 
@@ -19,6 +20,7 @@ interface Comment {
     title: string;
     description: string;
   };
+  content_id: string;
   description: string;
   created_at: string;
 }
@@ -54,6 +56,7 @@ function CommentTable() {
         }
       );
       const result = await response.json();
+      console.log(result);
       if (!response.ok) {
         throw new Error(result.msg || "Failed to fetch comments");
       }
@@ -62,9 +65,10 @@ function CommentTable() {
           row.content.title !== "unknown" &&
           row.user.name !== "unknown" &&
           (row.user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            row.content.title 
+            row.content.title
               .toLowerCase()
-              .includes(searchQuery.toLowerCase()) || row.description.toLowerCase().includes(searchQuery.toLowerCase()))
+              .includes(searchQuery.toLowerCase()) ||
+            row.description.toLowerCase().includes(searchQuery.toLowerCase()))
         );
       });
       setFilteredData(filteredData);
@@ -103,7 +107,10 @@ function CommentTable() {
   };
 
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const paginatedData = filteredData.slice(startIndex, startIndex + itemsPerPage);
+  const paginatedData = filteredData.slice(
+    startIndex,
+    startIndex + itemsPerPage
+  );
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
 
   if (loading) {
@@ -169,7 +176,9 @@ function CommentTable() {
                 className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600"
               >
                 <td className="px-6 py-4">{row.user.name}</td>
-                <td className="px-6 py-4">{row.content.title}</td>
+                <Link href={`/post/${row.content_id}`} passHref>
+                  <td className="px-6 py-4">{row.content.title}</td>
+                </Link>
                 <td className="px-1 py-4">{row.description}</td>
                 <td className="px-6 py-4">
                   {new Date(row.created_at).toLocaleDateString()}

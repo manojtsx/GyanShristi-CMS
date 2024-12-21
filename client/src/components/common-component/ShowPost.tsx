@@ -28,6 +28,7 @@ interface ContentData {
   fileContent: string; // Added this field to handle HTML content directly
 }
 interface User {
+  _id: string;
   name: string;
   profile_pic: string;
 }

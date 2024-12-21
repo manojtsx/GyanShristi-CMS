@@ -7,13 +7,13 @@ import { useNotifications } from "@/context/NotificationContext";
 
 const API = process.env.NEXT_PUBLIC_BACKEND_API;
 function AddCategory() {
-  const {token, user} = useAuth();
+  const { token, user } = useAuth();
   const router = useRouter();
-  const { addNotification } = useNotifications(); 
+  const { addNotification } = useNotifications();
   const [category, setCategory] = useState({
-    user_id: "",
+    user_id: user._id,
     title: "",
-    ownerName: "",
+    ownerName: user.name,
   });
 
   const [users, setUsers] = useState([
@@ -25,8 +25,6 @@ function AddCategory() {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-
-
 
   const fetchUsers = async () => {
     try {
@@ -51,7 +49,6 @@ function AddCategory() {
       } else {
         throw new Error("Users data is not an array");
       }
-      
     } catch (error: any) {
       addNotification(error.message, "error");
       setError(error.message);
@@ -66,6 +63,7 @@ function AddCategory() {
 
   const addCategory = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    console.log(category)
     try {
       const response = await fetch(`${API}api/category/add`, {
         method: "POST",
@@ -79,17 +77,20 @@ function AddCategory() {
       const data = await response.json();
       if (!response.ok) throw new Error(data.msg);
 
-      window.location.reload(); 
+      window.location.reload();
       addNotification(data.msg, "success");
     } catch (error: any) {
       addNotification(error.message, "error");
       setError(error.message);
     }
-  }
+  };
 
   return (
     <div>
-      <form onSubmit={addCategory} className="flex flex-col h-screen justify-center items-center">
+      <form
+        onSubmit={addCategory}
+        className="flex flex-col h-screen justify-center items-center"
+      >
         <div className="w-24 relative">
           <Image
             src="/GirlProfile.jpg"
@@ -100,26 +101,30 @@ function AddCategory() {
           />
         </div>
         <div className="flex flex-col justify-center items-center gap-7 px-10 py-3 shadow-lg bg-[#F9F7F7]">
-          <div className="w-full flex flex-col">
-            <label htmlFor="createdBy" className="w-32 text-lg">
-              Created By{" "}
-            </label>
-            <select
-              id="author"
-              name="author"
-              className="rounded-lg h-10 w-[200px] text-center"
-              value={category.user_id}
-              onChange={(e) => setCategory({ ...category, user_id: e.target.value })}
-              required
-            >
-              <option value="">Select Author</option>
-              {users.map((user) => (
-                <option key={user._id} value={user._id}>
-                  {user.name}
-                </option>
-              ))}
-            </select>
-          </div>
+          {user.role !== "author" && (
+            <div className="w-full flex flex-col">
+              <label htmlFor="createdBy" className="w-32 text-lg">
+                Created By{" "}
+              </label>
+              <select
+                id="author"
+                name="author"
+                className="rounded-lg h-10 w-[200px] text-center"
+                value={category.user_id}
+                onChange={(e) =>
+                  setCategory({ ...category, user_id: e.target.value })
+                }
+                required
+              >
+                <option value="">Select Author</option>
+                {users.map((user) => (
+                  <option key={user._id} value={user._id}>
+                    {user.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
           <div className="w-full flex flex-col">
             <label htmlFor="title" className="w-32 text-lg">
               Title{" "}
@@ -127,11 +132,13 @@ function AddCategory() {
             <input
               name="title"
               value={category.title}
-              onChange={(e) => setCategory({ ...category, title: e.target.value })}
+              onChange={(e) =>
+                setCategory({ ...category, title: e.target.value })
+              }
               placeholder="Enter a title"
             />
           </div>
-          <SubmitButton text="Add"/>
+          <SubmitButton text="Add" />
         </div>
       </form>
     </div>

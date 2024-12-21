@@ -93,7 +93,7 @@ const SideMenuBarEditor = () => {
   return (
     <div
       className={`h-screen bg-[#011936] ${open ? "w-56" : "w-20"
-        } duration-300 relative flex flex-col`}
+        } duration-300 fixed left-0 top-0 z-10 flex flex-col`}
     >
       <BsArrowLeftShort
         className={`text-[#011936] text-2xl bg-slate-50 rounded-full border border-[#011936] absolute -right-3 top-5 cursor-pointer ${!open && "rotate-180"

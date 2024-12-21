@@ -10,7 +10,7 @@ const addCategory = async (req, res) => {
       return res.status(401).json({ msg: "Unauthorized" });
     }
 
-    if (userRole === "admin" || userRole === "editor") {
+    if (userRole === "admin" || userRole === "editor" || userRole === "author") {
       const { title, user_id } = req.body;
       const categoryUserId = user_id || userId; // Use user_id from request body if provided, otherwise use authenticated userId
       const newCategory = new Category({ title, user_id: categoryUserId });

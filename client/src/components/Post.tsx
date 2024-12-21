@@ -121,6 +121,7 @@ function Post() {
 
   const handleSubmit = async () => {
     try {
+      
       // Prepare the FormData object
       const formData = new FormData();
 

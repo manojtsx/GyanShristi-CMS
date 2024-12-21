@@ -135,7 +135,7 @@ function ContentTable() {
         </div>
       </div>
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg mr-6">
-        <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+        <table className="w-full text-sm text-left rtl:text-right text-gray-500">
           <thead className="text-xs text-gray-200 uppercase bg-[#011936]">
             <tr>
               <th scope="col" className="px-6 py-3">
@@ -160,7 +160,7 @@ function ContentTable() {
               paginatedData.map((row) => (
                 <tr
                   key={row._id}
-                  className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600"
+                  className="bg-white border-b hover:bg-gray-100"
                 >
                   <Link href={`/post/${row._id}`}><td className="px-6 py-4 cursor-pointer">{row.title}</td></Link>
                   <td className="px-6 py-4">{!row.user_id ? "Unknown" : row.user_id.name}</td>

@@ -47,6 +47,14 @@ const SpeechToTextEditor: React.FC<SpeechToTextEditorProps> = ({value, onChange}
     [editorInstance, resetTranscript]
   );
 
+  const insertTranscriptIntoEditor = useCallback(() => {
+    if (editorInstance && transcript) {
+      // Insert transcript into the editor
+      editorInstance.html.insert(" " + transcript);
+      resetTranscript();
+    }
+  }, [editorInstance, transcript, resetTranscript]);
+
   useEffect(() => {
     if (editorInstance) {
       const handleContentChanged = () => {
@@ -78,7 +86,16 @@ const SpeechToTextEditor: React.FC<SpeechToTextEditorProps> = ({value, onChange}
       alert("You are offline. Please check your internet connection.");
     }
   };
-  const stopListening = () => SpeechRecognition.stopListening();
+  const stopListening = () => {
+    if(transcript){
+      insertTranscriptIntoEditor();
+    }
+    if(editorInstance){
+      const currentContent = editorInstance.html.get();
+      onChange(currentContent);
+    }
+    SpeechRecognition.stopListening();
+  };
 
   return (
     <div>
