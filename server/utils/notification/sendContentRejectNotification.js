@@ -36,7 +36,7 @@ async function sendContentRejectNotification(email, contentTitle, contentType, c
         const info = await transporter.sendMail(mailOptions);
     } catch (err) {
         console.error('Error sending email: ', err);
-        throw new Error('Error sending content acceptance notification');
+        return null;
     }
 }
 

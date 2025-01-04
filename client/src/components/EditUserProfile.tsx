@@ -117,6 +117,7 @@ function EditUserProfile() {
         </div>
         <SubmitButton text="Save" />
         <Link href={`/${user.role}/user/edit/password/${userId}`} className='text-[#1E43C8]'>Change Password</Link>
+        <Link href={`/${user.role}/user/edit/email/${userId}`} className='text-[#1E43C8]'>Change Email</Link>
       </div>
     </form>
   )
