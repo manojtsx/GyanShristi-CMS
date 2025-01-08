@@ -142,9 +142,9 @@ const About = () => {
                   className="w-36 h-36 rounded-full mb-4 transform transition-transform duration-1000 hover:scale-150 object-cover"
                 />
                 </div>
-                <h3 className="text-lg text-[#ececee] font-semibold md:mb-2 dark:text-[#E0E0E0]">Global Reach</h3>
+                <h3 className="text-lg text-[#ececee] font-semibold md:mb-2 dark:text-[#E0E0E0]">Multimedia Support</h3>
                 <p className="text-sm text-[#ececee] text-center dark:text-[#B0B0B0]">
-                  Multilingual support to engage a worldwide audience.
+                  Multimedia support for a diverse range of content creators.
                 </p>
               </div>
             </div>
