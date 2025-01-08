@@ -597,7 +597,7 @@ const getAllContent = async (req, res) => {
     const { filter, filter2 } = req.query;
    
    // Fetch all content from the database and populate user and category details
-   let content = await Content.find({ status: { $ne: "Pending" } })
+   let content = await Content.find({ status: { $nin: ["Pending", "Rejected"] } })
    .populate("user_id", "name email profile_pic") // Populate user details, fetching only name and email
    .populate("category_id", "title"); // Populate category details, fetching only the title
    
