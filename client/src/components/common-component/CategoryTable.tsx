@@ -62,6 +62,7 @@ function CategoryTable() {
       });
       const data = await res.json();
       addNotification(data.msg, "success");
+      getCategoryList();
     } catch (err: any) {
       addNotification(err.message, "error");
     }
@@ -73,6 +74,7 @@ function CategoryTable() {
   };
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
+    setCurrentPage(1);
   };
 
   // Filter data based on search query

@@ -116,6 +116,7 @@ function AuthorTable() {
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
+    setCurrentPage(1)
   };
 
   // Filter data based on search query

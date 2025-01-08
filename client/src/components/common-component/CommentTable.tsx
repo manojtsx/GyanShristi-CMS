@@ -97,6 +97,7 @@ function CommentTable() {
       }
       setData(data.filter((row) => row._id !== id));
       setFilteredData(filteredData.filter((row) => row._id !== id));
+      fetchComments();
     } catch (error: any) {
       setError(error.message);
     }
@@ -104,6 +105,7 @@ function CommentTable() {
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
+    setCurrentPage(1);
   };
 
   const startIndex = (currentPage - 1) * itemsPerPage;

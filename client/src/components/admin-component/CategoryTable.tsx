@@ -39,7 +39,6 @@ function CategoryTable() {
 
   useEffect(() => {
     getCategoryList();
-    1;
   }, []);
 
   return (

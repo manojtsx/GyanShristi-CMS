@@ -44,26 +44,26 @@ function ContentTable() {
   // Calculate total pages based on data length
   const totalPages = Math.ceil(data.length / itemsPerPage);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(`${API}api/content/?filter2=${user._id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        const result = await response.json();
+  const fetchData = async () => {
+    try {
+      const response = await fetch(`${API}api/content/?filter2=${user._id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const result = await response.json();
 
-        if (!response.ok) {
-          throw new Error(result.msg);
-        }
-        const sortedContent = result.content.sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
-        setData(sortedContent);
-      } catch (error: any) {
-        console.error("Error fetching data:", error);
-        addNotification(error.message, "error");
+      if (!response.ok) {
+        throw new Error(result.msg);
       }
-    };
+      const sortedContent = result.content.sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+      setData(sortedContent);
+    } catch (error: any) {
+      console.error("Error fetching data:", error);
+      addNotification(error.message, "error");
+    }
+  };
+  useEffect(() => {
 
     fetchData();
   }, [token]);
@@ -84,6 +84,7 @@ function ContentTable() {
       const result = await response.json();
       setData(data.filter((row) => row._id !== id));
       addNotification(result.msg, "success");
+      fetchData();
     } catch (error) {
       console.error("Error deleting content:", error);
       addNotification("Failed to delete content", "error");
@@ -96,6 +97,7 @@ function ContentTable() {
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
+    setCurrentPage(1);
   };
 
   // Filter data based on search query
