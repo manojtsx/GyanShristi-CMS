@@ -55,11 +55,11 @@ function ViewerLatestContent() {
     fetchContents();
   }, []);
 
-  const latestContents = contents.slice(-3);
+  const latestContents = contents.slice(0,3);
   const randomContents = contents.sort(() => 0.5 - Math.random()).slice(0, 3);
-  const latestPosts = contents.filter(content => content.content_type === "post").slice(-3);
-  const latestVideos = contents.filter(content => content.content_type === "video").slice(-3);
-  const latestPDFs = contents.filter(content => content.content_type === "pdf").slice(-3);
+  const latestPosts = contents.filter(content => content.content_type === "post").slice(0,3);
+  const latestVideos = contents.filter(content => content.content_type === "video").slice(0,3);
+  const latestPDFs = contents.filter(content => content.content_type === "pdf").slice(0,3);
 
   if (contents.length === 0) {
     return <div>No contents found..</div>;
