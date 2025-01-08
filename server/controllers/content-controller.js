@@ -658,7 +658,7 @@ const getContentByCategory = async (req, res) => {
     // Fetch all content from the database
     let content = await Content.find({
       category_id: id,
-      status: { $ne: "Pending" },
+      status: { $nin: ["Pending", "Rejected"] },
     });
     if (!content) {
       res.status(404).json({ msg: "No content found" });
