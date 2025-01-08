@@ -43,7 +43,7 @@ const SpeechToTextEditor: React.FC<SpeechToTextEditorProps> = ({value, onChange}
         editorInstance.html.insert(" " + transcript);
         resetTranscript();
       }
-    }, 100), // Adjust the debounce delay as needed
+    }, 1000), // Adjust the debounce delay as needed
     [editorInstance, resetTranscript]
   );
 
@@ -81,7 +81,7 @@ const SpeechToTextEditor: React.FC<SpeechToTextEditorProps> = ({value, onChange}
 
   const startListening = () => {
     if (navigator.onLine) {
-      SpeechRecognition.startListening({ continuous: true });
+      SpeechRecognition.startListening({ continuous: true , language : 'en-US'});
     } else {
       alert("You are offline. Please check your internet connection.");
     }
